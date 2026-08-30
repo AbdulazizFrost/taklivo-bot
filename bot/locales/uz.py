@@ -39,7 +39,7 @@ TEXTS = {
         "• <b>Zamonaviy va tejamkor:</b> havola Telegram, WhatsApp yoki Instagram orqali yuboriladi\n"
         "• <b>Mehmonlarga qulay:</b> bir bosishda lokatsiya, kelishini tasdiqlash (RSVP), dress-kod\n"
         "• <b>Individual:</b> sizning suratlaringiz, sevimli musiqangiz va sevgi tarixingiz\n\n"
-        "📞 Bog‘lanish va aloqa: {support_admin}"
+        "📞 Bog‘lanish va aloqa: @Abdulaziz5335"
     ),
 
     # Narxlar
@@ -181,7 +181,7 @@ TEXTS = {
     "notify_payment_rejected": (
         "❌ <b>#{order_id}-raqamli buyurtma to‘lovi tasdiqlanmadi.</b>\n\n"
         "Sabab: to‘lov chekini tekshirib bo‘lmadi.\n"
-        "Iltimos, haqiqiy chekni yuboring yoki qo‘llab-quvvatlash bilan bog‘laning: {support_admin}."
+        "Iltimos, haqiqiy chekni yuboring yoki qo‘llab-quvvatlash bilan bog‘laning: @Abdulaziz5335."
     ),
     "notify_website_ready": (
         "🎉 <b>SIZNING TAKLIFNOMANGIZ TAYYOR!</b>\n\n"
