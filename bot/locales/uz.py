@@ -27,6 +27,7 @@ TEXTS = {
     "btn_pricing": "💰 Funksiyalar narxlari",
     "btn_my_orders": "📦 Mening buyurtmalarim",
     "btn_about": "ℹ️ Xizmat haqida",
+    "btn_instagram": "📸 Bizning Instagram",
     "btn_change_language": "🌐 Tilni o‘zgartirish",
 
     # Xizmat haqida
@@ -39,7 +40,8 @@ TEXTS = {
         "• <b>Zamonaviy va tejamkor:</b> havola Telegram, WhatsApp yoki Instagram orqali yuboriladi\n"
         "• <b>Mehmonlarga qulay:</b> bir bosishda lokatsiya, kelishini tasdiqlash (RSVP), dress-kod\n"
         "• <b>Individual:</b> sizning suratlaringiz, sevimli musiqangiz va sevgi tarixingiz\n\n"
-        "📞 Bog‘lanish va aloqa: @Abdulaziz5335"
+        "📸 <b>Instagram:</b> <a href='https://www.instagram.com/wedding_websites_uzbekistan/'>@wedding_websites_uzbekistan</a>\n"
+        "📞 <b>Bog‘lanish va aloqa:</b> @Abdulaziz5335"
     ),
 
     # Narxlar

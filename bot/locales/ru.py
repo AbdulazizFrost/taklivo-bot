@@ -27,6 +27,7 @@ TEXTS = {
     "btn_pricing": "💰 Прайс-лист функций",
     "btn_my_orders": "📦 Мои заказы",
     "btn_about": "ℹ️ О сервисе",
+    "btn_instagram": "📸 Наш Instagram",
     "btn_change_language": "🌐 Сменить язык",
 
     # О сервисе
@@ -39,7 +40,8 @@ TEXTS = {
         "• <b>Экологично и современно:</b> ссылка отправляется в Telegram, WhatsApp или Instagram\n"
         "• <b>Удобно гостям:</b> карта проезда в один клик, подтверждение присутствия (RSVP), дресс-код\n"
         "• <b>Индивидуально:</b> ваши фотографии, любимая музыка и история любви\n\n"
-        "📞 Поддержка и связь: @Abdulaziz5335"
+        "📸 <b>Instagram:</b> <a href='https://www.instagram.com/wedding_websites_uzbekistan/'>@wedding_websites_uzbekistan</a>\n"
+        "📞 <b>Поддержка и связь:</b> @Abdulaziz5335"
     ),
 
     # Цены

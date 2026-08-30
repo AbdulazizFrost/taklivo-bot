@@ -90,16 +90,11 @@ async def callback_main_menu(callback: CallbackQuery, state: FSMContext) -> None
 async def callback_about(callback: CallbackQuery) -> None:
     """Раздел «О сервисе»."""
     lang = await db.get_user_language(callback.from_user.id)
-    kb = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=get_text(lang, "btn_create_invitation"), callback_data="client:create_order")],
-            [InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:main_menu")],
-        ]
-    )
     await callback.message.edit_text(
-        text=get_text(lang, "about_text", support_admin=config.SUPPORT_ADMIN),
-        reply_markup=kb,
+        text=get_text(lang, "about_text"),
+        reply_markup=get_about_keyboard(lang=lang),
         parse_mode="HTML",
+        disable_web_page_preview=True,
     )
     await callback.answer()
 

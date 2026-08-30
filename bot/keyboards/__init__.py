@@ -1,9 +1,10 @@
 """
-Пакет клавиатур.
+Пакет клавиатур для бота TAKLIVO.
 """
 from bot.keyboards.client import (
     get_language_keyboard,
     get_main_menu_keyboard,
+    get_about_keyboard,
     get_portfolio_keyboard,
     get_template_detail_keyboard,
     get_pricing_keyboard,
@@ -31,6 +32,7 @@ from bot.keyboards.admin import (
 __all__ = [
     "get_language_keyboard",
     "get_main_menu_keyboard",
+    "get_about_keyboard",
     "get_portfolio_keyboard",
     "get_template_detail_keyboard",
     "get_pricing_keyboard",

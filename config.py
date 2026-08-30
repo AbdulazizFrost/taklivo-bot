@@ -38,6 +38,10 @@ class Config:
     # Юзернейм администратора для связи и поддержки клиентов
     SUPPORT_ADMIN: str = os.getenv("SUPPORT_ADMIN", "@Abdulaziz5335").strip()
 
+    # Instagram аккаунт сервиса
+    INSTAGRAM_URL: str = os.getenv("INSTAGRAM_URL", "https://www.instagram.com/wedding_websites_uzbekistan/").strip()
+    INSTAGRAM_HANDLE: str = "@wedding_websites_uzbekistan"
+
     # Реквизиты оплаты
     PAYMENT_DETAILS: str = os.getenv(
         "PAYMENT_DETAILS",
