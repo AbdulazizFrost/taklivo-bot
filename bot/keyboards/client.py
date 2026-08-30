@@ -35,6 +35,32 @@ def get_main_menu_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     )
 
 
+def get_portfolio_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
+    """Список шаблонов для просмотра."""
+    buttons = []
+    for tmpl_id, tmpl in config.TEMPLATES.items():
+        name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
+        buttons.append([
+            InlineKeyboardButton(text=name, callback_data=f"tmpl_view:{tmpl_id}")
+        ])
+    buttons.append([
+        InlineKeyboardButton(text=get_text(lang, "btn_create_invitation"), callback_data="client:create_order"),
+        InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:main_menu"),
+    ])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def get_template_detail_keyboard(template_id: str, demo_url: str, lang: str = "ru") -> InlineKeyboardMarkup:
+    """Кнопки в карточке конкретного шаблона."""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(lang, "btn_demo_link"), url=demo_url)],
+            [InlineKeyboardButton(text=get_text(lang, "btn_choose_template"), callback_data=f"order_select_tmpl:{template_id}")],
+            [InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:portfolio")],
+        ]
+    )
+
+
 def get_pricing_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     """Клавиатура раздела цен."""
     return InlineKeyboardMarkup(
