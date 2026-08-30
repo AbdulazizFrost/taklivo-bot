@@ -102,7 +102,7 @@ class NotificationService:
         lang: str = "ru",
     ) -> bool:
         """Уведомляет клиента об отклонении чека."""
-        text = get_text(lang, "notify_payment_rejected", order_id=order.id)
+        text = get_text(lang, "notify_payment_rejected", order_id=order.id, support_admin=config.SUPPORT_ADMIN)
         try:
             await bot.send_message(
                 chat_id=order.telegram_id,

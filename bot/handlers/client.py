@@ -97,7 +97,7 @@ async def callback_about(callback: CallbackQuery) -> None:
         ]
     )
     await callback.message.edit_text(
-        text=get_text(lang, "about_text"),
+        text=get_text(lang, "about_text", support_admin=config.SUPPORT_ADMIN),
         reply_markup=kb,
         parse_mode="HTML",
     )

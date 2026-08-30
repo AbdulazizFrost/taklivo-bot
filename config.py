@@ -1,6 +1,5 @@
 """
 Конфигурация проекта TAKLIVO.
-Идеальная математика: Базовая цена 50 000 сум + все опции (100 000 сум) = ровно 150 000 сум.
 """
 from dataclasses import dataclass
 import os
@@ -36,6 +35,9 @@ class Config:
             if clean_item.isdigit():
                 ADMIN_IDS.append(int(clean_item))
 
+    # Юзернейм администратора для связи и поддержки клиентов
+    SUPPORT_ADMIN: str = os.getenv("SUPPORT_ADMIN", "@AbdulazizFrost").strip()
+
     # Реквизиты оплаты
     PAYMENT_DETAILS: str = os.getenv(
         "PAYMENT_DETAILS",
@@ -48,7 +50,7 @@ class Config:
     # Базовая стоимость создания сайта
     BASE_PRICE: int = int(os.getenv("BASE_PRICE", "50000"))
 
-    # Цены на дополнительные функции (в сумме ровно 100 000 сум -> максимум 150 000 сум)
+    # Цены на дополнительные функции (в сумах)
     TIMER_PRICE: int = int(os.getenv("TIMER_PRICE", "10000"))
     RSVP_PRICE: int = int(os.getenv("RSVP_PRICE", "20000"))
     MAP_PRICE: int = int(os.getenv("MAP_PRICE", "10000"))

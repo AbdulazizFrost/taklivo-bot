@@ -24,7 +24,6 @@ TEXTS = {
         "Nima qilmoqchisiz?"
     ),
     "btn_create_invitation": "💍 Taklifnoma yaratish",
-    "btn_portfolio": "👀 Namunalarni ko‘rish",
     "btn_pricing": "💰 Funksiyalar narxlari",
     "btn_my_orders": "📦 Mening buyurtmalarim",
     "btn_about": "ℹ️ Xizmat haqida",
@@ -40,13 +39,8 @@ TEXTS = {
         "• <b>Zamonaviy va tejamkor:</b> havola Telegram, WhatsApp yoki Instagram orqali yuboriladi\n"
         "• <b>Mehmonlarga qulay:</b> bir bosishda lokatsiya, kelishini tasdiqlash (RSVP), dress-kod\n"
         "• <b>Individual:</b> sizning suratlaringiz, sevimli musiqangiz va sevgi tarixingiz\n\n"
-        "📞 Qo‘llab-quvvatlash va aloqa: @taklivo_admin"
+        "📞 Bog‘lanish va aloqa: {support_admin}"
     ),
-
-    # Portfolio
-    "portfolio_title": "👀 <b>Shablonlarimiz galereyasi:</b>\n\nBrauzerda namunani ko‘rish yoki darhol buyurtma berish uchun uslubni tanlang:",
-    "btn_demo_link": "👁 Namunani ochish",
-    "btn_choose_template": "✅ Ushbu dizaynni tanlash",
 
     # Narxlar
     "pricing_title": (
@@ -187,7 +181,7 @@ TEXTS = {
     "notify_payment_rejected": (
         "❌ <b>#{order_id}-raqamli buyurtma to‘lovi tasdiqlanmadi.</b>\n\n"
         "Sabab: to‘lov chekini tekshirib bo‘lmadi.\n"
-        "Iltimos, haqiqiy chekni yuboring yoki qo‘llab-quvvatlash bilan bog‘laning: @taklivo_admin."
+        "Iltimos, haqiqiy chekni yuboring yoki qo‘llab-quvvatlash bilan bog‘laning: {support_admin}."
     ),
     "notify_website_ready": (
         "🎉 <b>SIZNING TAKLIFNOMANGIZ TAYYOR!</b>\n\n"
