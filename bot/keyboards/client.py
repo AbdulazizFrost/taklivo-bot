@@ -21,43 +21,16 @@ def get_language_keyboard() -> InlineKeyboardMarkup:
 
 
 def get_main_menu_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
-    """Главное меню бота."""
+    """Главное меню бота (без лишней кнопки примеров)."""
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text=get_text(lang, "btn_create_invitation"), callback_data="client:create_order")],
-            [InlineKeyboardButton(text=get_text(lang, "btn_portfolio"), callback_data="client:portfolio")],
             [InlineKeyboardButton(text=get_text(lang, "btn_pricing"), callback_data="client:pricing")],
             [InlineKeyboardButton(text=get_text(lang, "btn_my_orders"), callback_data="client:my_orders")],
             [
                 InlineKeyboardButton(text=get_text(lang, "btn_about"), callback_data="client:about"),
                 InlineKeyboardButton(text=get_text(lang, "btn_change_language"), callback_data="client:change_lang"),
             ],
-        ]
-    )
-
-
-def get_portfolio_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
-    """Список шаблонов для просмотра."""
-    buttons = []
-    for tmpl_id, tmpl in config.TEMPLATES.items():
-        name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
-        buttons.append([
-            InlineKeyboardButton(text=name, callback_data=f"tmpl_view:{tmpl_id}")
-        ])
-    buttons.append([
-        InlineKeyboardButton(text=get_text(lang, "btn_create_invitation"), callback_data="client:create_order"),
-        InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:main_menu"),
-    ])
-    return InlineKeyboardMarkup(inline_keyboard=buttons)
-
-
-def get_template_detail_keyboard(template_id: str, demo_url: str, lang: str = "ru") -> InlineKeyboardMarkup:
-    """Кнопки в карточке конкретного шаблона."""
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=get_text(lang, "btn_demo_link"), url=demo_url)],
-            [InlineKeyboardButton(text=get_text(lang, "btn_choose_template"), callback_data=f"order_select_tmpl:{template_id}")],
-            [InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:portfolio")],
         ]
     )
 
@@ -75,7 +48,7 @@ def get_pricing_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
 # --- Клавиатуры визарда заказа (Конструктор) ---
 
 def get_template_selection_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
-    """Выбор дизайна в визарде заказа."""
+    """Выбор стиля в визарде заказа."""
     buttons = []
     for tmpl_id, tmpl in config.TEMPLATES.items():
         name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
