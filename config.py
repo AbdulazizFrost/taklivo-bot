@@ -36,7 +36,7 @@ class Config:
                 ADMIN_IDS.append(int(clean_item))
 
     # Юзернейм администратора для связи и поддержки клиентов
-    SUPPORT_ADMIN: str = os.getenv("SUPPORT_ADMIN", "@AbdulazizFrost").strip()
+    SUPPORT_ADMIN: str = os.getenv("SUPPORT_ADMIN", "@Abdulaziz5335").strip()
 
     # Реквизиты оплаты
     PAYMENT_DETAILS: str = os.getenv(
