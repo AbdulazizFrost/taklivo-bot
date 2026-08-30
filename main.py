@@ -7,6 +7,14 @@ import logging
 import os
 import sys
 
+# Настройка UTF-8 для консоли Windows
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 from aiohttp import web
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
@@ -51,10 +59,10 @@ async def start_web_server() -> web.AppRunner | None:
     site = web.TCPSite(runner, "0.0.0.0", port)
     try:
         await site.start()
-        logger.info(f"🌐 HTTP Health-сервер запущен на порту {port}")
+        logger.info(f"HTTP Health-сервер запущен на порту {port}")
         return runner
     except Exception as e:
-        logger.warning(f"Не удалось запустить HTTP Health-сервер (некритично для локального запуска): {e}")
+        logger.warning(f"HTTP Health-сервер не запущен (некритично для локального запуска): {e}")
         return None
 
 
@@ -93,7 +101,7 @@ async def global_error_handler(event: ErrorEvent) -> None:
 
 async def main() -> None:
     """Точка входа и инициализация приложения."""
-    logger.info("🚀 Запуск Telegram-бота TAKLIVO...")
+    logger.info("Запуск Telegram-бота TAKLIVO...")
 
     # Проверка переменных окружения
     config.validate()
@@ -122,7 +130,7 @@ async def main() -> None:
     # Настройка персонального меню
     await set_bot_commands(bot)
 
-    logger.info(f"✅ Бот TAKLIVO успешно запущен. ID администраторов: {config.ADMIN_IDS}")
+    logger.info(f"Бот TAKLIVO успешно запущен. ID администраторов: {config.ADMIN_IDS}")
     try:
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:
