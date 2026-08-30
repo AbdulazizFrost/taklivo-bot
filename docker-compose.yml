@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  taklivo_bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taklivo_bot_app
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      # Постоянное хранилище базы данных и резервных копий (данные никогда не пропадут)
+      - ./data:/app/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

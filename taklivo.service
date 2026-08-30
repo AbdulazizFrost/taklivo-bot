@@ -1,0 +1,17 @@
+[Unit]
+Description=TAKLIVO Wedding Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/taklivo_bot
+ExecStart=/var/www/taklivo_bot/venv/bin/python main.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+EnvironmentFile=/var/www/taklivo_bot/.env
+
+[Install]
+WantedBy=multi-user.target

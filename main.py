@@ -1,0 +1,139 @@
+"""
+Главный модуль запуска Telegram-бота TAKLIVO.
+Поддерживает как локальный запуск, так и бесплатный облачный хостинг (Render, Koyeb, Railway).
+"""
+import asyncio
+import logging
+import os
+import sys
+
+from aiohttp import web
+from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.types import (
+    BotCommand,
+    BotCommandScopeDefault,
+    BotCommandScopeChat,
+    ErrorEvent,
+)
+
+from bot.database import db
+from bot.handlers import client_router, order_router, admin_router
+from config import config
+
+# Настройка логирования
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+    ],
+)
+logger = logging.getLogger("taklivo_bot")
+
+
+async def health_check(request: web.Request) -> web.Response:
+    """Эндпоинт проверки здоровья для бесплатных облачных хостингов (Render/Koyeb)."""
+    return web.json_response({"status": "ok", "service": "TAKLIVO Wedding Bot", "database": "connected"})
+
+
+async def start_web_server() -> web.AppRunner | None:
+    """Запуск легковесного HTTP сервера для облачных платформ."""
+    port = int(os.getenv("PORT", "8080"))
+    app = web.Application()
+    app.router.add_get("/", health_check)
+    app.router.add_get("/health", health_check)
+    
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    try:
+        await site.start()
+        logger.info(f"🌐 HTTP Health-сервер запущен на порту {port}")
+        return runner
+    except Exception as e:
+        logger.warning(f"Не удалось запустить HTTP Health-сервер (некритично для локального запуска): {e}")
+        return None
+
+
+async def set_bot_commands(bot: Bot) -> None:
+    """
+    Установка команд в меню:
+    - Обычные пользователи видят ТОЛЬКО /start.
+    - Администраторы видят /start и /admin.
+    """
+    user_commands = [
+        BotCommand(command="start", description="Главное меню / Asosiy menyu"),
+    ]
+    admin_commands = [
+        BotCommand(command="start", description="Главное меню / Asosiy menyu"),
+        BotCommand(command="admin", description="👑 Панель администратора"),
+    ]
+
+    try:
+        await bot.set_my_commands(user_commands, scope=BotCommandScopeDefault())
+        for admin_id in config.ADMIN_IDS:
+            try:
+                await bot.set_my_commands(
+                    admin_commands,
+                    scope=BotCommandScopeChat(chat_id=admin_id),
+                )
+            except Exception as e:
+                logger.warning(f"Не удалось установить меню для админа {admin_id}: {e}")
+    except Exception as e:
+        logger.warning(f"Не удалось установить команды меню: {e}")
+
+
+async def global_error_handler(event: ErrorEvent) -> None:
+    """Глобальный обработчик непредвиденных ошибок."""
+    logger.error(f"Ошибка в обработчике: {event.exception}", exc_info=True)
+
+
+async def main() -> None:
+    """Точка входа и инициализация приложения."""
+    logger.info("🚀 Запуск Telegram-бота TAKLIVO...")
+
+    # Проверка переменных окружения
+    config.validate()
+
+    # Инициализация базы данных SQLite с WAL-режимом
+    await db.init()
+    logger.info(f"База данных успешно подключена ({config.DATABASE_PATH}).")
+
+    # Инициализация HTTP сервера для бесплатного хостинга (Render / Koyeb)
+    web_runner = await start_web_server()
+
+    # Инициализация бота и диспетчера
+    bot = Bot(
+        token=config.BOT_TOKEN,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+    )
+    storage = MemoryStorage()
+    dp = Dispatcher(storage=storage)
+
+    # Регистрация обработчиков
+    dp.errors.register(global_error_handler)
+    dp.include_router(admin_router)
+    dp.include_router(order_router)
+    dp.include_router(client_router)
+
+    # Настройка персонального меню
+    await set_bot_commands(bot)
+
+    logger.info(f"✅ Бот TAKLIVO успешно запущен. ID администраторов: {config.ADMIN_IDS}")
+    try:
+        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+    finally:
+        if web_runner:
+            await web_runner.cleanup()
+        await bot.session.close()
+        logger.info("Бот TAKLIVO остановлен.")
+
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("Бот завершил работу.")
