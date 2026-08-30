@@ -11,6 +11,7 @@ from bot.database import db, OrderStatus
 from bot.keyboards import (
     get_language_keyboard,
     get_main_menu_keyboard,
+    get_about_keyboard,
     get_portfolio_keyboard,
     get_template_detail_keyboard,
     get_pricing_keyboard,
