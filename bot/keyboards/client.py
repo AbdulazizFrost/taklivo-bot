@@ -47,6 +47,39 @@ def get_about_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     )
 
 
+def get_portfolio_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
+    """Клавиатура каталога шаблонов."""
+    buttons = []
+    for tmpl_id, tmpl in config.TEMPLATES.items():
+        name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
+        buttons.append([
+            InlineKeyboardButton(text=name, callback_data=f"tmpl_view:{tmpl_id}")
+        ])
+    buttons.append([
+        InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:main_menu")
+    ])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def get_template_detail_keyboard(
+    template_id: str,
+    demo_url: str,
+    lang: str = "ru",
+) -> InlineKeyboardMarkup:
+    """Клавиатура детального просмотра шаблона."""
+    choose_text = "✨ Tanlash va buyurtma berish" if lang == "uz" else "✨ Выбрать и настроить"
+    demo_text = "🌐 Namunani ko‘rish" if lang == "uz" else "🌐 Открыть демо-сайт"
+    back_text = "⬅️ Orqaga" if lang == "uz" else "⬅️ Назад"
+
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=demo_text, url=demo_url)],
+            [InlineKeyboardButton(text=choose_text, callback_data=f"order_select_tmpl:{template_id}")],
+            [InlineKeyboardButton(text=back_text, callback_data="client:portfolio")],
+        ]
+    )
+
+
 def get_pricing_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     """Клавиатура раздела цен."""
     return InlineKeyboardMarkup(
