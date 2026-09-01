@@ -9,7 +9,7 @@ import shutil
 from typing import Any, Optional
 import aiosqlite
 
-from bot.database.models import User, Order, OrderPhoto, OrderMusic, OrderStatus, PaymentStatus
+from bot.database.models import User, Order, OrderPhoto, OrderMusic, OrderStatus, PaymentStatus, EventType
 from config import config
 
 
@@ -21,7 +21,7 @@ class Database:
         self.backups_dir.mkdir(parents=True, exist_ok=True)
 
     async def init(self) -> None:
-        """Инициализирует таблицы базы данных и индексы."""
+        """Инициализирует таблицы базы данных, индексы и миграции."""
         async with aiosqlite.connect(self.db_path) as db:
             db.row_factory = aiosqlite.Row
 
@@ -51,8 +51,12 @@ class Database:
                     template_id TEXT NOT NULL,
                     template_name TEXT NOT NULL,
                     plan TEXT NOT NULL DEFAULT 'CUSTOM',
-                    bride_name TEXT NOT NULL,
-                    groom_name TEXT NOT NULL,
+                    event_type TEXT NOT NULL DEFAULT 'wedding',
+                    bride_name TEXT NOT NULL DEFAULT '',
+                    groom_name TEXT NOT NULL DEFAULT '',
+                    celebrant_name TEXT,
+                    parents_name TEXT,
+                    age_or_details TEXT,
                     wedding_date TEXT NOT NULL,
                     wedding_time TEXT NOT NULL,
                     venue TEXT NOT NULL,
@@ -75,6 +79,18 @@ class Database:
                     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
                 );
             """)
+
+            # Миграция существующих таблиц заказов
+            cursor = await db.execute("PRAGMA table_info(orders);")
+            cols = [row["name"] for row in await cursor.fetchall()]
+            if "event_type" not in cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN event_type TEXT NOT NULL DEFAULT 'wedding';")
+            if "celebrant_name" not in cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN celebrant_name TEXT;")
+            if "parents_name" not in cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN parents_name TEXT;")
+            if "age_or_details" not in cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN age_or_details TEXT;")
 
             # Таблица фотографий к заказу
             await db.execute("""
@@ -201,6 +217,7 @@ class Database:
     # --- Заказы ---
 
     def _row_to_order(self, row: aiosqlite.Row) -> Order:
+        keys = row.keys()
         return Order(
             id=row["id"],
             user_id=row["user_id"],
@@ -209,8 +226,12 @@ class Database:
             template_id=row["template_id"],
             template_name=row["template_name"],
             plan=row["plan"],
-            bride_name=row["bride_name"],
-            groom_name=row["groom_name"],
+            event_type=row["event_type"] if "event_type" in keys and row["event_type"] else "wedding",
+            bride_name=row["bride_name"] or "",
+            groom_name=row["groom_name"] or "",
+            celebrant_name=row["celebrant_name"] if "celebrant_name" in keys else None,
+            parents_name=row["parents_name"] if "parents_name" in keys else None,
+            age_or_details=row["age_or_details"] if "age_or_details" in keys else None,
             wedding_date=row["wedding_date"],
             wedding_time=row["wedding_time"],
             venue=row["venue"],
@@ -239,8 +260,6 @@ class Database:
         template_id: str,
         template_name: str,
         plan: str,
-        bride_name: str,
-        groom_name: str,
         wedding_date: str,
         wedding_time: str,
         venue: str,
@@ -254,6 +273,12 @@ class Database:
         schedule_enabled: bool,
         second_language_enabled: bool,
         total_price: int,
+        event_type: str = "wedding",
+        bride_name: str = "",
+        groom_name: str = "",
+        celebrant_name: Optional[str] = None,
+        parents_name: Optional[str] = None,
+        age_or_details: Optional[str] = None,
         status: str = OrderStatus.WAITING_PAYMENT.value,
     ) -> int:
         """Создает новый заказ в базе данных."""
@@ -262,13 +287,15 @@ class Database:
                 """
                 INSERT INTO orders (
                     user_id, telegram_id, status, template_id, template_name, plan,
-                    bride_name, groom_name, wedding_date, wedding_time,
+                    event_type, bride_name, groom_name, celebrant_name, parents_name, age_or_details,
+                    wedding_date, wedding_time,
                     venue, address, phone, rsvp_enabled, map_enabled,
                     music_enabled, gallery_enabled, dresscode_enabled,
                     schedule_enabled, second_language_enabled, total_price, payment_status
                 ) VALUES (
                     ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?,
+                    ?, ?,
                     ?, ?, ?, ?, ?,
                     ?, ?, ?,
                     ?, ?, ?, ?
@@ -281,8 +308,12 @@ class Database:
                     template_id,
                     template_name,
                     plan,
+                    event_type,
                     bride_name,
                     groom_name,
+                    celebrant_name,
+                    parents_name,
+                    age_or_details,
                     wedding_date,
                     wedding_time,
                     venue,

@@ -6,6 +6,16 @@ from enum import Enum
 from typing import Optional
 
 
+class EventType(str, Enum):
+    WEDDING = "wedding"       # Свадьба / Nikoh to'yi
+    BIRTHDAY = "birthday"     # День рождения / Yubiley / Tug'ilgan kun
+    SUNNAT = "sunnat"         # Суннат туй / Xatna to'y / Sunnat to'yi
+
+    @classmethod
+    def all_types(cls) -> list[str]:
+        return [t.value for t in cls]
+
+
 class OrderStatus(str, Enum):
     NEW = "NEW"
     WAITING_PAYMENT = "WAITING_PAYMENT"
@@ -48,8 +58,12 @@ class Order:
     template_id: str
     template_name: str
     plan: str
+    event_type: str
     bride_name: str
     groom_name: str
+    celebrant_name: Optional[str]
+    parents_name: Optional[str]
+    age_or_details: Optional[str]
     wedding_date: str
     wedding_time: str
     venue: str

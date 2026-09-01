@@ -33,7 +33,7 @@ class NotificationService:
             photos_count=photos_count,
             has_music=has_music,
         )
-        keyboard = get_admin_order_actions_keyboard(order.id, username=username)
+        keyboard = get_admin_order_actions_keyboard(order)
 
         for admin_id in config.ADMIN_IDS:
             try:
@@ -122,11 +122,17 @@ class NotificationService:
         lang: str = "ru",
     ) -> bool:
         """Отправляет клиенту ссылку на готовый сайт и кнопки проверки/правок."""
+        if order.event_type == "birthday":
+            hero_title = order.celebrant_name or "Tug‘ilgan kun"
+        elif order.event_type == "sunnat":
+            hero_title = order.celebrant_name or "Sunnat to‘y"
+        else:
+            hero_title = f"{order.bride_name} & {order.groom_name}"
+
         text = get_text(
             lang,
             "notify_website_ready",
-            bride_name=escape(order.bride_name),
-            groom_name=escape(order.groom_name),
+            hero_title=escape(hero_title),
             website_url=website_url,
         )
         keyboard = get_client_website_review_keyboard(order.id, website_url, lang=lang)
@@ -153,14 +159,21 @@ class NotificationService:
     ) -> None:
         """Уведомляет администраторов о поступивших правках по заказу."""
         user_mention = f"@{escape(username)}" if username else "<i>(без @username)</i>"
+        if order.event_type == "birthday":
+            hero_title = f"🎂 <b>{escape(order.celebrant_name or 'Именинник')}</b>"
+        elif order.event_type == "sunnat":
+            hero_title = f"✂️ <b>{escape(order.celebrant_name or 'Мальчик')}</b>"
+        else:
+            hero_title = f"👰🤵 <b>{escape(order.bride_name)} & {escape(order.groom_name)}</b>"
+
         text = (
             f"✏️ <b>НОВЫЕ ПРАВКИ К ЗАКАЗУ #{order.id}</b>\n\n"
-            f"👰🤵 <b>{escape(order.bride_name)} & {escape(order.groom_name)}</b>\n"
+            f"{hero_title}\n"
             f"👤 Клиент: {user_mention} (ID: <code>{order.telegram_id}</code>)\n"
             f"🌐 Сайт: {order.website_url or '—'}\n\n"
             f"<b>Текст пожеланий:</b>\n<i>{escape(revision_text)}</i>"
         )
-        keyboard = get_admin_order_actions_keyboard(order.id, username=username)
+        keyboard = get_admin_order_actions_keyboard(order)
 
         for admin_id in config.ADMIN_IDS:
             try:

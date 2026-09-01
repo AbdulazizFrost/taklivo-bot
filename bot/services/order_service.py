@@ -1,6 +1,6 @@
 """
 Сервис бизнес-логики управления заказами TAKLIVO.
-Обрабатывает все операции жизненного цикла заказа.
+Обрабатывает все операции жизненного цикла заказа для всех типов торжеств (Свадьба, ДР, Суннат туй).
 """
 from typing import Any, Optional
 from bot.database import db, Order, OrderPhoto, OrderMusic, OrderStatus, PaymentStatus
@@ -21,6 +21,7 @@ class OrderService:
         """Создает новый заказ в базе данных на основе выбранных в конструкторе опций."""
         options = data.get("options", {})
         calc_res = calculate_total(options)
+        event_type = data.get("event_type", "wedding")
 
         order_id = await db.create_order(
             user_id=user_id,
@@ -28,8 +29,12 @@ class OrderService:
             template_id=data.get("template_id", "luxury_gold"),
             template_name=data.get("template_name", "Luxury Gold"),
             plan="CUSTOM",
+            event_type=event_type,
             bride_name=data.get("bride_name", ""),
             groom_name=data.get("groom_name", ""),
+            celebrant_name=data.get("celebrant_name"),
+            parents_name=data.get("parents_name"),
+            age_or_details=data.get("age_or_details"),
             wedding_date=data.get("wedding_date", ""),
             wedding_time=data.get("wedding_time", ""),
             venue=data.get("venue", ""),
@@ -161,8 +166,7 @@ class OrderService:
     @staticmethod
     def format_order_preview(
         order_id: int | str,
-        bride_name: str,
-        groom_name: str,
+        event_type: str,
         wedding_date: str,
         wedding_time: str,
         venue: str,
@@ -174,6 +178,11 @@ class OrderService:
         photos_count: int,
         has_music: bool,
         total_price: int,
+        bride_name: str = "",
+        groom_name: str = "",
+        celebrant_name: Optional[str] = None,
+        parents_name: Optional[str] = None,
+        age_or_details: Optional[str] = None,
         lang: str = "ru",
     ) -> str:
         """Форматирует сводку заказа перед подтверждением клиентом."""
@@ -198,12 +207,37 @@ class OrderService:
         features_str = "\n".join(features) if features else "—"
         music_status = ("✅ " + ("Yuklangan" if lang == "uz" else "Загружена")) if has_music else ("❌ " + ("Yuklanmagan" if lang == "uz" else "Не выбрана"))
 
+        # Формируем блок главных персон в зависимости от типа торжества
+        if event_type == "birthday":
+            event_title = "🎂 Tug‘ilgan kun / Yubiley" if lang == "uz" else "🎂 День рождения / Юбилей"
+            age_str = f" ({escape(age_or_details)})" if age_or_details and age_or_details != "-" else ""
+            if lang == "uz":
+                hero_info = f"🎂 <b>Tug‘ilgan kun sohibi:</b> {escape(celebrant_name or '')}{age_str}"
+            else:
+                hero_info = f"🎂 <b>Именинник / Юбиляр:</b> {escape(celebrant_name or '')}{age_str}"
+        elif event_type == "sunnat":
+            event_title = "✂️ Sunnat to‘yi" if lang == "uz" else "✂️ Суннат туй"
+            parents_str = ""
+            if parents_name and parents_name != "-":
+                parents_label = "Ota-onasi:" if lang == "uz" else "Родители:"
+                parents_str = f"\n👨‍👩‍👦 <b>{parents_label}</b> {escape(parents_name)}"
+            if lang == "uz":
+                hero_info = f"👦 <b>Bosh qahramon:</b> {escape(celebrant_name or '')}{parents_str}"
+            else:
+                hero_info = f"👦 <b>Виновник торжества:</b> {escape(celebrant_name or '')}{parents_str}"
+        else:
+            event_title = "💍 Nikoh to‘yi" if lang == "uz" else "💍 Свадьба"
+            if lang == "uz":
+                hero_info = f"👰 <b>Kelin:</b> {escape(bride_name)}\n🤵 <b>Kuyov:</b> {escape(groom_name)}"
+            else:
+                hero_info = f"👰 <b>Невеста:</b> {escape(bride_name)}\n🤵 <b>Жених:</b> {escape(groom_name)}"
+
         return get_text(
             lang,
             "preview_title",
             order_id=order_id,
-            bride_name=escape(bride_name),
-            groom_name=escape(groom_name),
+            event_title=event_title,
+            hero_info=hero_info,
             wedding_date=format_date_pretty(wedding_date, lang=lang),
             wedding_time=escape(wedding_time),
             venue=escape(venue),
@@ -223,7 +257,7 @@ class OrderService:
         photos_count: int = 0,
         has_music: bool = False,
     ) -> str:
-        """Форматирует подробное сообщение о заказе для администратора."""
+        """Форматирует подробное сообщение о заказе для администратора с указанием типа торжества."""
         features: list[str] = []
         if order.rsvp_enabled:
             features.append("➕ RSVP опрос")
@@ -243,10 +277,21 @@ class OrderService:
         features_str = "\n".join(features) if features else "—"
         user_mention = f"@{escape(username)}" if username else "<i>(без @username)</i>"
 
+        if order.event_type == "birthday":
+            event_badge = "🎂 ДЕНЬ РОЖДЕНИЯ / ЮБИЛЕЙ"
+            age_info = f" ({escape(order.age_or_details)})" if order.age_or_details and order.age_or_details != "-" else ""
+            hero_block = f"🎂 <b>Именинник:</b> {escape(order.celebrant_name or '—')}{age_info}\n"
+        elif order.event_type == "sunnat":
+            event_badge = "✂️ СУННАТ ТУЙ / ХАТНА"
+            parents_info = f"\n👨‍👩‍👦 <b>Родители:</b> {escape(order.parents_name)}" if order.parents_name and order.parents_name != "-" else ""
+            hero_block = f"👦 <b>Мальчик:</b> {escape(order.celebrant_name or '—')}{parents_info}\n"
+        else:
+            event_badge = "💍 СВАДЬБА / NIKOH TO‘YI"
+            hero_block = f"👰 <b>Невеста:</b> {escape(order.bride_name)}\n🤵 <b>Жених:</b> {escape(order.groom_name)}\n"
+
         return (
-            f"🔔 <b>ЗАКАЗ #{order.id}</b>\n\n"
-            f"👰 <b>Невеста:</b> {escape(order.bride_name)}\n"
-            f"🤵 <b>Жених:</b> {escape(order.groom_name)}\n\n"
+            f"🔔 <b>НОВЫЙ ЗАКАЗ #{order.id} [{event_badge}]</b>\n\n"
+            f"{hero_block}\n"
             f"📅 <b>Дата:</b> {order.wedding_date} | 🕐 <b>Время:</b> {order.wedding_time}\n"
             f"🏰 <b>Место:</b> {escape(order.venue)}\n"
             f"📍 <b>Адрес:</b> {escape(order.address)}\n"

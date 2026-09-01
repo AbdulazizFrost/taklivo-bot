@@ -236,8 +236,12 @@ async def callback_view_single_order(callback: CallbackQuery) -> None:
 
     preview_text = order_service.format_order_preview(
         order_id=order.id,
+        event_type=order.event_type,
         bride_name=order.bride_name,
         groom_name=order.groom_name,
+        celebrant_name=order.celebrant_name,
+        parents_name=order.parents_name,
+        age_or_details=order.age_or_details,
         wedding_date=order.wedding_date,
         wedding_time=order.wedding_time,
         venue=order.venue,

@@ -2,7 +2,7 @@
 Пакет базы данных.
 """
 from bot.database.database import db, Database
-from bot.database.models import User, Order, OrderPhoto, OrderMusic, OrderStatus, PaymentStatus
+from bot.database.models import User, Order, OrderPhoto, OrderMusic, OrderStatus, PaymentStatus, EventType
 
 __all__ = [
     "db",
@@ -13,4 +13,5 @@ __all__ = [
     "OrderMusic",
     "OrderStatus",
     "PaymentStatus",
+    "EventType",
 ]

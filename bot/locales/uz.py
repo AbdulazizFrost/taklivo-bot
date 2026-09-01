@@ -14,16 +14,16 @@ TEXTS = {
     # Asosiy menyu
     "main_menu_title": (
         "💍 <b>TAKLIVO</b>\n\n"
-        "To‘yingiz uchun bir necha daqiqada zamonaviy onlayn taklifnoma yarating.\n\n"
-        "✨ Chiroyli moslashuvchan dizayn\n"
-        "📱 Smartfonlarda qulay ochiladi\n"
+        "<b>Nikoh to‘yi, Tug‘ilgan kun / Yubiley yoki Sunnat to‘yi</b> uchun bir necha daqiqada zamonaviy onlayn taklifnoma yarating!\n\n"
+        "✨ Nafis interaktiv dizayn\n"
+        "📱 Barcha smartfonlarda qulay ochiladi\n"
         "💌 Mehmonlar uchun RSVP so‘rovnomasi\n"
-        "📍 Manzilga interaktiv xarita\n"
-        "🎵 Yoqimli fon musiqasi\n"
-        "📸 Kelin-kuyov fotogalereyasi\n\n"
+        "📍 Manzilga interaktiv xarita va lokatsiya\n"
+        "🎵 Sevimli fon musiqangiz\n"
+        "📸 Fotogalereya va taymer\n\n"
         "Nima qilmoqchisiz?"
     ),
-    "btn_create_invitation": "💍 Taklifnoma yaratish",
+    "btn_create_invitation": "✨ Taklifnoma yaratish",
     "btn_pricing": "💰 Funksiyalar narxlari",
     "btn_my_orders": "📦 Mening buyurtmalarim",
     "btn_about": "ℹ️ Xizmat haqida",
@@ -33,13 +33,16 @@ TEXTS = {
     # Xizmat haqida
     "about_text": (
         "ℹ️ <b>TAKLIVO xizmati haqida</b>\n\n"
-        "<b>TAKLIVO</b> — to‘y va maxsus tantanalar uchun zamonaviy raqamli taklifnomalar servisi.\n\n"
+        "<b>TAKLIVO</b> — barcha turdagi tantanalar uchun zamonaviy raqamli taklifnomalar servisi:\n"
+        "💍 <b>Nikoh to‘ylari</b>\n"
+        "🎂 <b>Tug‘ilgan kun va Yubileylar</b>\n"
+        "✂️ <b>Sunnat to‘ylari (Xatna to‘y)</b>\n\n"
         "🌟 <b>Nega aynan biz:</b>\n"
         "• <b>Tezkor:</b> sayt 24 soat ichida tayyor bo‘ladi\n"
         "• <b>Faqat kerakli funksiyalarga to‘laysiz:</b> qulay konstruktor\n"
-        "• <b>Zamonaviy va tejamkor:</b> havola Telegram, WhatsApp yoki Instagram orqali yuboriladi\n"
-        "• <b>Mehmonlarga qulay:</b> bir bosishda lokatsiya, kelishini tasdiqlash (RSVP), dress-kod\n"
-        "• <b>Individual:</b> sizning suratlaringiz, sevimli musiqangiz va sevgi tarixingiz\n\n"
+        "• <b>Zamonaviy va tejamkor:</b> havola Telegram, Instagram, WhatsApp orqali yuboriladi\n"
+        "• <b>Mehmonlarga qulay:</b> 1 bosishda lokatsiya (Yandex / Google Maps), RSVP so‘rovnoma, dress-kod\n"
+        "• <b>Individual:</b> sizning suratlaringiz, sevimli musiqangiz va shaxsiy matningiz\n\n"
         "📸 <b>Instagram:</b> <a href='https://www.instagram.com/wedding_websites_uzbekistan/'>@wedding_websites_uzbekistan</a>\n"
         "📞 <b>Bog‘lanish va aloqa:</b> @Abdulaziz5335"
     ),
@@ -57,14 +60,19 @@ TEXTS = {
         "• 📸 Fotogalereya (10 tagacha rasm): +{gallery_price}\n"
         "• 🎵 Fon musiqasi: +{music_price}\n"
         "• 👗 Dress-kod ranglar palitrasi: +{dresscode_price}\n"
-        "• 🗓 To‘y kun tartibi: +{schedule_price}\n"
+        "• 🗓 Kun tartibi / dasturi: +{schedule_price}\n"
         "• 🌐 Ikkinchi til (UZ/RU): +{second_language_price}"
     ),
 
     # Buyurtma konstruktori (FSM)
-    "step_template": "🎨 <b>1-qadam (7 tadan): Taklifnoma uslubini tanlang</b>\n\nO‘zingizga ma’qul kelgan dizaynni bosing:",
+    "step_event_type": "🎉 <b>1-qadam (8 tadan): Tantanangiz turini tanlang</b>\n\nQaysi bayram uchun onlayn taklifnoma yaratmoqchisiz?",
+    "event_wedding": "💍 Nikoh to‘yi",
+    "event_birthday": "🎂 Tug‘ilgan kun / Yubiley",
+    "event_sunnat": "✂️ Sunnat to‘yi (Xatna to‘y)",
+
+    "step_template": "🎨 <b>2-qadam (8 tadan): Taklifnoma uslubini tanlang</b>\n\nO‘zingizga ma’qul kelgan dizaynni bosing:",
     "step_options": (
-        "⚙️ <b>2-qadam (7 tadan): Saytingiz uchun kerakli funksiyalarni tanlang</b>\n\n"
+        "⚙️ <b>3-qadam (8 tadan): Saytingiz uchun kerakli funksiyalarni tanlang</b>\n\n"
         "Tugmalarni bosish orqali kerakli bloklarni yoqing (🟢) yoki o‘chiring (⚪️):\n\n"
         "• Asosiy taklifnoma: <b>{base_price}</b>\n"
         "• Qo‘shimcha funksiyalar: <b>+{extra_price}</b>\n"
@@ -81,26 +89,37 @@ TEXTS = {
     "option_schedule": "🗓 Kun tartibi",
     "option_second_language": "🌐 Ikkinchi til",
 
-    "step_bride_name": "👰 <b>3.1-qadam: Kelinning ismini kiriting</b>\n\n<i>Masalan: Malika yoki Malikaxon</i>",
-    "step_groom_name": "🤵 <b>3.2-qadam: Kuyovning ismini kiriting</b>\n\n<i>Masalan: Aziz yoki Azizbek</i>",
+    # Ma'lumot kiritish: Nikoh to'yi
+    "step_bride_name": "👰 <b>4.1-qadam: Kelinning ismini kiriting</b>\n\n<i>Masalan: Malika yoki Malikaxon</i>",
+    "step_groom_name": "🤵 <b>4.2-qadam: Kuyovning ismini kiriting</b>\n\n<i>Masalan: Aziz yoki Azizbek</i>",
+
+    # Ma'lumot kiritish: Tug'ilgan kun
+    "step_birthday_name": "🎂 <b>4.1-qadam: Tug‘ilgan kun sohibi yoki yubilyar ismini kiriting</b>\n\n<i>Masalan: Azizbek yoki Lola</i>",
+    "step_birthday_age": "🎉 <b>4.2-qadam: Yoshi yoki yubiley sanasini kiriting (yoki o‘tkazib yuborish uchun «-» yozing)</b>\n\n<i>Masalan: 18 yosh, 25 yosh yoki 50 yillik yubiley</i>",
+
+    # Ma'lumot kiritish: Sunnat to'y
+    "step_sunnat_child_name": "👦 <b>4.1-qadam: Tantananing bosh qahramoni (bolaning) ismini kiriting</b>\n\n<i>Masalan: Muhammadali yoki Behruzbek</i>",
+    "step_sunnat_parents_name": "👨‍👩‍👦 <b>4.2-qadam: Ota-onasining yoki to‘y egalarining ismlarini kiriting</b>\n\n<i>Masalan: Alisher va Nigora yoki Karimovlar oilasi</i>",
+
+    # Umumiy maydonlar
     "step_date": (
-        "📅 <b>4.1-qadam: To‘y sanasini kiriting</b>\n\n"
+        "📅 <b>5.1-qadam: Tantananing sanasini kiriting</b>\n\n"
         "<i>Format: KK.OO.YYYY (masalan, 15.09.2026)</i>"
     ),
     "err_invalid_date": "⚠️ <b>Noto‘g‘ri sana!</b> Iltimos, sanani <b>KK.OO.YYYY</b> formatida kiriting (masalan, <code>15.09.2026</code>).",
 
-    "step_time": "🕐 <b>4.2-qadam: Tantananing boshlanish vaqtini kiriting</b>\n\n<i>Format: SS:DD (masalan, 18:00)</i>",
+    "step_time": "🕐 <b>5.2-qadam: Tantananing boshlanish vaqtini kiriting</b>\n\n<i>Format: SS:DD (masalan, 18:00)</i>",
     "err_invalid_time": "⚠️ <b>Noto‘g‘ri vaqt!</b> Vaqtni <b>SS:DD</b> formatida kiriting (masalan, <code>18:00</code>).",
 
-    "step_venue": "🏰 <b>5.1-qadam: To‘yxona / restoran nomini kiriting</b>\n\n<i>Masalan: «Oqsaroy» to‘yxonasi</i>",
-    "step_address": "📍 <b>5.2-qadam: Manzil yoki mo‘ljalni kiriting</b>\n\n<i>Masalan: Toshkent sh., Navoiy ko‘chasi, 15-uy</i>",
-    "step_phone": "📞 <b>5.3-qadam: Bog‘lanish uchun telefon raqamingizni kiriting</b>\n\n<i>Masalan: +998901234567</i>",
+    "step_venue": "🏰 <b>6.1-qadam: To‘yxona / restoran / kafe nomini kiriting</b>\n\n<i>Masalan: «Oqsaroy» to‘yxonasi</i>",
+    "step_address": "📍 <b>6.2-qadam: Manzil yoki mo‘ljalni kiriting</b>\n\n<i>Masalan: Toshkent sh., Navoiy ko‘chasi, 15-uy</i>",
+    "step_phone": "📞 <b>6.3-qadam: Bog‘lanish uchun telefon raqamingizni kiriting</b>\n\n<i>Masalan: +998901234567</i>",
     "err_invalid_phone": "⚠️ <b>Noto‘g‘ri telefon raqami!</b> Xalqaro formatda kiriting (masalan, <code>+998901234567</code>).",
 
     # Media: Galereya va Musiqa
     "step_gallery_upload": (
-        "📸 <b>6-qadam: Galereya uchun rasmlar</b>\n\n"
-        "1 tadan 10 tagacha sifatli birgalikdagi suratlarni yuboring.\n\n"
+        "📸 <b>7-qadam: Galereya uchun rasmlar</b>\n\n"
+        "1 tadan 10 tagacha sifatli suratlarni yuboring.\n\n"
         "Yuklandi: <b>{count}/10</b>"
     ),
     "btn_add_more_photos": "➕ Yana rasm yuklash",
@@ -111,7 +130,7 @@ TEXTS = {
     "err_not_photo": "⚠️ Iltimos, aynan fotosurat (rasm) yuboring.",
 
     "step_music_upload": (
-        "🎵 <b>7-qadam: Fon musiqasi</b>\n\n"
+        "🎵 <b>8-qadam: Fon musiqasi</b>\n\n"
         "Saytda yangraydigan audio faylni (MP3) yuboring yoki «O‘tkazib yuborish» tugmasini bosing."
     ),
     "music_received": "🎵 Musiqa muvaffaqiyatli yuklandi: <b>{filename}</b>",
@@ -119,9 +138,8 @@ TEXTS = {
 
     # Buyurtma ko‘rinishi (preview)
     "preview_title": (
-        "💍 <b>SIZNING BUYURTMANGIZ #{order_id}</b>\n\n"
-        "👰 <b>Kelin:</b> {bride_name}\n"
-        "🤵 <b>Kuyov:</b> {groom_name}\n\n"
+        "✨ <b>SIZNING BUYURTMANGIZ #{order_id} ({event_title})</b>\n\n"
+        "{hero_info}\n\n"
         "📅 <b>Sana:</b> {wedding_date}\n"
         "🕐 <b>Vaqt:</b> {wedding_time}\n"
         "🏰 <b>To‘yxona:</b> {venue}\n"
@@ -150,16 +168,16 @@ TEXTS = {
         "✅ <b>To‘lov cheki qabul qilindi!</b>\n\n"
         "Buyurtmangiz <b>#{order_id}</b> administrator tekshiruviga yuborildi.\n"
         "Tekshirish odatda 10–30 daqiqa vaqt oladi.\n\n"
-        "To‘lov tasdiqlanishi bilan sizga xabar keladi va biz saytingizni tayyorlashni boshlaymiz! 💍"
+        "To‘lov tasdiqlanishi bilan sizga xabar keladi va biz saytingizni tayyorlashni boshlaymiz! ✨"
     ),
     "err_not_receipt": "⚠️ Iltimos, to‘lov chekining fotosurati yoki skrinshotini yuboring.",
 
     # Statuslar va Mening buyurtmalarim
     "my_orders_title": "📦 <b>Sizning buyurtmalaringiz:</b>",
-    "no_orders": "Sizda hali buyurtmalar mavjud emas. Boshlash uchun «💍 Taklifnoma yaratish» tugmasini bosing!",
+    "no_orders": "Sizda hali buyurtmalar mavjud emas. Boshlash uchun «✨ Taklifnoma yaratish» tugmasini bosing!",
     "order_card": (
-        "💍 <b>Buyurtma #{order_id}</b>\n"
-        "👰🤵 {bride_name} & {groom_name}\n"
+        "✨ <b>Buyurtma #{order_id} ({event_title})</b>\n"
+        "{hero_info}\n"
         "📅 {wedding_date} | 🎨 {template_name}\n"
         "📊 Holati: <b>{status_badge}</b>\n"
         "💰 Summa: {total_price}\n"
@@ -172,13 +190,13 @@ TEXTS = {
     # O‘zgartirishlar
     "prompt_revisions": "✏️ <b>Taklifnomada nimalarni o‘zgartirish kerakligini yozing:</b>\n\n(matn, rasm, musiqa, sana, manzil va h.k.)",
     "revisions_sent": "✅ <b>O‘zgartirishlar dizaynerga yuborildi!</b> Tez orada tuzatishlar kiritiladi.",
-    "website_approved": "🎉 <b>Tabriklaymiz!</b> Sayt sizga ma’qul kelganidan xursandmiz. Baxtli hayot va go‘zal to‘y tilaymiz! ❤️",
+    "website_approved": "🎉 <b>Tabriklaymiz!</b> Sayt sizga ma’qul kelganidan xursandmiz. Baxtli va yorqin bayram tilaymiz! ❤️",
 
     # Mijozga bildirishnomalar
     "notify_payment_confirmed": (
         "✅ <b>To‘lov muvaffaqiyatli tasdiqlandi!</b>\n\n"
         "Buyurtmangiz <b>#{order_id}</b> ishga qabul qilindi.\n"
-        "Biz sizning shaxsiy to‘y veb-saytingizni tayyorlashga kirishdik 💍"
+        "Biz sizning shaxsiy veb-saytingizni tayyorlashga kirishdik ✨"
     ),
     "notify_payment_rejected": (
         "❌ <b>#{order_id}-raqamli buyurtma to‘lovi tasdiqlanmadi.</b>\n\n"
@@ -187,7 +205,7 @@ TEXTS = {
     ),
     "notify_website_ready": (
         "🎉 <b>SIZNING TAKLIFNOMANGIZ TAYYOR!</b>\n\n"
-        "<b>{bride_name} & {groom_name} 💍</b>\n\n"
+        "<b>{hero_title} ✨</b>\n\n"
         "Biz sizning shaxsiy onlayn taklifnomangizni tayyorladik.\n"
         "Iltimos, ochib ko‘rib barcha ma’lumotlarni tekshiring:\n\n"
         "🔗 <a href='{website_url}'>{website_url}</a>\n\n"

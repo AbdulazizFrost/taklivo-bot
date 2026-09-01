@@ -22,13 +22,19 @@ class SiteGeneratorService:
             "order_id": order.id,
             "status": order.status,
             "created_at": order.created_at,
+            "event_type": order.event_type,
             "couple": {
                 "bride_name": order.bride_name,
                 "groom_name": order.groom_name,
             },
+            "celebrant": {
+                "name": order.celebrant_name,
+                "parents_name": order.parents_name,
+                "age_or_details": order.age_or_details,
+            },
             "event": {
-                "wedding_date": order.wedding_date,
-                "wedding_time": order.wedding_time,
+                "event_date": order.wedding_date,
+                "event_time": order.wedding_time,
                 "venue": order.venue,
                 "address": order.address,
                 "phone": order.phone,
@@ -85,24 +91,18 @@ class SiteGeneratorService:
     ) -> str:
         """
         Асинхронный генератор сайта.
-        Архитектурно готов к вызову headless build pipeline (Next.js / Astro / GitHub Pages / Vercel).
         """
-        logger.info(f"Generating wedding site for order #{order.id} (Template: {order.template_id})")
-        
-        # Генерация красивого человекочитаемого слага
-        slug = f"{order.groom_name.lower()}-{order.bride_name.lower()}".replace(" ", "-")
-        generated_url = f"https://taklivo.uz/wedding/{slug}-{order.id}"
-        
-        return generated_url
+        logger.info(f"Generating site for order #{order.id} ({order.event_type} - {order.template_id})")
+        if order.event_type == "birthday":
+            name = (order.celebrant_name or "birthday").lower().replace(" ", "-")
+            slug = f"birthday-{name}"
+        elif order.event_type == "sunnat":
+            name = (order.celebrant_name or "sunnat").lower().replace(" ", "-")
+            slug = f"sunnat-{name}"
+        else:
+            slug = f"{order.groom_name.lower()}-{order.bride_name.lower()}".replace(" ", "-")
+            slug = f"wedding-{slug}"
+        return f"https://taklivo.uz/{slug}-{order.id}"
 
 
 site_generator = SiteGeneratorService()
-
-
-async def generate_site(
-    order: Order,
-    photos: Optional[list[OrderPhoto]] = None,
-    music: Optional[OrderMusic] = None,
-) -> str:
-    """Удобная функция генерации сайта."""
-    return await site_generator.generate_site(order, photos, music)

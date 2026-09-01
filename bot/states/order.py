@@ -5,6 +5,9 @@ from aiogram.fsm.state import State, StatesGroup
 
 
 class OrderStates(StatesGroup):
+    # Выбор типа события
+    choosing_event_type = State()
+
     # Выбор дизайна, тарифа и опций
     choosing_template = State()
     choosing_plan = State()
@@ -13,6 +16,16 @@ class OrderStates(StatesGroup):
     # Данные свадьбы
     bride_name = State()
     groom_name = State()
+
+    # Данные Дня рождения / Юбилея
+    birthday_name = State()
+    birthday_age = State()
+
+    # Данные Суннат туя
+    sunnat_child_name = State()
+    sunnat_parents_name = State()
+
+    # Общие данные
     wedding_date = State()
     wedding_time = State()
     venue = State()
@@ -30,20 +43,3 @@ class OrderStates(StatesGroup):
 
     # Правки по готовому сайту
     revising = State()
-
-    # Алиасы для обратной совместимости
-    SELECT_TEMPLATE = choosing_template
-    SELECT_PLAN = choosing_plan
-    SELECT_OPTIONS = choosing_options
-    ENTER_BRIDE_NAME = bride_name
-    ENTER_GROOM_NAME = groom_name
-    ENTER_DATE = wedding_date
-    ENTER_TIME = wedding_time
-    ENTER_VENUE = venue
-    ENTER_ADDRESS = address
-    ENTER_PHONE = phone
-    UPLOAD_GALLERY = gallery_upload
-    UPLOAD_MUSIC = music_upload
-    CONFIRM_ORDER = review
-    UPLOAD_RECEIPT = waiting_receipt
-    ENTER_REVISION = revising

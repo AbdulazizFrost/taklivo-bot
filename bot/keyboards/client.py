@@ -47,32 +47,6 @@ def get_about_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     )
 
 
-def get_portfolio_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
-    """Список шаблонов для просмотра."""
-    buttons = []
-    for tmpl_id, tmpl in config.TEMPLATES.items():
-        name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
-        buttons.append([
-            InlineKeyboardButton(text=name, callback_data=f"tmpl_view:{tmpl_id}")
-        ])
-    buttons.append([
-        InlineKeyboardButton(text=get_text(lang, "btn_create_invitation"), callback_data="client:create_order"),
-        InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:main_menu"),
-    ])
-    return InlineKeyboardMarkup(inline_keyboard=buttons)
-
-
-def get_template_detail_keyboard(template_id: str, demo_url: str, lang: str = "ru") -> InlineKeyboardMarkup:
-    """Кнопки в карточке конкретного шаблона."""
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=get_text(lang, "btn_demo_link"), url=demo_url)],
-            [InlineKeyboardButton(text=get_text(lang, "btn_choose_template"), callback_data=f"order_select_tmpl:{template_id}")],
-            [InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:portfolio")],
-        ]
-    )
-
-
 def get_pricing_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     """Клавиатура раздела цен."""
     return InlineKeyboardMarkup(
@@ -85,8 +59,20 @@ def get_pricing_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
 
 # --- Клавиатуры визарда заказа (Конструктор) ---
 
+def get_event_type_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
+    """Шаг 1: Выбор типа мероприятия."""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(lang, "event_wedding"), callback_data="wizard_event:wedding")],
+            [InlineKeyboardButton(text=get_text(lang, "event_birthday"), callback_data="wizard_event:birthday")],
+            [InlineKeyboardButton(text=get_text(lang, "event_sunnat"), callback_data="wizard_event:sunnat")],
+            [InlineKeyboardButton(text=get_text(lang, "btn_cancel"), callback_data="wizard:cancel")],
+        ]
+    )
+
+
 def get_template_selection_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
-    """Выбор стиля в визарде заказа."""
+    """Шаг 2: Выбор стиля в визарде заказа."""
     buttons = []
     for tmpl_id, tmpl in config.TEMPLATES.items():
         name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
@@ -94,7 +80,8 @@ def get_template_selection_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
             InlineKeyboardButton(text=name, callback_data=f"wizard_tmpl:{tmpl_id}")
         ])
     buttons.append([
-        InlineKeyboardButton(text=get_text(lang, "btn_cancel"), callback_data="wizard:cancel")
+        InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="wizard_back:to_event"),
+        InlineKeyboardButton(text=get_text(lang, "btn_cancel"), callback_data="wizard:cancel"),
     ])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
@@ -178,32 +165,44 @@ def get_order_preview_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     )
 
 
-def get_edit_fields_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
-    """Выбор поля для редактирования."""
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text="👰 Имя невесты" if lang == "ru" else "👰 Kelin ismi", callback_data="edit_field:bride"),
-                InlineKeyboardButton(text="🤵 Имя жениха" if lang == "ru" else "🤵 Kuyov ismi", callback_data="edit_field:groom"),
-            ],
-            [
-                InlineKeyboardButton(text="📅 Дата" if lang == "ru" else "📅 Sana", callback_data="edit_field:date"),
-                InlineKeyboardButton(text="🕐 Время" if lang == "ru" else "🕐 Vaqt", callback_data="edit_field:time"),
-            ],
-            [
-                InlineKeyboardButton(text="🏰 Место" if lang == "ru" else "🏰 To‘yxona", callback_data="edit_field:venue"),
-                InlineKeyboardButton(text="📍 Адрес" if lang == "ru" else "📍 Manzil", callback_data="edit_field:address"),
-            ],
-            [
-                InlineKeyboardButton(text="📞 Телефон" if lang == "ru" else "📞 Telefon", callback_data="edit_field:phone"),
-                InlineKeyboardButton(text="🎨 Дизайн" if lang == "ru" else "🎨 Dizayn", callback_data="edit_field:template"),
-            ],
-            [
-                InlineKeyboardButton(text="⚙️ Функции сайта" if lang == "ru" else "⚙️ Sayt funksiyalari", callback_data="edit_field:options"),
-            ],
-            [InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="wizard_back:to_preview")],
-        ]
-    )
+def get_edit_fields_keyboard(event_type: str = "wedding", lang: str = "ru") -> InlineKeyboardMarkup:
+    """Адаптивный выбор поля для редактирования под тип события."""
+    buttons = []
+    if event_type == "wedding":
+        buttons.append([
+            InlineKeyboardButton(text="👰 Имя невесты" if lang == "ru" else "👰 Kelin ismi", callback_data="edit_field:bride"),
+            InlineKeyboardButton(text="🤵 Имя жениха" if lang == "ru" else "🤵 Kuyov ismi", callback_data="edit_field:groom"),
+        ])
+    elif event_type == "birthday":
+        buttons.append([
+            InlineKeyboardButton(text="🎂 Имя именинника" if lang == "ru" else "🎂 Yubilyar ismi", callback_data="edit_field:birthday_name"),
+            InlineKeyboardButton(text="🎉 Возраст / Юбилей" if lang == "ru" else "🎉 Yoshi / Sana", callback_data="edit_field:birthday_age"),
+        ])
+    elif event_type == "sunnat":
+        buttons.append([
+            InlineKeyboardButton(text="👦 Имя мальчика" if lang == "ru" else "👦 Bola ismi", callback_data="edit_field:sunnat_child"),
+            InlineKeyboardButton(text="👨‍👩‍👦 Родители" if lang == "ru" else "👨‍👩‍👦 Ota-onasi", callback_data="edit_field:sunnat_parents"),
+        ])
+
+    buttons.extend([
+        [
+            InlineKeyboardButton(text="📅 Дата" if lang == "ru" else "📅 Sana", callback_data="edit_field:date"),
+            InlineKeyboardButton(text="🕐 Время" if lang == "ru" else "🕐 Vaqt", callback_data="edit_field:time"),
+        ],
+        [
+            InlineKeyboardButton(text="🏰 Место" if lang == "ru" else "🏰 To‘yxona / Joy", callback_data="edit_field:venue"),
+            InlineKeyboardButton(text="📍 Адрес" if lang == "ru" else "📍 Manzil", callback_data="edit_field:address"),
+        ],
+        [
+            InlineKeyboardButton(text="📞 Телефон" if lang == "ru" else "📞 Telefon", callback_data="edit_field:phone"),
+            InlineKeyboardButton(text="🎨 Дизайн" if lang == "ru" else "🎨 Dizayn", callback_data="edit_field:template"),
+        ],
+        [
+            InlineKeyboardButton(text="⚙️ Функции сайта" if lang == "ru" else "⚙️ Sayt funksiyalari", callback_data="edit_field:options"),
+        ],
+        [InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="wizard_back:to_preview")],
+    ])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
 def get_payment_keyboard(order_id: int, lang: str = "ru") -> InlineKeyboardMarkup:
@@ -220,7 +219,14 @@ def get_my_orders_keyboard(orders: list[Order], lang: str = "ru") -> InlineKeybo
     buttons = []
     for order in orders:
         badge = order.status
-        btn_text = f"#{order.id} | {order.bride_name} & {order.groom_name} ({badge})"
+        if order.event_type == "birthday":
+            title = f"🎂 {order.celebrant_name or 'ДР'}"
+        elif order.event_type == "sunnat":
+            title = f"✂️ {order.celebrant_name or 'Суннат туй'}"
+        else:
+            title = f"💍 {order.bride_name} & {order.groom_name}"
+
+        btn_text = f"#{order.id} | {title} ({badge})"
         buttons.append([
             InlineKeyboardButton(text=btn_text, callback_data=f"my_order:{order.id}")
         ])

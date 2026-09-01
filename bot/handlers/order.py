@@ -1,6 +1,7 @@
 """
-FSM-обработчик визарда оформления заказа свадебного онлайн-приглашения TAKLIVO.
-Конструктор: Выбор стиля -> Выбор опций -> Ввод данных -> Загрузка медиа -> Проверка -> Оплата.
+FSM-обработчик визарда оформления заказа онлайн-приглашения TAKLIVO.
+Поддерживает все типы торжеств: Свадьба (Nikoh to'yi), День рождения (Tug'ilgan kun / Yubiley), Суннат туй (Sunnat to'yi).
+Конструктор: Выбор события -> Выбор стиля -> Выбор опций -> Ввод данных -> Загрузка медиа -> Проверка -> Оплата.
 """
 import logging
 from aiogram import Router, F
@@ -10,6 +11,7 @@ from aiogram.fsm.context import FSMContext
 from bot.database import db, OrderStatus
 from bot.keyboards import (
     get_main_menu_keyboard,
+    get_event_type_keyboard,
     get_template_selection_keyboard,
     get_options_toggle_keyboard,
     get_gallery_upload_keyboard,
@@ -70,11 +72,12 @@ async def callback_cancel_unpaid_order(callback: CallbackQuery, state: FSMContex
 
 @router.callback_query(F.data == "client:create_order")
 async def start_order_wizard(callback: CallbackQuery, state: FSMContext) -> None:
-    """Старт визарда: Шаг 1 — Выбор шаблона."""
+    """Старт визарда: Шаг 1 — Выбор типа мероприятия."""
     lang = await db.get_user_language(callback.from_user.id)
     await state.clear()
     await state.update_data(
         lang=lang,
+        event_type="wedding",
         options={
             "timer": True,
             "rsvp": False,
@@ -89,6 +92,26 @@ async def start_order_wizard(callback: CallbackQuery, state: FSMContext) -> None
         music_file_id=None,
         music_filename=None,
     )
+    await state.set_state(OrderStates.choosing_event_type)
+
+    await callback.message.edit_text(
+        text=get_text(lang, "step_event_type"),
+        reply_markup=get_event_type_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+# --- Шаг 1: Выбор типа события -> Шаг 2: Выбор дизайна ---
+
+@router.callback_query(OrderStates.choosing_event_type, F.data.startswith("wizard_event:"))
+async def process_step_event_type(callback: CallbackQuery, state: FSMContext) -> None:
+    """Обработка выбора типа торжества (свадьба / ДР / суннат туй)."""
+    event_type = callback.data.split(":")[1]
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+
+    await state.update_data(event_type=event_type)
     await state.set_state(OrderStates.choosing_template)
 
     await callback.message.edit_text(
@@ -99,57 +122,7 @@ async def start_order_wizard(callback: CallbackQuery, state: FSMContext) -> None
     await callback.answer()
 
 
-@router.callback_query(F.data.startswith("order_select_tmpl:"))
-async def select_tmpl_from_portfolio(callback: CallbackQuery, state: FSMContext) -> None:
-    """Выбор шаблона прямо из портфолио -> сразу к выбору опций."""
-    tmpl_id = callback.data.split(":")[1]
-    lang = await db.get_user_language(callback.from_user.id)
-    tmpl = config.TEMPLATES.get(tmpl_id)
-    if not tmpl:
-        await callback.answer()
-        return
-
-    await state.clear()
-    tmpl_name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
-    options = {
-        "timer": True,
-        "rsvp": False,
-        "map": True,
-        "gallery": False,
-        "music": False,
-        "dresscode": False,
-        "schedule": False,
-        "second_language": False,
-    }
-    calc_res = calculate_total(options, lang=lang)
-
-    await state.update_data(
-        lang=lang,
-        template_id=tmpl_id,
-        template_name=tmpl_name,
-        options=options,
-        total_price=calc_res.total_price,
-        photos=[],
-        music_file_id=None,
-        music_filename=None,
-    )
-    await state.set_state(OrderStates.choosing_options)
-
-    await callback.message.edit_text(
-        text=get_text(
-            lang,
-            "step_options",
-            base_price=format_currency(calc_res.base_price, lang=lang),
-            extra_price=format_currency(calc_res.extra_options_total, lang=lang),
-            total_price=format_currency(calc_res.total_price, lang=lang),
-        ),
-        reply_markup=get_options_toggle_keyboard(options, lang=lang),
-        parse_mode="HTML",
-    )
-    await callback.answer()
-
-
-# --- Шаг 1: Выбор шаблона -> Шаг 2: Конструктор опций ---
+# --- Шаг 2: Выбор шаблона -> Шаг 3: Конструктор опций ---
 
 @router.callback_query(OrderStates.choosing_template, F.data.startswith("wizard_tmpl:"))
 async def process_step_template(callback: CallbackQuery, state: FSMContext) -> None:
@@ -198,7 +171,7 @@ async def process_step_template(callback: CallbackQuery, state: FSMContext) -> N
     await callback.answer()
 
 
-# --- Шаг 2: Конструктор опций (Toggle переключатели) ---
+# --- Шаг 3: Конструктор опций (Toggle переключатели) ---
 
 @router.callback_query(OrderStates.choosing_options, F.data.startswith("opt_toggle:"))
 async def process_option_toggle(callback: CallbackQuery, state: FSMContext) -> None:
@@ -228,16 +201,32 @@ async def process_option_toggle(callback: CallbackQuery, state: FSMContext) -> N
 
 @router.callback_query(OrderStates.choosing_options, F.data == "wizard_opt:continue")
 async def process_options_continue(callback: CallbackQuery, state: FSMContext) -> None:
-    """Переход к вводу данных молодоженов (Имя невесты)."""
+    """Переход к вводу данных в зависимости от типа мероприятия."""
     data = await state.get_data()
     lang = data.get("lang", "ru")
-    await state.set_state(OrderStates.bride_name)
+    event_type = data.get("event_type", "wedding")
 
-    await callback.message.edit_text(
-        text=get_text(lang, "step_bride_name"),
-        reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
-        parse_mode="HTML",
-    )
+    if event_type == "birthday":
+        await state.set_state(OrderStates.birthday_name)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_birthday_name"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
+            parse_mode="HTML",
+        )
+    elif event_type == "sunnat":
+        await state.set_state(OrderStates.sunnat_child_name)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_sunnat_child_name"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
+            parse_mode="HTML",
+        )
+    else:
+        await state.set_state(OrderStates.bride_name)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_bride_name"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
+            parse_mode="HTML",
+        )
     await callback.answer()
 
 
@@ -249,8 +238,16 @@ async def process_wizard_back(callback: CallbackQuery, state: FSMContext) -> Non
     target = callback.data.split(":")[1]
     data = await state.get_data()
     lang = data.get("lang", "ru")
+    event_type = data.get("event_type", "wedding")
 
-    if target == "to_tmpl":
+    if target == "to_event":
+        await state.set_state(OrderStates.choosing_event_type)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_event_type"),
+            reply_markup=get_event_type_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
+    elif target == "to_tmpl":
         await state.set_state(OrderStates.choosing_template)
         await callback.message.edit_text(
             text=get_text(lang, "step_template"),
@@ -286,11 +283,45 @@ async def process_wizard_back(callback: CallbackQuery, state: FSMContext) -> Non
             reply_markup=get_back_cancel_keyboard("wizard_back:to_bride", lang=lang),
             parse_mode="HTML",
         )
+    elif target == "to_birthday_name":
+        await state.set_state(OrderStates.birthday_name)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_birthday_name"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
+            parse_mode="HTML",
+        )
+    elif target == "to_birthday_age":
+        await state.set_state(OrderStates.birthday_age)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_birthday_age"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_birthday_name", lang=lang),
+            parse_mode="HTML",
+        )
+    elif target == "to_sunnat_child":
+        await state.set_state(OrderStates.sunnat_child_name)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_sunnat_child_name"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
+            parse_mode="HTML",
+        )
+    elif target == "to_sunnat_parents":
+        await state.set_state(OrderStates.sunnat_parents_name)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_sunnat_parents_name"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_sunnat_child", lang=lang),
+            parse_mode="HTML",
+        )
     elif target == "to_date":
+        prev_callback = "wizard_back:to_groom"
+        if event_type == "birthday":
+            prev_callback = "wizard_back:to_birthday_age"
+        elif event_type == "sunnat":
+            prev_callback = "wizard_back:to_sunnat_parents"
+
         await state.set_state(OrderStates.wedding_date)
         await callback.message.edit_text(
             text=get_text(lang, "step_date"),
-            reply_markup=get_back_cancel_keyboard("wizard_back:to_groom", lang=lang),
+            reply_markup=get_back_cancel_keyboard(prev_callback, lang=lang),
             parse_mode="HTML",
         )
     elif target == "to_time":
@@ -327,7 +358,7 @@ async def process_wizard_back(callback: CallbackQuery, state: FSMContext) -> Non
     await callback.answer()
 
 
-# --- Шаг 3: Имена жениха и невесты ---
+# --- Шаг 4: Ввод персональных данных (Свадьба) ---
 
 @router.message(OrderStates.bride_name, F.text)
 async def process_bride_name(message: Message, state: FSMContext) -> None:
@@ -377,19 +408,112 @@ async def process_groom_name(message: Message, state: FSMContext) -> None:
     )
 
 
-# --- Шаг 4: Дата и время свадьбы ---
+# --- Шаг 4: Ввод персональных данных (День рождения) ---
+
+@router.message(OrderStates.birthday_name, F.text)
+async def process_birthday_name(message: Message, state: FSMContext) -> None:
+    """Ввод имени именинника/юбиляра."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+    name = message.text.strip()
+    if len(name) < 2 or len(name) > 60:
+        await message.answer(
+            get_text(lang, "step_birthday_name"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+
+    await state.update_data(celebrant_name=name)
+    await state.set_state(OrderStates.birthday_age)
+
+    await message.answer(
+        text=get_text(lang, "step_birthday_age"),
+        reply_markup=get_back_cancel_keyboard("wizard_back:to_birthday_name", lang=lang),
+        parse_mode="HTML",
+    )
+
+
+@router.message(OrderStates.birthday_age, F.text)
+async def process_birthday_age(message: Message, state: FSMContext) -> None:
+    """Ввод возраста/юбилея."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+    age = message.text.strip()
+
+    await state.update_data(age_or_details=age)
+    await state.set_state(OrderStates.wedding_date)
+
+    await message.answer(
+        text=get_text(lang, "step_date"),
+        reply_markup=get_back_cancel_keyboard("wizard_back:to_birthday_age", lang=lang),
+        parse_mode="HTML",
+    )
+
+
+# --- Шаг 4: Ввод персональных данных (Суннат туй) ---
+
+@router.message(OrderStates.sunnat_child_name, F.text)
+async def process_sunnat_child_name(message: Message, state: FSMContext) -> None:
+    """Ввод имени мальчика."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+    name = message.text.strip()
+    if len(name) < 2 or len(name) > 60:
+        await message.answer(
+            get_text(lang, "step_sunnat_child_name"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+
+    await state.update_data(celebrant_name=name)
+    await state.set_state(OrderStates.sunnat_parents_name)
+
+    await message.answer(
+        text=get_text(lang, "step_sunnat_parents_name"),
+        reply_markup=get_back_cancel_keyboard("wizard_back:to_sunnat_child", lang=lang),
+        parse_mode="HTML",
+    )
+
+
+@router.message(OrderStates.sunnat_parents_name, F.text)
+async def process_sunnat_parents_name(message: Message, state: FSMContext) -> None:
+    """Ввод имен родителей / организаторов."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+    parents = message.text.strip()
+
+    await state.update_data(parents_name=parents)
+    await state.set_state(OrderStates.wedding_date)
+
+    await message.answer(
+        text=get_text(lang, "step_date"),
+        reply_markup=get_back_cancel_keyboard("wizard_back:to_sunnat_parents", lang=lang),
+        parse_mode="HTML",
+    )
+
+
+# --- Шаг 5: Дата и время торжества ---
 
 @router.message(OrderStates.wedding_date, F.text)
 async def process_wedding_date(message: Message, state: FSMContext) -> None:
-    """Ввод и валидация даты свадьбы."""
+    """Ввод и валидация даты торжества."""
     data = await state.get_data()
     lang = data.get("lang", "ru")
+    event_type = data.get("event_type", "wedding")
     is_valid, formatted_date = validate_date(message.text)
+
+    prev_callback = "wizard_back:to_groom"
+    if event_type == "birthday":
+        prev_callback = "wizard_back:to_birthday_age"
+    elif event_type == "sunnat":
+        prev_callback = "wizard_back:to_sunnat_parents"
 
     if not is_valid or not formatted_date:
         await message.answer(
             text=get_text(lang, "err_invalid_date"),
-            reply_markup=get_back_cancel_keyboard("wizard_back:to_groom", lang=lang),
+            reply_markup=get_back_cancel_keyboard(prev_callback, lang=lang),
             parse_mode="HTML",
         )
         return
@@ -429,7 +553,7 @@ async def process_wedding_time(message: Message, state: FSMContext) -> None:
     )
 
 
-# --- Шаг 5: Место, адрес, телефон ---
+# --- Шаг 6: Место, адрес, телефон ---
 
 @router.message(OrderStates.venue, F.text)
 async def process_venue(message: Message, state: FSMContext) -> None:
@@ -506,11 +630,11 @@ async def process_phone(message: Message, state: FSMContext) -> None:
         await _show_order_preview(message, state)
 
 
-# --- Шаг 6: Загрузка фотографий для галереи ---
+# --- Шаг 7: Загрузка фотографий для галереи ---
 
 @router.message(OrderStates.gallery_upload, F.photo)
 async def process_gallery_photo(message: Message, state: FSMContext) -> None:
-    """Прием фотографий жениха и невесты."""
+    """Прием фотографий."""
     data = await state.get_data()
     lang = data.get("lang", "ru")
     photos: list[dict] = data.get("photos", [])
@@ -569,7 +693,7 @@ async def process_gallery_finish(callback: CallbackQuery, state: FSMContext) -> 
     await callback.answer()
 
 
-# --- Шаг 7: Загрузка музыки ---
+# --- Шаг 8: Загрузка музыки ---
 
 @router.message(OrderStates.music_upload, F.audio | F.voice | F.document)
 async def process_music_file(message: Message, state: FSMContext) -> None:
@@ -615,6 +739,7 @@ async def _show_order_preview(message_or_msg: Message, state: FSMContext, is_edi
     """Отображение полной сводки заказа."""
     data = await state.get_data()
     lang = data.get("lang", "ru")
+    event_type = data.get("event_type", "wedding")
     options = data.get("options", {})
     calc_res = calculate_total(options, lang=lang)
 
@@ -623,8 +748,12 @@ async def _show_order_preview(message_or_msg: Message, state: FSMContext, is_edi
 
     preview_text = order_service.format_order_preview(
         order_id="NEW",
+        event_type=event_type,
         bride_name=data.get("bride_name", ""),
         groom_name=data.get("groom_name", ""),
+        celebrant_name=data.get("celebrant_name"),
+        parents_name=data.get("parents_name"),
+        age_or_details=data.get("age_or_details"),
         wedding_date=data.get("wedding_date", ""),
         wedding_time=data.get("wedding_time", ""),
         venue=data.get("venue", ""),
@@ -655,12 +784,14 @@ async def _show_order_preview(message_or_msg: Message, state: FSMContext, is_edi
 
 @router.callback_query(OrderStates.review, F.data == "wizard_order:edit")
 async def process_edit_order_fields(callback: CallbackQuery, state: FSMContext) -> None:
-    """Выбор поля для редактирования."""
+    """Выбор поля для редактирования под тип события."""
     data = await state.get_data()
     lang = data.get("lang", "ru")
+    event_type = data.get("event_type", "wedding")
+
     await callback.message.edit_text(
         text="✏️ <b>Выберите, какое поле вы хотите изменить:</b>" if lang == "ru" else "✏️ <b>Qaysi maydonni o‘zgartirmoqchisiz?</b>",
-        reply_markup=get_edit_fields_keyboard(lang=lang),
+        reply_markup=get_edit_fields_keyboard(event_type=event_type, lang=lang),
         parse_mode="HTML",
     )
     await callback.answer()
@@ -679,6 +810,18 @@ async def process_jump_to_field(callback: CallbackQuery, state: FSMContext) -> N
     elif field == "groom":
         await state.set_state(OrderStates.groom_name)
         await callback.message.edit_text(text=get_text(lang, "step_groom_name"), reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang), parse_mode="HTML")
+    elif field == "birthday_name":
+        await state.set_state(OrderStates.birthday_name)
+        await callback.message.edit_text(text=get_text(lang, "step_birthday_name"), reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang), parse_mode="HTML")
+    elif field == "birthday_age":
+        await state.set_state(OrderStates.birthday_age)
+        await callback.message.edit_text(text=get_text(lang, "step_birthday_age"), reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang), parse_mode="HTML")
+    elif field == "sunnat_child":
+        await state.set_state(OrderStates.sunnat_child_name)
+        await callback.message.edit_text(text=get_text(lang, "step_sunnat_child_name"), reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang), parse_mode="HTML")
+    elif field == "sunnat_parents":
+        await state.set_state(OrderStates.sunnat_parents_name)
+        await callback.message.edit_text(text=get_text(lang, "step_sunnat_parents_name"), reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang), parse_mode="HTML")
     elif field == "date":
         await state.set_state(OrderStates.wedding_date)
         await callback.message.edit_text(text=get_text(lang, "step_date"), reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang), parse_mode="HTML")

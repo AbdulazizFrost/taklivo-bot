@@ -245,7 +245,7 @@ async def callback_admin_view_order(callback: CallbackQuery, state: FSMContext) 
 # --- Подтверждение / отклонение оплаты ---
 
 @router.callback_query(F.data.startswith("adm_pay_ok:"))
-async def callback_admin_confirm_payment(callback: CallbackQuery) -> None:
+async def callback_admin_confirm_payment(callback: CallbackQuery, state: FSMContext) -> None:
     """Администратор подтверждает оплату."""
     if not is_admin(callback.from_user.id):
         return
@@ -256,14 +256,14 @@ async def callback_admin_confirm_payment(callback: CallbackQuery) -> None:
     if ok and order:
         await callback.answer("✅ Оплата подтверждена!")
         user_lang = await db.get_user_language(order.telegram_id)
-        await notifications.notify_client_payment_approved(callback.bot, order.telegram_id, order.id, user_lang)
-        await callback_admin_view_order(callback, FSMContext)
+        await notifications.notify_client_payment_confirmed(callback.bot, order, user_lang)
+        await callback_admin_view_order(callback, state)
     else:
         await callback.answer("Ошибка при подтверждении", show_alert=True)
 
 
 @router.callback_query(F.data.startswith("adm_pay_rej:"))
-async def callback_admin_reject_payment(callback: CallbackQuery) -> None:
+async def callback_admin_reject_payment(callback: CallbackQuery, state: FSMContext) -> None:
     """Администратор отклоняет оплату."""
     if not is_admin(callback.from_user.id):
         return
@@ -274,8 +274,8 @@ async def callback_admin_reject_payment(callback: CallbackQuery) -> None:
     if ok and order:
         await callback.answer("❌ Оплата отклонена.")
         user_lang = await db.get_user_language(order.telegram_id)
-        await notifications.notify_client_payment_rejected(callback.bot, order.telegram_id, order.id, user_lang)
-        await callback_admin_view_order(callback, FSMContext)
+        await notifications.notify_client_payment_rejected(callback.bot, order, user_lang)
+        await callback_admin_view_order(callback, state)
     else:
         await callback.answer("Ошибка при отклонении", show_alert=True)
 
@@ -325,13 +325,10 @@ async def process_admin_entered_url(message: Message, state: FSMContext) -> None
 
     if ok and order:
         user_lang = await db.get_user_language(order.telegram_id)
-        await notifications.notify_client_website_ready(
+        await notifications.notify_client_site_ready(
             bot=message.bot,
-            telegram_id=order.telegram_id,
-            order_id=order.id,
+            order=order,
             website_url=url,
-            bride_name=order.bride_name,
-            groom_name=order.groom_name,
             lang=user_lang,
         )
         await message.answer(
@@ -480,7 +477,7 @@ async def callback_admin_change_status(callback: CallbackQuery) -> None:
 
 
 @router.callback_query(F.data.startswith("set_st:"))
-async def callback_admin_set_status(callback: CallbackQuery) -> None:
+async def callback_admin_set_status(callback: CallbackQuery, state: FSMContext) -> None:
     """Установка выбранного статуса."""
     if not is_admin(callback.from_user.id):
         return
@@ -491,4 +488,4 @@ async def callback_admin_set_status(callback: CallbackQuery) -> None:
 
     await db.update_order_status(order_id, new_status)
     await callback.answer(f"Статус изменен на {new_status}")
-    await callback_admin_view_order(callback, FSMContext)
+    await callback_admin_view_order(callback, state)
