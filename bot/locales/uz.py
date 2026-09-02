@@ -121,7 +121,6 @@ TEXTS = {
         "Tugmalarni bosish orqali kerakli bloklarni yoqing (🟢) yoki o‘chiring (⚪️):\n\n"
         "• Asosiy taklifnoma: <b>{base_price}</b>\n"
         "• Qo‘shimcha funksiyalar: <b>+{extra_price}</b>\n"
-        "{discount_line}"
         "────────────────\n"
         "💰 <b>JAMI TO‘LOV: {total_price}</b>"
     ),
