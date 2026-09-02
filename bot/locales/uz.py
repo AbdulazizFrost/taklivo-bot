@@ -86,21 +86,6 @@ TEXTS = {
     "promo_applied_amount": "✅ <b>Promokod faollashtirildi!</b> Chegirma: -<b>{amount}</b>",
     "err_invalid_promo": "⚠️ <b>Noto‘g‘ri promokod!</b> Kod to‘g‘riligini yoki amal qilish muddatini tekshiring.",
 
-    # Mehmonlar uchun ismli havolalar
-    "btn_guest_links": "💌 Mehmonlar uchun ismli havolalar yaratish",
-    "prompt_guest_names": (
-        "💌 <b>Ismli taklifnomalar generatori</b>\n\n"
-        "Mehmonlaringiz ismlarini yuboring (har bir ismni yangi qatordan yoki vergul bilan).\n\n"
-        "<i>Masalan:</i>\n"
-        "Alisher aka\n"
-        "Dilnoza opa\n"
-        "Karimovlar oilasi"
-    ),
-    "guest_links_ready": (
-        "🎉 <b>Mehmonlaringiz uchun shaxsiy havolalar tayyor!</b>\n\n"
-        "Nusxa oling va har bir mehmonga yuboring:\n\n{links_list}"
-    ),
-
     # Narxlar
     "pricing_title": (
         "💰 <b>TAKLIVO narxlari va imkoniyatlari</b>\n\n"

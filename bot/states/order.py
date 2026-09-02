@@ -44,6 +44,3 @@ class OrderStates(StatesGroup):
 
     # Правки по готовому сайту
     revising = State()
-
-    # Именные ссылки для гостей
-    entering_guest_names = State()

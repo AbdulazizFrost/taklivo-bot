@@ -319,9 +319,6 @@ def get_order_card_keyboard(order: Order, lang: str = "ru") -> InlineKeyboardMar
         buttons.append([
             InlineKeyboardButton(text=get_text(lang, "btn_open_website"), url=order.website_url)
         ])
-        buttons.append([
-            InlineKeyboardButton(text=get_text(lang, "btn_guest_links"), callback_data=f"guest_links:{order.id}")
-        ])
     if order.status in ("PREVIEW", "COMPLETED", "IN_PROGRESS"):
         buttons.append([
             InlineKeyboardButton(text=get_text(lang, "btn_request_revisions"), callback_data=f"req_revision:{order.id}")
