@@ -2,7 +2,7 @@
 Клавиатуры для панели администратора TAKLIVO.
 """
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from bot.database.models import Order
+from bot.database.models import Order, PromoCode
 
 
 def get_admin_main_keyboard() -> InlineKeyboardMarkup:
@@ -22,23 +22,18 @@ def get_admin_main_keyboard() -> InlineKeyboardMarkup:
                 InlineKeyboardButton(text="📋 Все заказы", callback_data="adm_filter:ALL"),
             ],
             [
+                InlineKeyboardButton(text="📢 Массовая рассылка", callback_data="adm:broadcast"),
+                InlineKeyboardButton(text="🎟 Промокоды", callback_data="adm:promos"),
+            ],
+            [
                 InlineKeyboardButton(text="👥 Пользователи бота", callback_data="adm:users"),
                 InlineKeyboardButton(text="📊 Аналитика и выручка", callback_data="adm:stats"),
             ],
             [
+                InlineKeyboardButton(text="📥 Скачать базу (Excel)", callback_data="adm:export_excel"),
                 InlineKeyboardButton(text="💾 Скачать бэкап БД", callback_data="adm:backup_db"),
-                InlineKeyboardButton(text="🔄 Обновить", callback_data="adm:refresh"),
             ],
-        ]
-    )
-
-
-def get_admin_users_keyboard() -> InlineKeyboardMarkup:
-    """Кнопки в разделе списка пользователей."""
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="🔄 Обновить", callback_data="adm:users")],
-            [InlineKeyboardButton(text="⬅️ Назад в главное меню", callback_data="adm:main")],
+            [InlineKeyboardButton(text="🔄 Обновить панель", callback_data="adm:refresh")],
         ]
     )
 
@@ -75,7 +70,7 @@ def get_admin_order_actions_keyboard(order: Order) -> InlineKeyboardMarkup:
     ])
 
     buttons.append([
-        InlineKeyboardButton(text="⚙️ Сменить статус", callback_data=f"adm_change_st:{order.id}"),
+        InlineKeyboardButton(text="⚙️ Изменить статус", callback_data=f"adm_change_st:{order.id}"),
         InlineKeyboardButton(text="⬅️ К списку заказов", callback_data="adm:back_to_list"),
     ])
 
@@ -83,53 +78,98 @@ def get_admin_order_actions_keyboard(order: Order) -> InlineKeyboardMarkup:
 
 
 def get_admin_status_selection_keyboard(order_id: int) -> InlineKeyboardMarkup:
-    """Выбор статуса для ручной смены."""
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text="💳 Ожидает оплаты", callback_data=f"set_st:{order_id}:WAITING_PAYMENT"),
-                InlineKeyboardButton(text="🔨 В работе", callback_data=f"set_st:{order_id}:IN_PROGRESS"),
-            ],
-            [
-                InlineKeyboardButton(text="👀 На проверке", callback_data=f"set_st:{order_id}:PREVIEW"),
-                InlineKeyboardButton(text="✏️ Правки", callback_data=f"set_st:{order_id}:REVISION"),
-            ],
-            [
-                InlineKeyboardButton(text="🎉 Завершён", callback_data=f"set_st:{order_id}:COMPLETED"),
-                InlineKeyboardButton(text="❌ Отменён", callback_data=f"set_st:{order_id}:CANCELLED"),
-            ],
-            [InlineKeyboardButton(text="⬅️ Назад к заказу", callback_data=f"adm_order:{order_id}")],
-        ]
-    )
+    """Выбор нового статуса для заказа."""
+    statuses = [
+        ("💳 Ожидает оплаты", "WAITING_PAYMENT"),
+        ("⏳ Чек на проверке", "PAYMENT_REVIEW"),
+        ("✅ Оплачен", "PAID"),
+        ("🔨 В работе", "IN_PROGRESS"),
+        ("👀 На проверке", "PREVIEW"),
+        ("✏️ С правками", "REVISION"),
+        ("🎉 Завершён", "COMPLETED"),
+        ("❌ Отменён", "CANCELLED"),
+    ]
+    buttons = []
+    for label, st in statuses:
+        buttons.append([InlineKeyboardButton(text=label, callback_data=f"set_st:{order_id}:{st}")])
+    buttons.append([InlineKeyboardButton(text="⬅️ Назад к заказу", callback_data=f"adm_order:{order_id}")])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-def get_admin_orders_list_keyboard(orders: list[Order], current_filter: str) -> InlineKeyboardMarkup:
-    """Список заказов с фильтрацией."""
+def get_admin_orders_list_keyboard(orders: list[Order], current_filter: str = "ALL") -> InlineKeyboardMarkup:
+    """Список заказов в админке."""
     buttons = []
     for order in orders:
-        btn_text = f"#{order.id} | {order.bride_name} & {order.groom_name} [{order.status}]"
+        if order.event_type == "birthday":
+            title = f"🎂 {order.celebrant_name or 'ДР'}"
+        elif order.event_type == "sunnat":
+            title = f"✂️ {order.celebrant_name or 'Суннат туй'}"
+        else:
+            title = f"💍 {order.bride_name} & {order.groom_name}"
+
+        btn_text = f"#{order.id} | {title} | {order.total_price:,} сум"
         buttons.append([
             InlineKeyboardButton(text=btn_text, callback_data=f"adm_order:{order.id}")
         ])
-
     buttons.append([
-        InlineKeyboardButton(text="⬅️ Главное меню админки", callback_data="adm:main"),
-        InlineKeyboardButton(text="🔄 Обновить", callback_data=f"adm_filter:{current_filter}"),
+        InlineKeyboardButton(text="⬅️ В главное меню админки", callback_data="adm:main")
     ])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
 def get_admin_back_keyboard(order_id: int | None = None) -> InlineKeyboardMarkup:
-    """Кнопка возврата в админку."""
-    if order_id:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="⬅️ Назад к заказу", callback_data=f"adm_order:{order_id}")],
-                [InlineKeyboardButton(text="🏠 Главное меню админки", callback_data="adm:main")],
-            ]
-        )
+    """Кнопка возврата в админке."""
+    back_callback = f"adm_order:{order_id}" if order_id else "adm:main"
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🏠 Главное меню админки", callback_data="adm:main")]
+            [InlineKeyboardButton(text="⬅️ Назад", callback_data=back_callback)]
+        ]
+    )
+
+
+def get_admin_users_keyboard() -> InlineKeyboardMarkup:
+    """Кнопки в разделе списка пользователей."""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="📥 Скачать базу (Excel)", callback_data="adm:export_excel")],
+            [InlineKeyboardButton(text="🔄 Обновить", callback_data="adm:users")],
+            [InlineKeyboardButton(text="⬅️ Назад в главное меню", callback_data="adm:main")],
+        ]
+    )
+
+
+def get_admin_promos_keyboard(promos: list[PromoCode]) -> InlineKeyboardMarkup:
+    """Список промокодов в админке."""
+    buttons = [
+        [InlineKeyboardButton(text="➕ Создать промокод", callback_data="adm_promo:create")]
+    ]
+    for p in promos:
+        discount_label = f"{p.discount_percent}%" if p.discount_percent > 0 else f"{p.discount_amount:,} сум"
+        btn_text = f"🎟 {p.code} ({discount_label}) — {p.used_count}/{p.max_uses} исп."
+        buttons.append([
+            InlineKeyboardButton(text=btn_text, callback_data=f"adm_promo_view:{p.id}")
+        ])
+    buttons.append([
+        InlineKeyboardButton(text="⬅️ Назад в главное меню", callback_data="adm:main")
+    ])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def get_admin_promo_card_keyboard(promo_id: int) -> InlineKeyboardMarkup:
+    """Кнопки управления отдельным промокодом."""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="🗑 Удалить промокод", callback_data=f"adm_promo_del:{promo_id}")],
+            [InlineKeyboardButton(text="⬅️ К списку промокодов", callback_data="adm:promos")],
+        ]
+    )
+
+
+def get_admin_broadcast_confirm_keyboard() -> InlineKeyboardMarkup:
+    """Кнопки подтверждения запуска рассылки."""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="🚀 Запустить рассылку", callback_data="adm_bc:confirm")],
+            [InlineKeyboardButton(text="❌ Отменить", callback_data="adm:main")],
         ]
     )

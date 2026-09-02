@@ -1,5 +1,5 @@
 """
-Клавиатуры для взаимодействия с клиентом.
+Клавиатуры для взаимодействия с клиентом TAKLIVO.
 """
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot.database.models import Order
@@ -21,17 +21,59 @@ def get_language_keyboard() -> InlineKeyboardMarkup:
 
 
 def get_main_menu_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
-    """Главное меню бота с прямой ссылкой на Instagram."""
+    """Главное меню бота с удобной структурой."""
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text=get_text(lang, "btn_create_invitation"), callback_data="client:create_order")],
-            [InlineKeyboardButton(text=get_text(lang, "btn_pricing"), callback_data="client:pricing")],
-            [InlineKeyboardButton(text=get_text(lang, "btn_my_orders"), callback_data="client:my_orders")],
+            [
+                InlineKeyboardButton(text=get_text(lang, "btn_pricing"), callback_data="client:pricing"),
+                InlineKeyboardButton(text=get_text(lang, "btn_my_orders"), callback_data="client:my_orders"),
+            ],
+            [
+                InlineKeyboardButton(text=get_text(lang, "btn_faq"), callback_data="client:faq"),
+                InlineKeyboardButton(text=get_text(lang, "btn_referral"), callback_data="client:referral"),
+            ],
             [InlineKeyboardButton(text=get_text(lang, "btn_instagram"), url=config.INSTAGRAM_URL)],
             [
                 InlineKeyboardButton(text=get_text(lang, "btn_about"), callback_data="client:about"),
                 InlineKeyboardButton(text=get_text(lang, "btn_change_language"), callback_data="client:change_lang"),
             ],
+        ]
+    )
+
+
+def get_faq_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
+    """Клавиатура списка вопросов FAQ."""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(lang, "faq_q1"), callback_data="faq_q:1")],
+            [InlineKeyboardButton(text=get_text(lang, "faq_q2"), callback_data="faq_q:2")],
+            [InlineKeyboardButton(text=get_text(lang, "faq_q3"), callback_data="faq_q:3")],
+            [InlineKeyboardButton(text=get_text(lang, "faq_q4"), callback_data="faq_q:4")],
+            [InlineKeyboardButton(text=get_text(lang, "faq_q5"), callback_data="faq_q:5")],
+            [InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:main_menu")],
+        ]
+    )
+
+
+def get_faq_answer_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
+    """Кнопка возврата к списку вопросов FAQ."""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="⬅️ Другие вопросы" if lang == "ru" else "⬅️ Boshqa savollar", callback_data="client:faq")],
+            [InlineKeyboardButton(text=get_text(lang, "btn_main_menu"), callback_data="client:main_menu")],
+        ]
+    )
+
+
+def get_referral_keyboard(referral_link: str, lang: str = "ru") -> InlineKeyboardMarkup:
+    """Кнопки в разделе реферальной программы."""
+    share_text = "🎉 Создай онлайн-приглашение на свадьбу или день рождения в TAKLIVO!" if lang == "ru" else "🎉 TAKLIVO-da to‘y yoki tug‘ilgan kuningiz uchun zamonaviy taklifnoma yarating!"
+    share_url = f"https://t.me/share/url?url={referral_link}&text={share_text}"
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(lang, "btn_share_ref"), url=share_url)],
+            [InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:main_menu")],
         ]
     )
 
@@ -187,15 +229,16 @@ def get_music_upload_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     )
 
 
-def get_order_preview_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
+def get_order_preview_keyboard(has_promo: bool = False, lang: str = "ru") -> InlineKeyboardMarkup:
     """Клавиатура подтверждения заказа."""
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=get_text(lang, "btn_confirm_order"), callback_data="wizard_order:confirm")],
-            [InlineKeyboardButton(text=get_text(lang, "btn_edit_order"), callback_data="wizard_order:edit")],
-            [InlineKeyboardButton(text=get_text(lang, "btn_cancel"), callback_data="wizard:cancel")],
-        ]
-    )
+    buttons = [
+        [InlineKeyboardButton(text=get_text(lang, "btn_confirm_order"), callback_data="wizard_order:confirm")],
+    ]
+    if not has_promo:
+        buttons.append([InlineKeyboardButton(text=get_text(lang, "btn_enter_promo"), callback_data="wizard_order:enter_promo")])
+    buttons.append([InlineKeyboardButton(text=get_text(lang, "btn_edit_order"), callback_data="wizard_order:edit")])
+    buttons.append([InlineKeyboardButton(text=get_text(lang, "btn_cancel"), callback_data="wizard:cancel")])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
 def get_edit_fields_keyboard(event_type: str = "wedding", lang: str = "ru") -> InlineKeyboardMarkup:
@@ -275,6 +318,9 @@ def get_order_card_keyboard(order: Order, lang: str = "ru") -> InlineKeyboardMar
     if order.website_url:
         buttons.append([
             InlineKeyboardButton(text=get_text(lang, "btn_open_website"), url=order.website_url)
+        ])
+        buttons.append([
+            InlineKeyboardButton(text=get_text(lang, "btn_guest_links"), callback_data=f"guest_links:{order.id}")
         ])
     if order.status in ("PREVIEW", "COMPLETED", "IN_PROGRESS"):
         buttons.append([

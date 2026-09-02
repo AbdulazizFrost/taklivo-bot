@@ -2,14 +2,23 @@
 Асинхронный модуль работы с базой данных SQLite через aiosqlite.
 Включает функции автоматического резервного копирования (Backup) для 100% сохранности данных.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from pathlib import Path
 import shutil
 from typing import Any, Optional
 import aiosqlite
 
-from bot.database.models import User, Order, OrderPhoto, OrderMusic, OrderStatus, PaymentStatus, EventType
+from bot.database.models import (
+    User,
+    Order,
+    OrderPhoto,
+    OrderMusic,
+    OrderStatus,
+    PaymentStatus,
+    EventType,
+    PromoCode,
+)
 from config import config
 
 
@@ -25,11 +34,11 @@ class Database:
         async with aiosqlite.connect(self.db_path) as db:
             db.row_factory = aiosqlite.Row
 
-            # Включаем внешние ключи
+            # Включаем внешние ключи и WAL
             await db.execute("PRAGMA foreign_keys = ON;")
-            await db.execute("PRAGMA journal_mode = WAL;")  # Write-Ahead Logging для высокой надежности
+            await db.execute("PRAGMA journal_mode = WAL;")
 
-            # Таблица пользователей
+            # 1. Таблица пользователей
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS users (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,11 +46,26 @@ class Database:
                     username TEXT,
                     first_name TEXT,
                     language TEXT DEFAULT 'ru',
+                    referrer_id INTEGER,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
 
-            # Таблица заказов
+            # 2. Таблица промокодов
+            await db.execute("""
+                CREATE TABLE IF NOT EXISTS promocodes (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    code TEXT UNIQUE NOT NULL,
+                    discount_percent INTEGER DEFAULT 0,
+                    discount_amount INTEGER DEFAULT 0,
+                    max_uses INTEGER DEFAULT 100,
+                    used_count INTEGER DEFAULT 0,
+                    is_active INTEGER DEFAULT 1,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+
+            # 3. Таблица заказов
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS orders (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,6 +94,8 @@ class Database:
                     schedule_enabled INTEGER DEFAULT 0,
                     second_language_enabled INTEGER DEFAULT 0,
                     total_price INTEGER NOT NULL,
+                    promocode TEXT,
+                    discount_amount INTEGER DEFAULT 0,
                     payment_status TEXT DEFAULT 'UNPAID',
                     payment_receipt_file_id TEXT,
                     website_url TEXT,
@@ -80,19 +106,7 @@ class Database:
                 );
             """)
 
-            # Миграция существующих таблиц заказов
-            cursor = await db.execute("PRAGMA table_info(orders);")
-            cols = [row["name"] for row in await cursor.fetchall()]
-            if "event_type" not in cols:
-                await db.execute("ALTER TABLE orders ADD COLUMN event_type TEXT NOT NULL DEFAULT 'wedding';")
-            if "celebrant_name" not in cols:
-                await db.execute("ALTER TABLE orders ADD COLUMN celebrant_name TEXT;")
-            if "parents_name" not in cols:
-                await db.execute("ALTER TABLE orders ADD COLUMN parents_name TEXT;")
-            if "age_or_details" not in cols:
-                await db.execute("ALTER TABLE orders ADD COLUMN age_or_details TEXT;")
-
-            # Таблица фотографий к заказу
+            # 4. Таблица фотографий к заказу
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS order_photos (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -104,7 +118,7 @@ class Database:
                 );
             """)
 
-            # Таблица музыки к заказу
+            # 5. Таблица музыки к заказу
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS order_music (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -116,20 +130,39 @@ class Database:
                 );
             """)
 
-            # Создание индексов
+            # Миграции для существующих баз данных
+            cursor = await db.execute("PRAGMA table_info(users);")
+            u_cols = [row["name"] for row in await cursor.fetchall()]
+            if "referrer_id" not in u_cols:
+                await db.execute("ALTER TABLE users ADD COLUMN referrer_id INTEGER;")
+
+            cursor = await db.execute("PRAGMA table_info(orders);")
+            o_cols = [row["name"] for row in await cursor.fetchall()]
+            if "event_type" not in o_cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN event_type TEXT NOT NULL DEFAULT 'wedding';")
+            if "celebrant_name" not in o_cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN celebrant_name TEXT;")
+            if "parents_name" not in o_cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN parents_name TEXT;")
+            if "age_or_details" not in o_cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN age_or_details TEXT;")
+            if "promocode" not in o_cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN promocode TEXT;")
+            if "discount_amount" not in o_cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN discount_amount INTEGER DEFAULT 0;")
+
+            # Индексы
             await db.execute("CREATE INDEX IF NOT EXISTS idx_users_telegram_id ON users(telegram_id);")
             await db.execute("CREATE INDEX IF NOT EXISTS idx_orders_telegram_id ON orders(telegram_id);")
             await db.execute("CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);")
             await db.execute("CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);")
             await db.execute("CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);")
+            await db.execute("CREATE INDEX IF NOT EXISTS idx_promocodes_code ON promocodes(code);")
 
             await db.commit()
 
     def create_backup_copy(self) -> str:
-        """
-        Создает мгновенный резервный снимок файла базы данных.
-        Возвращает путь к созданному файлу бэкапа.
-        """
+        """Создает мгновенный резервный снимок файла базы данных."""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_filename = f"taklivo_backup_{timestamp}.db"
         backup_path = self.backups_dir / backup_filename
@@ -147,6 +180,7 @@ class Database:
         username: Optional[str] = None,
         first_name: Optional[str] = None,
         language: str = "ru",
+        referrer_id: Optional[int] = None,
     ) -> User:
         """Получает или создает пользователя в базе."""
         async with aiosqlite.connect(self.db_path) as db:
@@ -170,15 +204,19 @@ class Database:
                     username=username or row["username"],
                     first_name=first_name or row["first_name"],
                     language=row["language"] or "ru",
+                    referrer_id=row["referrer_id"] if "referrer_id" in row.keys() else None,
                     created_at=str(row["created_at"]),
                 )
 
+            # Если пользователь новый и указан реферер (и реферер не сам пользователь)
+            valid_referrer = referrer_id if referrer_id and referrer_id != telegram_id else None
+
             cursor = await db.execute(
                 """
-                INSERT INTO users (telegram_id, username, first_name, language)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO users (telegram_id, username, first_name, language, referrer_id)
+                VALUES (?, ?, ?, ?, ?)
                 """,
-                (telegram_id, username, first_name, language),
+                (telegram_id, username, first_name, language, valid_referrer),
             )
             user_id = cursor.lastrowid
             await db.commit()
@@ -189,6 +227,7 @@ class Database:
                 username=username,
                 first_name=first_name,
                 language=language,
+                referrer_id=valid_referrer,
                 created_at=datetime.utcnow().isoformat(),
             )
 
@@ -211,6 +250,143 @@ class Database:
             await db.execute(
                 "UPDATE users SET language = ? WHERE telegram_id = ?",
                 (language, telegram_id),
+            )
+            await db.commit()
+
+    async def get_referral_stats(self, telegram_id: int) -> dict[str, int]:
+        """Возвращает количество приглашенных друзей и количество оформленных ими заказов."""
+        async with aiosqlite.connect(self.db_path) as db:
+            # Число зарегистрированных по ссылке
+            cursor = await db.execute(
+                "SELECT COUNT(*) as invited_count FROM users WHERE referrer_id = ?",
+                (telegram_id,),
+            )
+            row = await cursor.fetchone()
+            invited_count = row[0] if row else 0
+
+            # Число заказов от рефералов со статусом оплаты PAID или успешных
+            cursor = await db.execute(
+                """
+                SELECT COUNT(o.id) as orders_count
+                FROM orders o
+                JOIN users u ON o.telegram_id = u.telegram_id
+                WHERE u.referrer_id = ?
+                  AND o.status IN ('PAID', 'IN_PROGRESS', 'PREVIEW', 'REVISION', 'COMPLETED')
+                """,
+                (telegram_id,),
+            )
+            row = await cursor.fetchone()
+            orders_count = row[0] if row else 0
+
+            return {
+                "invited_count": invited_count,
+                "orders_count": orders_count,
+            }
+
+    async def get_all_users(self) -> list[User]:
+        """Возвращает всех пользователей из базы для экспорта."""
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute("SELECT * FROM users ORDER BY id ASC")
+            rows = await cursor.fetchall()
+            return [
+                User(
+                    id=row["id"],
+                    telegram_id=row["telegram_id"],
+                    username=row["username"],
+                    first_name=row["first_name"],
+                    language=row["language"] or "ru",
+                    referrer_id=row["referrer_id"] if "referrer_id" in row.keys() else None,
+                    created_at=str(row["created_at"]),
+                )
+                for row in rows
+            ]
+
+    # --- Промокоды ---
+
+    async def create_promocode(
+        self,
+        code: str,
+        discount_percent: int = 0,
+        discount_amount: int = 0,
+        max_uses: int = 100,
+    ) -> int:
+        """Создает новый промокод."""
+        code_clean = code.strip().upper()
+        async with aiosqlite.connect(self.db_path) as db:
+            cursor = await db.execute(
+                """
+                INSERT INTO promocodes (code, discount_percent, discount_amount, max_uses)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(code) DO UPDATE SET
+                    discount_percent = excluded.discount_percent,
+                    discount_amount = excluded.discount_amount,
+                    max_uses = excluded.max_uses,
+                    is_active = 1
+                """,
+                (code_clean, discount_percent, discount_amount, max_uses),
+            )
+            promocode_id = cursor.lastrowid
+            await db.commit()
+            return promocode_id
+
+    async def get_promocode(self, code: str) -> Optional[PromoCode]:
+        """Получает активный промокод по его кодовому слову."""
+        code_clean = code.strip().upper()
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute(
+                "SELECT * FROM promocodes WHERE code = ? AND is_active = 1",
+                (code_clean,),
+            )
+            row = await cursor.fetchone()
+            if row:
+                return PromoCode(
+                    id=row["id"],
+                    code=row["code"],
+                    discount_percent=row["discount_percent"],
+                    discount_amount=row["discount_amount"],
+                    max_uses=row["max_uses"],
+                    used_count=row["used_count"],
+                    is_active=bool(row["is_active"]),
+                    created_at=str(row["created_at"]),
+                )
+            return None
+
+    async def get_all_promocodes(self) -> list[PromoCode]:
+        """Возвращает список всех промокодов."""
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute("SELECT * FROM promocodes ORDER BY id DESC")
+            rows = await cursor.fetchall()
+            return [
+                PromoCode(
+                    id=row["id"],
+                    code=row["code"],
+                    discount_percent=row["discount_percent"],
+                    discount_amount=row["discount_amount"],
+                    max_uses=row["max_uses"],
+                    used_count=row["used_count"],
+                    is_active=bool(row["is_active"]),
+                    created_at=str(row["created_at"]),
+                )
+                for row in rows
+            ]
+
+    async def delete_promocode(self, promocode_id: int) -> bool:
+        """Деактивирует или удаляет промокод."""
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute("DELETE FROM promocodes WHERE id = ?", (promocode_id,))
+            await db.commit()
+            return True
+
+    async def increment_promocode_usage(self, code: str) -> None:
+        """Увеличивает счетчик использований промокода."""
+        code_clean = code.strip().upper()
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute(
+                "UPDATE promocodes SET used_count = used_count + 1 WHERE code = ?",
+                (code_clean,),
             )
             await db.commit()
 
@@ -245,6 +421,8 @@ class Database:
             schedule_enabled=bool(row["schedule_enabled"]),
             second_language_enabled=bool(row["second_language_enabled"]),
             total_price=row["total_price"],
+            promocode=row["promocode"] if "promocode" in keys else None,
+            discount_amount=row["discount_amount"] if "discount_amount" in keys else 0,
             payment_status=row["payment_status"],
             payment_receipt_file_id=row["payment_receipt_file_id"],
             website_url=row["website_url"],
@@ -279,6 +457,8 @@ class Database:
         celebrant_name: Optional[str] = None,
         parents_name: Optional[str] = None,
         age_or_details: Optional[str] = None,
+        promocode: Optional[str] = None,
+        discount_amount: int = 0,
         status: str = OrderStatus.WAITING_PAYMENT.value,
     ) -> int:
         """Создает новый заказ в базе данных."""
@@ -291,14 +471,16 @@ class Database:
                     wedding_date, wedding_time,
                     venue, address, phone, rsvp_enabled, map_enabled,
                     music_enabled, gallery_enabled, dresscode_enabled,
-                    schedule_enabled, second_language_enabled, total_price, payment_status
+                    schedule_enabled, second_language_enabled, total_price,
+                    promocode, discount_amount, payment_status
                 ) VALUES (
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
                     ?, ?,
                     ?, ?, ?, ?, ?,
                     ?, ?, ?,
-                    ?, ?, ?, ?
+                    ?, ?, ?,
+                    ?, ?, ?
                 )
                 """,
                 (
@@ -327,10 +509,19 @@ class Database:
                     1 if schedule_enabled else 0,
                     1 if second_language_enabled else 0,
                     total_price,
+                    promocode,
+                    discount_amount,
                     PaymentStatus.UNPAID.value,
                 ),
             )
             order_id = cursor.lastrowid
+
+            if promocode:
+                await db.execute(
+                    "UPDATE promocodes SET used_count = used_count + 1 WHERE code = ?",
+                    (promocode.strip().upper(),),
+                )
+
             await db.commit()
             return order_id
 
@@ -373,6 +564,33 @@ class Database:
             cursor = await db.execute(
                 "SELECT * FROM orders ORDER BY id DESC LIMIT ?",
                 (limit,),
+            )
+            rows = await cursor.fetchall()
+            return [self._row_to_order(row) for row in rows]
+
+    async def get_all_orders(self) -> list[Order]:
+        """Возвращает все заказы для экспорта в Excel."""
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute("SELECT * FROM orders ORDER BY id ASC")
+            rows = await cursor.fetchall()
+            return [self._row_to_order(row) for row in rows]
+
+    async def get_orders_due_soon(self, days_ahead: int) -> list[Order]:
+        """Возвращает заказы, дата проведения которых наступит через days_ahead дней."""
+        target_date_obj = datetime.now() + timedelta(days=days_ahead)
+        # Формат даты в заказах: DD.MM.YYYY
+        target_str = target_date_obj.strftime("%d.%m.%Y")
+
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute(
+                """
+                SELECT * FROM orders
+                WHERE wedding_date = ?
+                  AND status IN ('PAID', 'IN_PROGRESS', 'PREVIEW', 'COMPLETED')
+                """,
+                (target_str,),
             )
             rows = await cursor.fetchall()
             return [self._row_to_order(row) for row in rows]
@@ -594,6 +812,7 @@ class Database:
                     username=row["username"],
                     first_name=row["first_name"],
                     language=row["language"] or "ru",
+                    referrer_id=row["referrer_id"] if "referrer_id" in row.keys() else None,
                     created_at=str(row["created_at"]),
                 )
                 for row in rows

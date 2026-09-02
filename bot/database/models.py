@@ -46,6 +46,19 @@ class User:
     username: Optional[str]
     first_name: Optional[str]
     language: str
+    referrer_id: Optional[int]
+    created_at: str
+
+
+@dataclass
+class PromoCode:
+    id: int
+    code: str
+    discount_percent: int
+    discount_amount: int
+    max_uses: int
+    used_count: int
+    is_active: bool
     created_at: str
 
 
@@ -77,6 +90,8 @@ class Order:
     schedule_enabled: bool
     second_language_enabled: bool
     total_price: int
+    promocode: Optional[str]
+    discount_amount: int
     payment_status: str
     payment_receipt_file_id: Optional[str]
     website_url: Optional[str]

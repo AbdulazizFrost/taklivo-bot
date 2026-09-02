@@ -18,10 +18,15 @@ class OrderService:
         telegram_id: int,
         data: dict[str, Any],
     ) -> int:
-        """Создает новый заказ в базе данных на основе выбранных в конструкторе опций."""
+        """Создает новый заказ в базе данных на основе выбранных в конструкторе опций и промокодов."""
         options = data.get("options", {})
         calc_res = calculate_total(options)
         event_type = data.get("event_type", "wedding")
+
+        # Применение скидки промокода
+        discount_amount = data.get("discount_amount", 0)
+        final_price = max(calc_res.total_price - discount_amount, 0)
+        promocode = data.get("promocode")
 
         order_id = await db.create_order(
             user_id=user_id,
@@ -47,7 +52,9 @@ class OrderService:
             dresscode_enabled=options.get("dresscode", False),
             schedule_enabled=options.get("schedule", False),
             second_language_enabled=options.get("second_language", False),
-            total_price=calc_res.total_price,
+            total_price=final_price,
+            promocode=promocode,
+            discount_amount=discount_amount,
             status=OrderStatus.WAITING_PAYMENT.value,
         )
 
@@ -183,6 +190,8 @@ class OrderService:
         celebrant_name: Optional[str] = None,
         parents_name: Optional[str] = None,
         age_or_details: Optional[str] = None,
+        promocode: Optional[str] = None,
+        discount_amount: int = 0,
         lang: str = "ru",
     ) -> str:
         """Форматирует сводку заказа перед подтверждением клиентом."""
@@ -232,6 +241,13 @@ class OrderService:
             else:
                 hero_info = f"👰 <b>Невеста:</b> {escape(bride_name)}\n🤵 <b>Жених:</b> {escape(groom_name)}"
 
+        promo_line = ""
+        if promocode and discount_amount > 0:
+            if lang == "uz":
+                promo_line = f"🎟 <b>Promokod ({escape(promocode)}):</b> -{format_currency(discount_amount, lang)}\n"
+            else:
+                promo_line = f"🎟 <b>Промокод ({escape(promocode)}):</b> -{format_currency(discount_amount, lang)}\n"
+
         return get_text(
             lang,
             "preview_title",
@@ -247,6 +263,7 @@ class OrderService:
             features_list=features_str,
             photos_count=photos_count,
             music_status=music_status,
+            promo_line=promo_line,
             total_price=format_currency(total_price, lang=lang),
         )
 
@@ -289,6 +306,10 @@ class OrderService:
             event_badge = "💍 СВАДЬБА / NIKOH TO‘YI"
             hero_block = f"👰 <b>Невеста:</b> {escape(order.bride_name)}\n🤵 <b>Жених:</b> {escape(order.groom_name)}\n"
 
+        promo_block = ""
+        if order.promocode:
+            promo_block = f"🎟 <b>Промокод:</b> <code>{escape(order.promocode)}</code> (Скидка: {format_currency(order.discount_amount, 'ru')})\n"
+
         return (
             f"🔔 <b>НОВЫЙ ЗАКАЗ #{order.id} [{event_badge}]</b>\n\n"
             f"{hero_block}\n"
@@ -298,6 +319,7 @@ class OrderService:
             f"📞 <b>Телефон:</b> {escape(order.phone)}\n\n"
             f"🎨 <b>Дизайн:</b> {escape(order.template_name)}\n\n"
             f"<b>Включенные опции:</b>\n{features_str}\n\n"
+            f"{promo_block}"
             f"💰 <b>Сумма:</b> {format_currency(order.total_price, 'ru')}\n"
             f"📊 <b>Статус заказа:</b> <code>{order.status}</code>\n"
             f"💳 <b>Статус оплаты:</b> <code>{order.payment_status}</code>\n\n"

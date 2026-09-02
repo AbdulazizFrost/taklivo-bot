@@ -1,6 +1,6 @@
 """
 Обработчики панели администратора TAKLIVO (/admin).
-Включает функции управления заказами, чеками, статистику и выгрузку бэкапа базы данных.
+Включает функции управления заказами, чеками, статистику, промокоды, рассылку и экспорт в Excel.
 """
 import json
 import logging
@@ -9,7 +9,7 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, InputMediaPhoto, FSInputFile
 from aiogram.fsm.context import FSMContext
 
-from bot.database import db, OrderStatus
+from bot.database import db, OrderStatus, PromoCode
 from bot.keyboards import (
     get_admin_main_keyboard,
     get_admin_order_actions_keyboard,
@@ -17,8 +17,17 @@ from bot.keyboards import (
     get_admin_orders_list_keyboard,
     get_admin_back_keyboard,
     get_admin_users_keyboard,
+    get_admin_promos_keyboard,
+    get_admin_promo_card_keyboard,
+    get_admin_broadcast_confirm_keyboard,
 )
-from bot.services import order_service, notifications, site_generator
+from bot.services import (
+    order_service,
+    notifications,
+    site_generator,
+    exporter,
+    broadcaster,
+)
 from bot.states.admin import AdminStates
 from bot.utils.helpers import format_currency, get_status_badge, escape
 from bot.utils.validators import validate_url
@@ -141,6 +150,37 @@ async def callback_admin_users(callback: CallbackQuery) -> None:
     await callback.answer()
 
 
+# --- Экспорт в Excel (CSV UTF-8 BOM) ---
+
+@router.callback_query(F.data == "adm:export_excel")
+async def callback_admin_export_excel(callback: CallbackQuery) -> None:
+    """Генерирует и отправляет файлы Excel для пользователей и заказов."""
+    if not is_admin(callback.from_user.id):
+        return
+
+    await callback.answer("⏳ Формирование файлов Excel...")
+    try:
+        users_file = await exporter.export_users_csv()
+        orders_file = await exporter.export_orders_csv()
+
+        doc_users = FSInputFile(path=users_file, filename=users_file.split("\\")[-1].split("/")[-1])
+        doc_orders = FSInputFile(path=orders_file, filename=orders_file.split("\\")[-1].split("/")[-1])
+
+        await callback.message.answer_document(
+            document=doc_users,
+            caption="📊 <b>Таблица пользователей TAKLIVO (Excel)</b>",
+            parse_mode="HTML",
+        )
+        await callback.message.answer_document(
+            document=doc_orders,
+            caption="📦 <b>Таблица всех заказов TAKLIVO (Excel)</b>",
+            parse_mode="HTML",
+        )
+    except Exception as e:
+        logger.error(f"Ошибка экспорта Excel: {e}")
+        await callback.message.answer(f"⚠️ Ошибка при формировании Excel: {e}")
+
+
 # --- Резервная копия базы данных (Backup) ---
 
 @router.callback_query(F.data == "adm:backup_db")
@@ -206,6 +246,300 @@ async def callback_admin_stats(callback: CallbackQuery) -> None:
     await callback.answer()
 
 
+# --- Массовая рассылка по пользователям ---
+
+@router.callback_query(F.data == "adm:broadcast")
+async def callback_admin_broadcast(callback: CallbackQuery, state: FSMContext) -> None:
+    """Начало процесса рассылки."""
+    if not is_admin(callback.from_user.id):
+        return
+
+    await state.set_state(AdminStates.entering_broadcast_message)
+    await callback.message.edit_text(
+        text=(
+            "📢 <b>МАССОВАЯ РАССЫЛКА ПО ВСЕМ ПОЛЬЗОВАТЕЛЯМ</b>\n\n"
+            "Отправьте сообщение (текст или фото с подписью), которое получат все пользователи бота."
+        ),
+        reply_markup=get_admin_back_keyboard(),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.message(AdminStates.entering_broadcast_message)
+async def process_broadcast_content(message: Message, state: FSMContext) -> None:
+    """Прием контента рассылки и запрос опциональной кнопки."""
+    if not is_admin(message.from_user.id):
+        return
+
+    # Сохраняем ID сообщения для рассылки
+    await state.update_data(broadcast_message_id=message.message_id, broadcast_chat_id=message.chat.id)
+    await state.set_state(AdminStates.entering_broadcast_button)
+
+    await message.answer(
+        text=(
+            "🔗 <b>Добавить кнопку со ссылкой под постом?</b>\n\n"
+            "Если нужна кнопка, отправьте её в формате:\n"
+            "<code>Текст кнопки | https://ссылка.uz</code>\n\n"
+            "<i>(или отправьте «-» или «нет» чтобы отправить без кнопки)</i>"
+        ),
+        parse_mode="HTML",
+    )
+
+
+@router.message(AdminStates.entering_broadcast_button, F.text)
+async def process_broadcast_button(message: Message, state: FSMContext) -> None:
+    """Обработка кнопки и подтверждение запуска."""
+    if not is_admin(message.from_user.id):
+        return
+
+    btn_text_raw = message.text.strip()
+    button_label = None
+    button_url = None
+
+    if "|" in btn_text_raw:
+        parts = btn_text_raw.split("|", 1)
+        button_label = parts[0].strip()
+        button_url = parts[1].strip()
+
+    await state.update_data(button_label=button_label, button_url=button_url)
+    await state.set_state(AdminStates.confirming_broadcast)
+
+    stats = await order_service.get_system_statistics()
+    total_users = stats["total_users"]
+
+    btn_info = f"• Кнопка: <b>{button_label}</b> ({button_url})\n" if button_label else "• Без кнопки\n"
+
+    await message.answer(
+        text=(
+            "🚀 <b>ГОТОВНОСТЬ К РАССЫЛКЕ</b>\n\n"
+            f"• Получателей: <b>{total_users}</b> чел.\n"
+            f"{btn_info}\n"
+            "Нажмите «Запустить рассылку» для старта."
+        ),
+        reply_markup=get_admin_broadcast_confirm_keyboard(),
+        parse_mode="HTML",
+    )
+
+
+@router.callback_query(AdminStates.confirming_broadcast, F.data == "adm_bc:confirm")
+async def callback_confirm_broadcast(callback: CallbackQuery, state: FSMContext) -> None:
+    """Запуск рассылки."""
+    if not is_admin(callback.from_user.id):
+        return
+
+    data = await state.get_data()
+    msg_id = data.get("broadcast_message_id")
+    chat_id = data.get("broadcast_chat_id")
+    btn_label = data.get("button_label")
+    btn_url = data.get("button_url")
+    await state.clear()
+
+    await callback.message.edit_text("⏳ Рассылка выполняется в фоновом режиме...")
+
+    # Получаем исходное сообщение через copy
+    # Для рассылки передаем сохраненные параметры
+    users = await db.get_all_users()
+    sent = 0
+    blocked = 0
+    failed = 0
+
+    from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+    keyboard = None
+    if btn_label and btn_url:
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=btn_label, url=btn_url)]])
+
+    import asyncio
+    for u in users:
+        try:
+            await callback.bot.copy_message(
+                chat_id=u.telegram_id,
+                from_chat_id=chat_id,
+                message_id=msg_id,
+                reply_markup=keyboard,
+            )
+            sent += 1
+        except Exception:
+            blocked += 1
+        await asyncio.sleep(0.04)
+
+    await callback.message.answer(
+        text=(
+            "✅ <b>РАССЫЛКА ЗАВЕРШЕНА!</b>\n\n"
+            f"• Всего пользователей: <b>{len(users)}</b>\n"
+            f"• Успешно доставлено: <b>{sent}</b>\n"
+            f"• Заблокировали/Недоступны: <b>{blocked}</b>"
+        ),
+        reply_markup=get_admin_main_keyboard(),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+# --- Управление промокодами ---
+
+@router.callback_query(F.data == "adm:promos")
+async def callback_admin_promos(callback: CallbackQuery) -> None:
+    """Список промокодов."""
+    if not is_admin(callback.from_user.id):
+        return
+
+    promos = await db.get_all_promocodes()
+    await callback.message.edit_text(
+        text="🎟 <b>УПРАВЛЕНИЕ ПРОМОКОДАМИ И СКИДКАМИ</b>\n\nВыберите промокод или создайте новый:",
+        reply_markup=get_admin_promos_keyboard(promos),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data == "adm_promo:create")
+async def callback_admin_start_promo_create(callback: CallbackQuery, state: FSMContext) -> None:
+    """Начало создания промокода."""
+    if not is_admin(callback.from_user.id):
+        return
+
+    await state.set_state(AdminStates.entering_promo_code)
+    await callback.message.edit_text(
+        text=(
+            "🎟 <b>Введите кодовое слово промокода</b>\n\n"
+            "<i>(например: OQSAROY2026 или WEDDING10)</i>"
+        ),
+        reply_markup=get_admin_back_keyboard(),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.message(AdminStates.entering_promo_code, F.text)
+async def process_promo_code_text(message: Message, state: FSMContext) -> None:
+    """Ввод названия промокода."""
+    if not is_admin(message.from_user.id):
+        return
+
+    code = message.text.strip().upper()
+    await state.update_data(new_promo_code=code)
+    await state.set_state(AdminStates.entering_promo_discount)
+
+    await message.answer(
+        text=(
+            f"🎟 Промокод: <b>{code}</b>\n\n"
+            "<b>Введите размер скидки:</b>\n"
+            "• В процентах: напишите например <code>15%</code> или <code>20%</code>\n"
+            "• Фиксированная сумма в сумах: напишите например <code>20000</code>"
+        ),
+        parse_mode="HTML",
+    )
+
+
+@router.message(AdminStates.entering_promo_discount, F.text)
+async def process_promo_discount(message: Message, state: FSMContext) -> None:
+    """Ввод скидки промокода."""
+    if not is_admin(message.from_user.id):
+        return
+
+    val = message.text.strip()
+    percent = 0
+    amount = 0
+
+    if "%" in val:
+        try:
+            percent = int(val.replace("%", "").strip())
+        except ValueError:
+            percent = 10
+    else:
+        try:
+            amount = int(val.replace(" ", "").strip())
+        except ValueError:
+            amount = 15000
+
+    await state.update_data(new_promo_percent=percent, new_promo_amount=amount)
+    await state.set_state(AdminStates.entering_promo_limit)
+
+    await message.answer(
+        text="🔢 <b>Введите лимит использований</b> (например: <code>50</code> или <code>100</code>):",
+        parse_mode="HTML",
+    )
+
+
+@router.message(AdminStates.entering_promo_limit, F.text)
+async def process_promo_limit(message: Message, state: FSMContext) -> None:
+    """Сохранение промокода."""
+    if not is_admin(message.from_user.id):
+        return
+
+    try:
+        limit = int(message.text.strip())
+    except ValueError:
+        limit = 100
+
+    data = await state.get_data()
+    code = data.get("new_promo_code", "PROMO")
+    percent = data.get("new_promo_percent", 0)
+    amount = data.get("new_promo_amount", 0)
+    await state.clear()
+
+    await db.create_promocode(
+        code=code,
+        discount_percent=percent,
+        discount_amount=amount,
+        max_uses=limit,
+    )
+
+    discount_label = f"{percent}%" if percent > 0 else f"{amount:,} сум"
+    await message.answer(
+        text=(
+            f"✅ <b>Промокод {code} успешно создан!</b>\n\n"
+            f"• Скидка: <b>{discount_label}</b>\n"
+            f"• Лимит использований: <b>{limit}</b>"
+        ),
+        reply_markup=get_admin_main_keyboard(),
+        parse_mode="HTML",
+    )
+
+
+@router.callback_query(F.data.startswith("adm_promo_view:"))
+async def callback_admin_promo_view(callback: CallbackQuery) -> None:
+    """Просмотр отдельного промокода."""
+    if not is_admin(callback.from_user.id):
+        return
+
+    promo_id = int(callback.data.split(":")[1])
+    promos = await db.get_all_promocodes()
+    target = next((p for p in promos if p.id == promo_id), None)
+
+    if not target:
+        await callback.answer("Промокод не найден", show_alert=True)
+        return
+
+    discount_label = f"{target.discount_percent}%" if target.discount_percent > 0 else f"{target.discount_amount:,} сум"
+    text = (
+        f"🎟 <b>ПРОМОКОД: {target.code}</b>\n\n"
+        f"• Скидка: <b>{discount_label}</b>\n"
+        f"• Использовано: <b>{target.used_count}</b> из <b>{target.max_uses}</b>\n"
+        f"• Дата создания: <i>{target.created_at[:10]}</i>"
+    )
+
+    await callback.message.edit_text(
+        text=text,
+        reply_markup=get_admin_promo_card_keyboard(target.id),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("adm_promo_del:"))
+async def callback_admin_promo_delete(callback: CallbackQuery) -> None:
+    """Удаление промокода."""
+    if not is_admin(callback.from_user.id):
+        return
+
+    promo_id = int(callback.data.split(":")[1])
+    await db.delete_promocode(promo_id)
+    await callback.answer("Промокод удален!")
+    await callback_admin_promos(callback)
+
+
 # --- Просмотр заказов по фильтрам ---
 
 @router.callback_query(F.data.startswith("adm_filter:"))
@@ -214,27 +548,31 @@ async def callback_admin_filter_orders(callback: CallbackQuery, state: FSMContex
     if not is_admin(callback.from_user.id):
         return
 
+    await state.clear()
     status_filter = callback.data.split(":")[1]
-    await state.update_data(current_filter=status_filter)
     orders = await order_service.get_orders_by_status_category(status_filter)
 
-    titles = {
-        "PAYMENT_REVIEW": "⏳ Заказы на проверке оплаты:",
-        "IN_PROGRESS": "🔨 Заказы в работе у дизайнера:",
-        "PREVIEW": "👀 Заказы на проверке клиентом:",
-        "REVISION": "✏️ Заказы с запрошенными правками:",
-        "COMPLETED": "🎉 Завершенные заказы:",
-        "ALL": "📋 Все заказы сервиса:",
+    filter_names = {
+        "PAYMENT_REVIEW": "⏳ На проверке оплаты",
+        "IN_PROGRESS": "🔨 В работе у дизайнера",
+        "PREVIEW": "👀 На проверке клиентом",
+        "REVISION": "✏️ С правками",
+        "COMPLETED": "🎉 Завершённые",
+        "ALL": "📋 Все заказы",
     }
-    title = titles.get(status_filter, "Список заказов:")
 
+    title = filter_names.get(status_filter, status_filter)
     if not orders:
-        text = f"{title}\n\n<i>Заказов в данной категории пока нет.</i>"
-    else:
-        text = f"{title}\nНажмите на заказ для управления:"
+        await callback.message.edit_text(
+            text=f"📋 <b>{title}</b>\n\n<i>В этой категории пока нет заказов.</i>",
+            reply_markup=get_admin_back_keyboard(),
+            parse_mode="HTML",
+        )
+        await callback.answer()
+        return
 
     await callback.message.edit_text(
-        text=text,
+        text=f"📋 <b>{title}</b> (Найдено: {len(orders)}):\n\nВыберите заказ для детального просмотра:",
         reply_markup=get_admin_orders_list_keyboard(orders, status_filter),
         parse_mode="HTML",
     )
@@ -243,52 +581,51 @@ async def callback_admin_filter_orders(callback: CallbackQuery, state: FSMContex
 
 @router.callback_query(F.data == "adm:back_to_list")
 async def callback_admin_back_to_list(callback: CallbackQuery, state: FSMContext) -> None:
-    """Возврат к предыдущему списку заказов."""
+    """Возврат к полному списку заказов."""
     if not is_admin(callback.from_user.id):
         return
-    data = await state.get_data()
-    status_filter = data.get("current_filter", "ALL")
-    orders = await order_service.get_orders_by_status_category(status_filter)
+    orders = await order_service.get_orders_by_status_category("ALL")
     await callback.message.edit_text(
-        text="Список заказов:",
-        reply_markup=get_admin_orders_list_keyboard(orders, status_filter),
+        text="📋 <b>Все заказы:</b>",
+        reply_markup=get_admin_orders_list_keyboard(orders, "ALL"),
         parse_mode="HTML",
     )
     await callback.answer()
 
 
-# --- Карточка отдельного заказа в админке ---
+# --- Детальный просмотр заказа администратором ---
 
 @router.callback_query(F.data.startswith("adm_order:"))
 async def callback_admin_view_order(callback: CallbackQuery, state: FSMContext) -> None:
-    """Детальный просмотр карточки заказа."""
+    """Детальная карточка заказа для администратора."""
     if not is_admin(callback.from_user.id):
         return
 
+    await state.clear()
     order_id = int(callback.data.split(":")[1])
     order = await order_service.get_order_by_id(order_id)
 
     if not order:
-        await callback.answer("Заказ не найден!", show_alert=True)
+        await callback.answer("Заказ не найден", show_alert=True)
         return
 
-    await state.update_data(current_admin_order_id=order_id)
     photos = await db.get_order_photos(order_id)
     music = await db.get_order_music(order_id)
 
-    info_text = order_service.format_admin_notification(
+    card_text = order_service.format_admin_notification(
         order=order,
         photos_count=len(photos),
         has_music=music is not None,
     )
 
     if order.website_url:
-        info_text += f"\n\n🌐 <b>Сайт:</b> <a href='{order.website_url}'>{order.website_url}</a>"
+        card_text += f"\n\n🌐 <b>Ссылка на сайт:</b> <a href='{order.website_url}'>{order.website_url}</a>"
+
     if order.revision_text:
-        info_text += f"\n\n✏️ <b>Текст правок от клиента:</b>\n<i>{escape(order.revision_text)}</i>"
+        card_text += f"\n\n✏️ <b>Пожелания по правкам:</b>\n<i>{escape(order.revision_text)}</i>"
 
     await callback.message.edit_text(
-        text=info_text,
+        text=card_text,
         reply_markup=get_admin_order_actions_keyboard(order),
         parse_mode="HTML",
         disable_web_page_preview=False,
@@ -296,49 +633,67 @@ async def callback_admin_view_order(callback: CallbackQuery, state: FSMContext) 
     await callback.answer()
 
 
-# --- Подтверждение / отклонение оплаты ---
+# --- Подтверждение / Отклонение оплаты администратором ---
 
 @router.callback_query(F.data.startswith("adm_pay_ok:"))
-async def callback_admin_confirm_payment(callback: CallbackQuery, state: FSMContext) -> None:
-    """Администратор подтверждает оплату."""
+async def callback_admin_confirm_payment(callback: CallbackQuery) -> None:
+    """Администратор нажимает «✅ Подтвердить оплату»."""
     if not is_admin(callback.from_user.id):
         return
 
     order_id = int(callback.data.split(":")[1])
-    ok, order = await order_service.confirm_order_payment(order_id)
+    success, updated_order = await order_service.confirm_order_payment(order_id)
 
-    if ok and order:
-        await callback.answer("✅ Оплата подтверждена!")
-        user_lang = await db.get_user_language(order.telegram_id)
-        await notifications.notify_client_payment_confirmed(callback.bot, order, user_lang)
-        await callback_admin_view_order(callback, state)
-    else:
+    if not success or not updated_order:
         await callback.answer("Ошибка при подтверждении", show_alert=True)
+        return
+
+    await callback.answer("Оплата подтверждена!", show_alert=True)
+    await notifications.notify_client_payment_confirmed(
+        bot=callback.bot,
+        telegram_id=updated_order.telegram_id,
+        order_id=updated_order.id,
+    )
+
+    await callback.message.edit_text(
+        text=f"✅ <b>Оплата по заказу #{order_id} успешно подтверждена!</b>\n\nСтатус заказа изменен на <code>IN_PROGRESS</code> (В работе). Клиент получил оповещение.",
+        reply_markup=get_admin_order_actions_keyboard(updated_order),
+        parse_mode="HTML",
+    )
 
 
 @router.callback_query(F.data.startswith("adm_pay_rej:"))
-async def callback_admin_reject_payment(callback: CallbackQuery, state: FSMContext) -> None:
-    """Администратор отклоняет оплату."""
+async def callback_admin_reject_payment(callback: CallbackQuery) -> None:
+    """Администратор нажимает «❌ Отклонить оплату»."""
     if not is_admin(callback.from_user.id):
         return
 
     order_id = int(callback.data.split(":")[1])
-    ok, order = await order_service.reject_order_payment(order_id)
+    success, updated_order = await order_service.reject_order_payment(order_id)
 
-    if ok and order:
-        await callback.answer("❌ Оплата отклонена.")
-        user_lang = await db.get_user_language(order.telegram_id)
-        await notifications.notify_client_payment_rejected(callback.bot, order, user_lang)
-        await callback_admin_view_order(callback, state)
-    else:
+    if not success or not updated_order:
         await callback.answer("Ошибка при отклонении", show_alert=True)
+        return
+
+    await callback.answer("Оплата отклонена", show_alert=True)
+    await notifications.notify_client_payment_rejected(
+        bot=callback.bot,
+        telegram_id=updated_order.telegram_id,
+        order_id=updated_order.id,
+    )
+
+    await callback.message.edit_text(
+        text=f"❌ <b>Оплата по заказу #{order_id} отклонена.</b>\n\nЗаказ возвращен в статус ожидания оплаты. Клиент оповещен.",
+        reply_markup=get_admin_order_actions_keyboard(updated_order),
+        parse_mode="HTML",
+    )
 
 
 # --- Отправка ссылки на готовый сайт клиенту ---
 
 @router.callback_query(F.data.startswith("adm_send_url:"))
 async def callback_admin_start_send_url(callback: CallbackQuery, state: FSMContext) -> None:
-    """Запрос ввода ссылки на готовый сайт."""
+    """Администратор нажимает «🌐 Отправить ссылку на сайт»."""
     if not is_admin(callback.from_user.id):
         return
 
@@ -348,8 +703,8 @@ async def callback_admin_start_send_url(callback: CallbackQuery, state: FSMConte
 
     await callback.message.answer(
         text=(
-            f"🌐 <b>Отправка ссылки на сайт по заказу #{order_id}</b>\n\n"
-            "Отправьте URL сайта (например: <code>https://taklivo.uz/wedding/aziz-malika</code>):"
+            f"🌐 <b>Введите ссылку на готовый сайт для заказа #{order_id}:</b>\n\n"
+            f"<i>Пример: https://taklivo.uz/wedding/aziz-malika</i>"
         ),
         reply_markup=get_admin_back_keyboard(order_id),
         parse_mode="HTML",
@@ -359,42 +714,67 @@ async def callback_admin_start_send_url(callback: CallbackQuery, state: FSMConte
 
 @router.message(AdminStates.entering_website_url, F.text)
 async def process_admin_entered_url(message: Message, state: FSMContext) -> None:
-    """Прием и валидация ссылки на сайт, сохранение и отправка клиенту."""
+    """Прием и валидация URL готового сайта."""
     if not is_admin(message.from_user.id):
+        return
+
+    url = message.text.strip()
+    if not validate_url(url):
+        await message.answer("⚠️ <b>Некорректная ссылка!</b> Введите валидный URL (начинающийся с http:// или https://).")
         return
 
     data = await state.get_data()
     order_id = data.get("target_order_id")
-    url = message.text.strip()
-
-    if not validate_url(url):
-        await message.answer(
-            "⚠️ <b>Некорректная ссылка!</b> Пожалуйста, отправьте валидный URL (начинается с http:// или https://):",
-            parse_mode="HTML",
-        )
-        return
-
-    ok, order = await order_service.set_website_url_for_order(order_id, url)
     await state.clear()
 
-    if ok and order:
-        user_lang = await db.get_user_language(order.telegram_id)
-        await notifications.notify_client_site_ready(
-            bot=message.bot,
-            order=order,
-            website_url=url,
-            lang=user_lang,
-        )
-        await message.answer(
-            f"✅ <b>Ссылка успешно сохранена и отправлена клиенту!</b>\n\n🔗 {url}\nСтатус заказа переведен в <code>PREVIEW</code>.",
-            reply_markup=get_admin_back_keyboard(order.id),
-            parse_mode="HTML",
-        )
-    else:
-        await message.answer("⚠️ Не удалось обновить заказ.")
+    if not order_id:
+        await message.answer("Ошибка: номер заказа не найден.")
+        return
+
+    success, updated_order = await order_service.set_website_url_for_order(order_id, url)
+    if not success or not updated_order:
+        await message.answer("Ошибка обновления заказа.")
+        return
+
+    await notifications.notify_client_website_ready(
+        bot=message.bot,
+        telegram_id=updated_order.telegram_id,
+        order_id=updated_order.id,
+        website_url=url,
+        order=updated_order,
+    )
+
+    await message.answer(
+        text=f"🎉 <b>Ссылка на сайт для заказа #{order_id} успешно отправлена клиенту!</b>\n\nСтатус заказа переведен в <code>PREVIEW</code> (На проверке).",
+        reply_markup=get_admin_order_actions_keyboard(updated_order),
+        parse_mode="HTML",
+    )
 
 
-# --- Просмотр чека и фотографий ---
+# --- Просмотр медиафайлов заказа ---
+
+@router.callback_query(F.data.startswith("adm_view_photos:"))
+async def callback_admin_view_photos(callback: CallbackQuery) -> None:
+    """Отправка всех фото заказа в виде медиа-группы."""
+    if not is_admin(callback.from_user.id):
+        return
+
+    order_id = int(callback.data.split(":")[1])
+    photos = await db.get_order_photos(order_id)
+
+    if not photos:
+        await callback.answer("К этому заказу нет фотографий", show_alert=True)
+        return
+
+    await callback.answer("Загрузка фотографий...")
+    media_group = [InputMediaPhoto(media=p.file_id) for p in photos[:10]]
+
+    try:
+        await callback.message.answer_media_group(media=media_group)
+    except Exception as e:
+        logger.error(f"Ошибка отправки медиа-группы: {e}")
+        await callback.message.answer(f"⚠️ Ошибка отправки фото: {e}")
+
 
 @router.callback_query(F.data.startswith("adm_view_receipt:"))
 async def callback_admin_view_receipt(callback: CallbackQuery) -> None:
@@ -409,40 +789,26 @@ async def callback_admin_view_receipt(callback: CallbackQuery) -> None:
         await callback.answer("Чек не прикреплен", show_alert=True)
         return
 
-    await callback.message.answer_photo(
-        photo=order.payment_receipt_file_id,
-        caption=f"🧾 <b>Чек по заказу #{order.id}</b>\nСумма: {format_currency(order.total_price, 'ru')}",
-        parse_mode="HTML",
-    )
-    await callback.answer()
+    await callback.answer("Загрузка чека...")
+    try:
+        await callback.message.answer_photo(
+            photo=order.payment_receipt_file_id,
+            caption=f"🧾 <b>Чек об оплате к заказу #{order.id}</b>\nСумма: {format_currency(order.total_price, 'ru')}",
+            parse_mode="HTML",
+        )
+    except Exception:
+        await callback.message.answer_document(
+            document=order.payment_receipt_file_id,
+            caption=f"🧾 <b>Документ чека к заказу #{order.id}</b>",
+            parse_mode="HTML",
+        )
 
 
-@router.callback_query(F.data.startswith("adm_view_photos:"))
-async def callback_admin_view_photos(callback: CallbackQuery) -> None:
-    """Выгрузка всех фотографий заказа."""
-    if not is_admin(callback.from_user.id):
-        return
-
-    order_id = int(callback.data.split(":")[1])
-    photos = await db.get_order_photos(order_id)
-
-    if not photos:
-        await callback.answer("К этому заказу нет фотографий", show_alert=True)
-        return
-
-    await callback.answer("Загрузка фотографий...")
-    media_group = [
-        InputMediaPhoto(media=p.file_id, caption=f"📸 Фото {idx+1}/{len(photos)} (Заказ #{order_id})")
-        for idx, p in enumerate(photos[:10])
-    ]
-    await callback.message.answer_media_group(media=media_group)
-
-
-# --- Экспорт JSON для генератора сайтов ---
+# --- Экспорт JSON для генератора сайта ---
 
 @router.callback_query(F.data.startswith("adm_export_json:"))
 async def callback_admin_export_json(callback: CallbackQuery) -> None:
-    """Выгрузка структурированного JSON для генерации сайта."""
+    """Выгрузка JSON данных заказа."""
     if not is_admin(callback.from_user.id):
         return
 

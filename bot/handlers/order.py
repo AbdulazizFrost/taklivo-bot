@@ -736,14 +736,18 @@ async def process_music_skip(callback: CallbackQuery, state: FSMContext) -> None
 # --- Предпросмотр (Review) и подтверждение заказа ---
 
 async def _show_order_preview(message_or_msg: Message, state: FSMContext, is_edit: bool = False) -> None:
-    """Отображение полной сводки заказа."""
+    """Отображение полной сводки заказа с учетом промокода."""
     data = await state.get_data()
     lang = data.get("lang", "ru")
     event_type = data.get("event_type", "wedding")
     options = data.get("options", {})
     calc_res = calculate_total(options, lang=lang)
 
-    await state.update_data(total_price=calc_res.total_price)
+    promocode = data.get("promocode")
+    discount_amount = data.get("discount_amount", 0)
+    final_price = max(calc_res.total_price - discount_amount, 0)
+
+    await state.update_data(total_price=final_price)
     await state.set_state(OrderStates.review)
 
     preview_text = order_service.format_order_preview(
@@ -764,22 +768,79 @@ async def _show_order_preview(message_or_msg: Message, state: FSMContext, is_edi
         options=options,
         photos_count=len(data.get("photos", [])),
         has_music=data.get("music_file_id") is not None,
-        total_price=calc_res.total_price,
+        promocode=promocode,
+        discount_amount=discount_amount,
+        total_price=final_price,
         lang=lang,
     )
 
     if is_edit:
         await message_or_msg.edit_text(
             text=preview_text,
-            reply_markup=get_order_preview_keyboard(lang=lang),
+            reply_markup=get_order_preview_keyboard(has_promo=bool(promocode), lang=lang),
             parse_mode="HTML",
         )
     else:
         await message_or_msg.answer(
             text=preview_text,
-            reply_markup=get_order_preview_keyboard(lang=lang),
+            reply_markup=get_order_preview_keyboard(has_promo=bool(promocode), lang=lang),
             parse_mode="HTML",
         )
+
+
+@router.callback_query(OrderStates.review, F.data == "wizard_order:enter_promo")
+async def process_start_promocode(callback: CallbackQuery, state: FSMContext) -> None:
+    """Запрос ввода промокода."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+    await state.set_state(OrderStates.entering_promocode)
+    await callback.message.edit_text(
+        text=get_text(lang, "prompt_promocode"),
+        reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.message(OrderStates.entering_promocode, F.text)
+async def process_entered_promocode(message: Message, state: FSMContext) -> None:
+    """Проверка и применение промокода."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+    code = message.text.strip().upper()
+
+    promo = await db.get_promocode(code)
+    if not promo or not promo.is_active or promo.used_count >= promo.max_uses:
+        await message.answer(
+            text=get_text(lang, "err_invalid_promo"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+
+    options = data.get("options", {})
+    calc_res = calculate_total(options, lang=lang)
+    base_total = calc_res.total_price
+
+    if promo.discount_percent > 0:
+        discount_amount = int(base_total * (promo.discount_percent / 100))
+        success_msg = get_text(
+            lang,
+            "promo_applied_percent",
+            discount=promo.discount_percent,
+            amount=format_currency(discount_amount, lang),
+        )
+    else:
+        discount_amount = promo.discount_amount
+        success_msg = get_text(
+            lang,
+            "promo_applied_amount",
+            amount=format_currency(discount_amount, lang),
+        )
+
+    await state.update_data(promocode=promo.code, discount_amount=discount_amount)
+    await message.answer(success_msg, parse_mode="HTML")
+    await _show_order_preview(message, state)
 
 
 @router.callback_query(OrderStates.review, F.data == "wizard_order:edit")
@@ -989,5 +1050,59 @@ async def process_invalid_receipt_format(message: Message, state: FSMContext) ->
     await message.answer(
         text=get_text(lang, "err_not_receipt"),
         reply_markup=get_payment_keyboard(order_id, lang=lang),
+        parse_mode="HTML",
+    )
+
+
+# --- Генератор персональных именных ссылок для гостей ---
+
+@router.callback_query(F.data.startswith("guest_links:"))
+async def process_start_guest_links(callback: CallbackQuery, state: FSMContext) -> None:
+    """Запрос списка имён гостей для создания персональных ссылок."""
+    order_id = int(callback.data.split(":")[1])
+    order = await order_service.get_order_by_id(order_id)
+    lang = await db.get_user_language(callback.from_user.id)
+
+    if not order or not order.website_url:
+        await callback.answer("Сайт ещё не готов", show_alert=True)
+        return
+
+    await state.update_data(target_website_url=order.website_url, lang=lang)
+    await state.set_state(OrderStates.entering_guest_names)
+
+    await callback.message.answer(
+        text=get_text(lang, "prompt_guest_names"),
+        reply_markup=get_cancel_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.message(OrderStates.entering_guest_names, F.text)
+async def process_generate_guest_links(message: Message, state: FSMContext) -> None:
+    """Генерация ссылок для каждого гостя."""
+    import urllib.parse
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+    base_url = data.get("target_website_url", "")
+
+    raw_names = message.text.replace(",", "\n").split("\n")
+    names = [n.strip() for n in raw_names if n.strip()]
+
+    if not names:
+        await message.answer("⚠️ Введите хотя бы одно имя.")
+        return
+
+    links_lines = []
+    separator = "&" if "?" in base_url else "?"
+    for i, name in enumerate(names[:30], 1):
+        encoded = urllib.parse.quote_plus(name)
+        personal_url = f"{base_url}{separator}guest={encoded}"
+        links_lines.append(f"👤 <b>{escape(name)}:</b>\n🔗 <code>{personal_url}</code>")
+
+    await state.clear()
+    await message.answer(
+        text=get_text(lang, "guest_links_ready", links_list="\n\n".join(links_lines)),
+        reply_markup=get_main_menu_keyboard(lang=lang),
         parse_mode="HTML",
     )

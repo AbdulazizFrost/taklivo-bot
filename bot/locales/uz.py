@@ -7,7 +7,7 @@ TEXTS = {
     "btn_back": "⬅️ Orqaga",
     "btn_cancel": "❌ Bekor qilish",
     "btn_main_menu": "🏠 Asosiy menyu",
-    "cancelled": "❌ Buyurtma bekor qilindi.",
+    "cancelled": "❌ Amal bekor qilindi.",
     "select_language": "Iltimos, tilni tanlang / Пожалуйста, выберите язык:",
     "language_selected": "🇺🇿 O‘zbek tili tanlandi.",
 
@@ -26,6 +26,8 @@ TEXTS = {
     "btn_create_invitation": "✨ Taklifnoma yaratish",
     "btn_pricing": "💰 Funksiyalar narxlari",
     "btn_my_orders": "📦 Mening buyurtmalarim",
+    "btn_faq": "❓ Ko‘p beriladigan savollar",
+    "btn_referral": "🎁 Do‘stlarni taklif qilish",
     "btn_about": "ℹ️ Xizmat haqida",
     "btn_instagram": "📸 Bizning Instagram",
     "btn_change_language": "🌐 Tilni o‘zgartirish",
@@ -45,6 +47,58 @@ TEXTS = {
         "• <b>Individual:</b> sizning suratlaringiz, sevimli musiqangiz va shaxsiy matningiz\n\n"
         "📸 <b>Instagram:</b> <a href='https://www.instagram.com/wedding_websites_uzbekistan/'>@wedding_websites_uzbekistan</a>\n"
         "📞 <b>Bog‘lanish va aloqa:</b> @Abdulaziz5335"
+    ),
+
+    # Ko‘p beriladigan savollar (FAQ)
+    "faq_title": "❓ <b>Ko‘p beriladigan savollar (FAQ)</b>\n\nQuyidagi savollardan birini tanlang:",
+    "faq_q1": "⏱ Sayt qancha vaqtda tayyor bo‘ladi?",
+    "faq_a1": "⏱ <b>Tayyorlanish muddati:</b>\nOdatda sayt to‘lov tasdiqlanganidan so‘ng 12–24 soat ichida to‘liq tayyor bo‘ladi. Agar shoshilinch bo‘lsa — @Abdulaziz5335 administratoriga yozing, eng qisqa vaqtda tayyorlab beramiz!",
+
+    "faq_q2": "📱 Mehmonlarga qanday yuboriladi?",
+    "faq_a2": "📱 <b>Mehmonlarga yuborish:</b>\nSizga tayyor nafis havola beriladi (masalan: <code>taklivo.uz/wedding/aziz-malika</code>). Uni Telegram, Instagram Direct, WhatsApp orqali yoki Stories/Bio-ga joylab osongina ulashishingiz mumkin!",
+
+    "faq_q3": "🎵 Musiqa iPhone va Android-da qanday ishlaydi?",
+    "faq_a3": "🎵 <b>Fon musiqasi:</b>\nSayt ochilganda chiroyli musiqa tugmasi chiqadi. Mehmon tugmani bosishi bilan musiqangiz yangraydi. Barcha iPhone (iOS) va Android smartfonlarida 100% ishlaydi!",
+
+    "faq_q4": "✏️ Sayt tayyor bo‘lgach ma’lumotlarni o‘zgartirsa bo‘ladimi?",
+    "faq_a4": "✏️ <b>Tuzatishlar kiritish:</b>\nAlbatta! Sayt tayyor bo‘lganda sizga tekshirish uchun yuboriladi. «O‘zgartirish kiritish» tugmasini bosib matn, sana, rasm yoki musiqani bepul tuzatishingiz mumkin.",
+
+    "faq_q5": "💳 To‘lov qanday amalga oshiriladi?",
+    "faq_a5": "💳 <b>To‘lov tartibi:</b>\nTo‘lov Uzcard yoki Humo kartasiga o‘tkazma orqali qabul qilinadi. To‘lovdan so‘ng chek (skrinshot) rasmini botga yuborasiz va buyurtmangiz darhol ishga olinadi.",
+
+    # Do‘stlarni taklif qilish (Referral)
+    "referral_title": (
+        "🎁 <b>TAKLIVO HAMKORLIK DASTURI</b>\n\n"
+        "Xizmatimizni do‘stlaringiz va yaqinlaringizga ulashing!\n\n"
+        "🔗 <b>Sizning shaxsiy havolangiz:</b>\n"
+        "<code>{referral_link}</code>\n\n"
+        "📊 <b>Sizning statistikangiz:</b>\n"
+        "• Taklif qilingan do‘stlar: <b>{invited_count}</b> ta\n"
+        "• Rasmiylashtirilgan buyurtmalar: <b>{orders_count}</b> ta\n\n"
+        "<i>Tez orada to‘yi yoki bayrami bo‘ladigan do‘stlaringizga yuboring!</i>"
+    ),
+    "btn_share_ref": "📲 Havolani ulashish",
+
+    # Promokodlar
+    "btn_enter_promo": "🎟 Promokodni kiritish",
+    "prompt_promocode": "🎟 <b>Promokodingizni kiriting:</b>\n\n<i>(masalan: OQSAROY2026)</i>",
+    "promo_applied_percent": "✅ <b>Promokod faollashtirildi!</b> Chegirma: <b>{discount}%</b> (-{amount})",
+    "promo_applied_amount": "✅ <b>Promokod faollashtirildi!</b> Chegirma: -<b>{amount}</b>",
+    "err_invalid_promo": "⚠️ <b>Noto‘g‘ri promokod!</b> Kod to‘g‘riligini yoki amal qilish muddatini tekshiring.",
+
+    # Mehmonlar uchun ismli havolalar
+    "btn_guest_links": "💌 Mehmonlar uchun ismli havolalar yaratish",
+    "prompt_guest_names": (
+        "💌 <b>Ismli taklifnomalar generatori</b>\n\n"
+        "Mehmonlaringiz ismlarini yuboring (har bir ismni yangi qatordan yoki vergul bilan).\n\n"
+        "<i>Masalan:</i>\n"
+        "Alisher aka\n"
+        "Dilnoza opa\n"
+        "Karimovlar oilasi"
+    ),
+    "guest_links_ready": (
+        "🎉 <b>Mehmonlaringiz uchun shaxsiy havolalar tayyor!</b>\n\n"
+        "Nusxa oling va har bir mehmonga yuboring:\n\n{links_list}"
     ),
 
     # Narxlar
@@ -76,6 +130,7 @@ TEXTS = {
         "Tugmalarni bosish orqali kerakli bloklarni yoqing (🟢) yoki o‘chiring (⚪️):\n\n"
         "• Asosiy taklifnoma: <b>{base_price}</b>\n"
         "• Qo‘shimcha funksiyalar: <b>+{extra_price}</b>\n"
+        "{discount_line}"
         "────────────────\n"
         "💰 <b>JAMI TO‘LOV: {total_price}</b>"
     ),
@@ -150,6 +205,7 @@ TEXTS = {
         "{features_list}\n\n"
         "📸 <b>Rasmlar soni:</b> {photos_count}\n"
         "🎵 <b>Musiqa:</b> {music_status}\n\n"
+        "{promo_line}"
         "💰 <b>JAMI TO‘LOV SUMMASI:</b>\n"
         "<b>{total_price}</b>"
     ),

@@ -29,6 +29,7 @@ from aiogram.types import (
 
 from bot.database import db
 from bot.handlers import client_router, order_router, admin_router
+from bot.services import reminder
 from config import config
 
 # Настройка логирования
@@ -130,10 +131,14 @@ async def main() -> None:
     # Настройка персонального меню
     await set_bot_commands(bot)
 
+    # Фоновые периодические задачи (напоминания клиентам)
+    reminder_task = asyncio.create_task(reminder.run_reminder_loop(bot))
+
     logger.info(f"Бот TAKLIVO успешно запущен. ID администраторов: {config.ADMIN_IDS}")
     try:
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:
+        reminder_task.cancel()
         if web_runner:
             await web_runner.cleanup()
         await bot.session.close()

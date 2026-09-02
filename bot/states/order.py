@@ -1,5 +1,5 @@
 """
-FSM-состояния для процесса оформления заказа клиентом.
+FSM-состояния для процесса оформления заказа клиентом TAKLIVO.
 """
 from aiogram.fsm.state import State, StatesGroup
 
@@ -38,8 +38,12 @@ class OrderStates(StatesGroup):
 
     # Проверка, оплата и чек
     review = State()
+    entering_promocode = State()
     payment = State()
     waiting_receipt = State()
 
     # Правки по готовому сайту
     revising = State()
+
+    # Именные ссылки для гостей
+    entering_guest_names = State()

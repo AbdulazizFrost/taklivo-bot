@@ -5,6 +5,9 @@ from bot.keyboards.client import (
     get_language_keyboard,
     get_main_menu_keyboard,
     get_about_keyboard,
+    get_faq_keyboard,
+    get_faq_answer_keyboard,
+    get_referral_keyboard,
     get_portfolio_keyboard,
     get_template_detail_keyboard,
     get_pricing_keyboard,
@@ -29,12 +32,18 @@ from bot.keyboards.admin import (
     get_admin_orders_list_keyboard,
     get_admin_back_keyboard,
     get_admin_users_keyboard,
+    get_admin_promos_keyboard,
+    get_admin_promo_card_keyboard,
+    get_admin_broadcast_confirm_keyboard,
 )
 
 __all__ = [
     "get_language_keyboard",
     "get_main_menu_keyboard",
     "get_about_keyboard",
+    "get_faq_keyboard",
+    "get_faq_answer_keyboard",
+    "get_referral_keyboard",
     "get_portfolio_keyboard",
     "get_template_detail_keyboard",
     "get_pricing_keyboard",
@@ -57,4 +66,7 @@ __all__ = [
     "get_admin_orders_list_keyboard",
     "get_admin_back_keyboard",
     "get_admin_users_keyboard",
+    "get_admin_promos_keyboard",
+    "get_admin_promo_card_keyboard",
+    "get_admin_broadcast_confirm_keyboard",
 ]

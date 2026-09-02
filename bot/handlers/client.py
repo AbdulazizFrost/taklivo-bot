@@ -1,5 +1,5 @@
 """
-Обработчики клиентской части бота TAKLIVO (Главное меню, Портфолио, Прайс-лист, Мои заказы, О сервисе, Правки).
+Обработчики клиентской части бота TAKLIVO (Главное меню, FAQ, Рефералы, Портфолио, Прайс-лист, Мои заказы, О сервисе, Правки).
 """
 import logging
 from aiogram import Router, F
@@ -12,6 +12,9 @@ from bot.keyboards import (
     get_language_keyboard,
     get_main_menu_keyboard,
     get_about_keyboard,
+    get_faq_keyboard,
+    get_faq_answer_keyboard,
+    get_referral_keyboard,
     get_portfolio_keyboard,
     get_template_detail_keyboard,
     get_pricing_keyboard,
@@ -33,12 +36,24 @@ logger = logging.getLogger(__name__)
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext) -> None:
-    """Обработка команды /start."""
+    """Обработка команды /start с поддержкой реферальных ссылок."""
     await state.clear()
+
+    # Проверка наличия реферера в deep link: /start ref_123456
+    referrer_id = None
+    args = message.text.split()
+    if len(args) > 1 and args[1].startswith("ref_"):
+        try:
+            ref_str = args[1].replace("ref_", "")
+            referrer_id = int(ref_str)
+        except ValueError:
+            referrer_id = None
+
     user = await db.get_or_create_user(
         telegram_id=message.from_user.id,
         username=message.from_user.username,
         first_name=message.from_user.first_name,
+        referrer_id=referrer_id,
     )
 
     await message.answer(
@@ -80,6 +95,63 @@ async def callback_main_menu(callback: CallbackQuery, state: FSMContext) -> None
     await callback.message.edit_text(
         text=get_text(lang, "main_menu_title"),
         reply_markup=get_main_menu_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+# --- Частые вопросы (FAQ) ---
+
+@router.callback_query(F.data == "client:faq")
+async def callback_faq(callback: CallbackQuery) -> None:
+    """Список вопросов FAQ."""
+    lang = await db.get_user_language(callback.from_user.id)
+    await callback.message.edit_text(
+        text=get_text(lang, "faq_title"),
+        reply_markup=get_faq_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("faq_q:"))
+async def callback_faq_answer(callback: CallbackQuery) -> None:
+    """Отображение ответа на конкретный вопрос FAQ."""
+    q_num = callback.data.split(":")[1]
+    lang = await db.get_user_language(callback.from_user.id)
+    answer_text = get_text(lang, f"faq_a{q_num}")
+
+    await callback.message.edit_text(
+        text=answer_text,
+        reply_markup=get_faq_answer_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+# --- Реферальная программа («Пригласи друга») ---
+
+@router.callback_query(F.data == "client:referral")
+async def callback_referral(callback: CallbackQuery) -> None:
+    """Раздел реферальной программы со статистикой и персональной ссылкой."""
+    lang = await db.get_user_language(callback.from_user.id)
+    stats = await db.get_referral_stats(callback.from_user.id)
+
+    bot_info = await callback.bot.get_me()
+    bot_username = bot_info.username or "taklivo_bot"
+    ref_link = f"https://t.me/{bot_username}?start=ref_{callback.from_user.id}"
+
+    text = get_text(
+        lang,
+        "referral_title",
+        referral_link=ref_link,
+        invited_count=stats["invited_count"],
+        orders_count=stats["orders_count"],
+    )
+
+    await callback.message.edit_text(
+        text=text,
+        reply_markup=get_referral_keyboard(ref_link, lang=lang),
         parse_mode="HTML",
     )
     await callback.answer()
@@ -252,6 +324,8 @@ async def callback_view_single_order(callback: CallbackQuery) -> None:
         options=options_dict,
         photos_count=len(photos),
         has_music=music is not None,
+        promocode=order.promocode,
+        discount_amount=order.discount_amount,
         total_price=order.total_price,
         lang=lang,
     )
