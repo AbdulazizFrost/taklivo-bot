@@ -47,6 +47,7 @@ class User:
     first_name: Optional[str]
     language: str
     referrer_id: Optional[int]
+    bonus_balance: int
     created_at: str
 
 
@@ -92,6 +93,7 @@ class Order:
     total_price: int
     promocode: Optional[str]
     discount_amount: int
+    bonus_used: int
     payment_status: str
     payment_receipt_file_id: Optional[str]
     website_url: Optional[str]

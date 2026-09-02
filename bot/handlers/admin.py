@@ -642,7 +642,7 @@ async def callback_admin_confirm_payment(callback: CallbackQuery) -> None:
         return
 
     order_id = int(callback.data.split(":")[1])
-    success, updated_order = await order_service.confirm_order_payment(order_id)
+    success, updated_order = await order_service.confirm_order_payment(order_id, bot=callback.bot)
 
     if not success or not updated_order:
         await callback.answer("Ошибка при подтверждении", show_alert=True)

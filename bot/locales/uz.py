@@ -69,15 +69,20 @@ TEXTS = {
     # Do‘stlarni taklif qilish (Referral)
     "referral_title": (
         "🎁 <b>TAKLIVO HAMKORLIK DASTURI</b>\n\n"
-        "Xizmatimizni do‘stlaringiz va yaqinlaringizga ulashing!\n\n"
-        "🔗 <b>Sizning shaxsiy havolangiz:</b>\n"
-        "<code>{referral_link}</code>\n\n"
+        "Do‘stlaringizni taklif qiling va o‘zingizning taklifnomangiz uchun bonuslarga ega bo‘ling!\n\n"
+        "🌟 <b>Har ikki tomon uchun foydali:</b>\n"
+        "• <b>Siz olasiz:</b> do‘stingizning har bir to‘langan buyurtmasi uchun <code>+{reward_bonus}</code>!\n"
+        "• <b>Do‘stingiz oladi:</b> ilk buyurtmasi uchun <code>{welcome_bonus}</code> chegirma!\n"
+        "• <b>1 bonus = 1 so‘m:</b> to‘plangan bonuslar bilan o‘z saytingiz narxini 100% gacha to‘lashingiz mumkin.\n\n"
+        "💰 <b>Sizning bonus balansingiz:</b> <b>{bonus_balance}</b>\n\n"
         "📊 <b>Sizning statistikangiz:</b>\n"
         "• Taklif qilingan do‘stlar: <b>{invited_count}</b> ta\n"
         "• Rasmiylashtirilgan buyurtmalar: <b>{orders_count}</b> ta\n\n"
+        "🔗 <b>Sizning shaxsiy havolangiz:</b>\n"
+        "<code>{referral_link}</code>\n\n"
         "<i>Tez orada to‘yi yoki bayrami bo‘ladigan do‘stlaringizga yuboring!</i>"
     ),
-    "btn_share_ref": "📲 Havolani ulashish",
+    "btn_share_ref": "📲 Havolani ulashish (+bonuslar)",
 
     # Promokodlar
     "btn_enter_promo": "🎟 Promokodni kiritish",

@@ -1,12 +1,18 @@
 """
 Сервис бизнес-логики управления заказами TAKLIVO.
 Обрабатывает все операции жизненного цикла заказа для всех типов торжеств (Свадьба, ДР, Суннат туй).
+Включает начисление реферальных бонусов и учет скидок.
 """
+import logging
 from typing import Any, Optional
+from aiogram import Bot
 from bot.database import db, Order, OrderPhoto, OrderMusic, OrderStatus, PaymentStatus
 from bot.locales import get_text
 from bot.services.calculator import calculate_total
 from bot.utils.helpers import format_currency, format_date_pretty, escape
+from config import config
+
+logger = logging.getLogger(__name__)
 
 
 class OrderService:
@@ -18,14 +24,15 @@ class OrderService:
         telegram_id: int,
         data: dict[str, Any],
     ) -> int:
-        """Создает новый заказ в базе данных на основе выбранных в конструкторе опций и промокодов."""
+        """Создает новый заказ в базе данных с учетом промокода и списания бонусов."""
         options = data.get("options", {})
         calc_res = calculate_total(options)
         event_type = data.get("event_type", "wedding")
 
-        # Применение скидки промокода
+        # Применение скидки промокода и бонусов
         discount_amount = data.get("discount_amount", 0)
-        final_price = max(calc_res.total_price - discount_amount, 0)
+        bonus_used = data.get("bonus_used", 0)
+        final_price = max(calc_res.total_price - discount_amount - bonus_used, 0)
         promocode = data.get("promocode")
 
         order_id = await db.create_order(
@@ -55,6 +62,7 @@ class OrderService:
             total_price=final_price,
             promocode=promocode,
             discount_amount=discount_amount,
+            bonus_used=bonus_used,
             status=OrderStatus.WAITING_PAYMENT.value,
         )
 
@@ -98,17 +106,51 @@ class OrderService:
         return True
 
     @staticmethod
-    async def confirm_order_payment(order_id: int) -> tuple[bool, Optional[Order]]:
-        """Подтверждает оплату заказа и переводит в работу (IN_PROGRESS)."""
+    async def confirm_order_payment(order_id: int, bot: Optional[Bot] = None) -> tuple[bool, Optional[Order]]:
+        """Подтверждает оплату заказа, переводит в работу (IN_PROGRESS) и начисляет реферальный бонус пригласившему."""
         order = await db.get_order(order_id)
         if not order:
             return False, None
+
         await db.update_order_status(
             order_id=order_id,
             status=OrderStatus.IN_PROGRESS.value,
             payment_status=PaymentStatus.PAID.value,
         )
         updated = await db.get_order(order_id)
+
+        # Проверяем, есть ли реферер у клиента
+        async with aiosqlite_conn(db.db_path) as conn:
+            cursor = await conn.execute("SELECT referrer_id FROM users WHERE telegram_id = ?", (order.telegram_id,))
+            row = await cursor.fetchone()
+            referrer_id = row[0] if row and row[0] else None
+
+        if referrer_id and referrer_id != order.telegram_id:
+            reward = config.REFERRAL_REWARD_BONUS
+            new_balance = await db.add_user_bonus(referrer_id, reward)
+            logger.info(f"Начислен реферальный бонус +{reward} пользователю {referrer_id} за заказ #{order_id}")
+
+            if bot:
+                try:
+                    ref_lang = await db.get_user_language(referrer_id)
+                    if ref_lang == "uz":
+                        ref_text = (
+                            f"🎉 <b>Do‘stingiz buyurtma berdi!</b>\n\n"
+                            f"Sizga hamkorlik dasturi bo‘yicha <b>+{reward:,} so‘m</b> bonus taqdim etildi! ✨\n\n"
+                            f"💰 <b>Joriy bonus balansingiz:</b> {new_balance:,} so‘m\n"
+                            f"<i>Ushbu bonuslarni o‘zingizning keyingi buyurtmangizda chegirma sifatida ishlatishingiz mumkin!</i>"
+                        )
+                    else:
+                        ref_text = (
+                            f"🎉 <b>Ваш приглашенный друг оформил заказ!</b>\n\n"
+                            f"Вам начислено <b>+{reward:,} бонусов</b> (сум) по партнерской программе! ✨\n\n"
+                            f"💰 <b>Ваш бонусный баланс:</b> {new_balance:,} сум\n"
+                            f"<i>Вы можете использовать эти бонусы для оплаты своего собственного сайта-приглашения!</i>"
+                        )
+                    await bot.send_message(chat_id=referrer_id, text=ref_text, parse_mode="HTML")
+                except Exception as e:
+                    logger.warning(f"Не удалось отправить уведомление о бонусе рефереру {referrer_id}: {e}")
+
         return True, updated
 
     @staticmethod
@@ -192,6 +234,7 @@ class OrderService:
         age_or_details: Optional[str] = None,
         promocode: Optional[str] = None,
         discount_amount: int = 0,
+        bonus_used: int = 0,
         lang: str = "ru",
     ) -> str:
         """Форматирует сводку заказа перед подтверждением клиентом."""
@@ -243,10 +286,9 @@ class OrderService:
 
         promo_line = ""
         if promocode and discount_amount > 0:
-            if lang == "uz":
-                promo_line = f"🎟 <b>Promokod ({escape(promocode)}):</b> -{format_currency(discount_amount, lang)}\n"
-            else:
-                promo_line = f"🎟 <b>Промокод ({escape(promocode)}):</b> -{format_currency(discount_amount, lang)}\n"
+            promo_line += f"🎟 <b>Промокод ({escape(promocode)}):</b> -{format_currency(discount_amount, lang)}\n" if lang == "ru" else f"🎟 <b>Promokod ({escape(promocode)}):</b> -{format_currency(discount_amount, lang)}\n"
+        if bonus_used > 0:
+            promo_line += f"🎁 <b>Оплачено бонусами:</b> -{format_currency(bonus_used, lang)}\n" if lang == "ru" else f"🎁 <b>Bonuslar orqali to‘landi:</b> -{format_currency(bonus_used, lang)}\n"
 
         return get_text(
             lang,
@@ -308,7 +350,9 @@ class OrderService:
 
         promo_block = ""
         if order.promocode:
-            promo_block = f"🎟 <b>Промокод:</b> <code>{escape(order.promocode)}</code> (Скидка: {format_currency(order.discount_amount, 'ru')})\n"
+            promo_block += f"🎟 <b>Промокод:</b> <code>{escape(order.promocode)}</code> (Скидка: {format_currency(order.discount_amount, 'ru')})\n"
+        if order.bonus_used > 0:
+            promo_block += f"🎁 <b>Оплачено бонусами:</b> {format_currency(order.bonus_used, 'ru')}\n"
 
         return (
             f"🔔 <b>НОВЫЙ ЗАКАЗ #{order.id} [{event_badge}]</b>\n\n"
@@ -320,12 +364,18 @@ class OrderService:
             f"🎨 <b>Дизайн:</b> {escape(order.template_name)}\n\n"
             f"<b>Включенные опции:</b>\n{features_str}\n\n"
             f"{promo_block}"
-            f"💰 <b>Сумма:</b> {format_currency(order.total_price, 'ru')}\n"
+            f"💰 <b>Сумма к оплате:</b> {format_currency(order.total_price, 'ru')}\n"
             f"📊 <b>Статус заказа:</b> <code>{order.status}</code>\n"
             f"💳 <b>Статус оплаты:</b> <code>{order.payment_status}</code>\n\n"
             f"👤 <b>Клиент:</b> {user_mention}\n"
             f"🆔 <b>Telegram ID:</b> <code>{order.telegram_id}</code>"
         )
+
+
+def aiosqlite_conn(db_path: str):
+    """Вспомогательный контекстный менеджер подключения к SQLite."""
+    import aiosqlite
+    return aiosqlite.connect(db_path)
 
 
 order_service = OrderService()

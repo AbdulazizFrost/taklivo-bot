@@ -64,6 +64,10 @@ class Config:
     SCHEDULE_PRICE: int = int(os.getenv("SCHEDULE_PRICE", "10000"))
     SECOND_LANGUAGE_PRICE: int = int(os.getenv("SECOND_LANGUAGE_PRICE", "10000"))
 
+    # Реферальная бонусная программа (в сумах / бонусах)
+    REFERRAL_REWARD_BONUS: int = int(os.getenv("REFERRAL_REWARD_BONUS", "15000"))  # Награда пригласившему за заказ друга
+    REFERRAL_WELCOME_BONUS: int = int(os.getenv("REFERRAL_WELCOME_BONUS", "10000"))  # Приветственный бонус другу на 1-й заказ
+
     # Каталог свадебных шаблонов
     TEMPLATES: dict[str, TemplateInfo] = {
         "floral": TemplateInfo(

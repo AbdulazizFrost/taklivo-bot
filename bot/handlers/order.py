@@ -736,18 +736,24 @@ async def process_music_skip(callback: CallbackQuery, state: FSMContext) -> None
 # --- Предпросмотр (Review) и подтверждение заказа ---
 
 async def _show_order_preview(message_or_msg: Message, state: FSMContext, is_edit: bool = False) -> None:
-    """Отображение полной сводки заказа с учетом промокода."""
+    """Отображение полной сводки заказа с учетом промокода и бонусов."""
     data = await state.get_data()
     lang = data.get("lang", "ru")
     event_type = data.get("event_type", "wedding")
     options = data.get("options", {})
     calc_res = calculate_total(options, lang=lang)
 
+    user_id = message_or_msg.from_user.id if message_or_msg.from_user else data.get("user_id", 0)
+    user_bonus_balance = await db.get_user_bonus_balance(user_id)
+
     promocode = data.get("promocode")
     discount_amount = data.get("discount_amount", 0)
-    final_price = max(calc_res.total_price - discount_amount, 0)
+    bonus_used = data.get("bonus_used", 0)
 
-    await state.update_data(total_price=final_price)
+    # Максимальная скидка не может превышать стоимость
+    final_price = max(calc_res.total_price - discount_amount - bonus_used, 0)
+
+    await state.update_data(total_price=final_price, user_bonus_balance=user_bonus_balance)
     await state.set_state(OrderStates.review)
 
     preview_text = order_service.format_order_preview(
@@ -770,22 +776,57 @@ async def _show_order_preview(message_or_msg: Message, state: FSMContext, is_edi
         has_music=data.get("music_file_id") is not None,
         promocode=promocode,
         discount_amount=discount_amount,
+        bonus_used=bonus_used,
         total_price=final_price,
+        lang=lang,
+    )
+
+    kb = get_order_preview_keyboard(
+        has_promo=bool(promocode),
+        bonus_balance=user_bonus_balance,
+        bonus_applied=bonus_used > 0,
         lang=lang,
     )
 
     if is_edit:
         await message_or_msg.edit_text(
             text=preview_text,
-            reply_markup=get_order_preview_keyboard(has_promo=bool(promocode), lang=lang),
+            reply_markup=kb,
             parse_mode="HTML",
         )
     else:
         await message_or_msg.answer(
             text=preview_text,
-            reply_markup=get_order_preview_keyboard(has_promo=bool(promocode), lang=lang),
+            reply_markup=kb,
             parse_mode="HTML",
         )
+
+
+@router.callback_query(OrderStates.review, F.data == "wizard_order:apply_bonus")
+async def process_apply_bonus(callback: CallbackQuery, state: FSMContext) -> None:
+    """Применение бонусного баланса для скидки."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+    options = data.get("options", {})
+    calc_res = calculate_total(options, lang=lang)
+    discount_amount = data.get("discount_amount", 0)
+
+    user_bonus_balance = await db.get_user_bonus_balance(callback.from_user.id)
+    remaining_price = max(calc_res.total_price - discount_amount, 0)
+    bonus_to_apply = min(user_bonus_balance, remaining_price)
+
+    await state.update_data(bonus_used=bonus_to_apply)
+    await callback.answer(f"Списано {bonus_to_apply:,} бонусов!" if lang == "ru" else f"{bonus_to_apply:,} bonus ishlatildi!")
+    await _show_order_preview(callback.message, state, is_edit=True)
+
+
+@router.callback_query(OrderStates.review, F.data == "wizard_order:cancel_bonus")
+async def process_cancel_bonus(callback: CallbackQuery, state: FSMContext) -> None:
+    """Отмена списания бонусов."""
+    lang = await db.get_user_language(callback.from_user.id)
+    await state.update_data(bonus_used=0)
+    await callback.answer("Списание бонусов отменено" if lang == "ru" else "Bonuslar bekor qilindi")
+    await _show_order_preview(callback.message, state, is_edit=True)
 
 
 @router.callback_query(OrderStates.review, F.data == "wizard_order:enter_promo")

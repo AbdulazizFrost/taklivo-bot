@@ -47,6 +47,7 @@ class Database:
                     first_name TEXT,
                     language TEXT DEFAULT 'ru',
                     referrer_id INTEGER,
+                    bonus_balance INTEGER DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
@@ -96,6 +97,7 @@ class Database:
                     total_price INTEGER NOT NULL,
                     promocode TEXT,
                     discount_amount INTEGER DEFAULT 0,
+                    bonus_used INTEGER DEFAULT 0,
                     payment_status TEXT DEFAULT 'UNPAID',
                     payment_receipt_file_id TEXT,
                     website_url TEXT,
@@ -135,6 +137,8 @@ class Database:
             u_cols = [row["name"] for row in await cursor.fetchall()]
             if "referrer_id" not in u_cols:
                 await db.execute("ALTER TABLE users ADD COLUMN referrer_id INTEGER;")
+            if "bonus_balance" not in u_cols:
+                await db.execute("ALTER TABLE users ADD COLUMN bonus_balance INTEGER DEFAULT 0;")
 
             cursor = await db.execute("PRAGMA table_info(orders);")
             o_cols = [row["name"] for row in await cursor.fetchall()]
@@ -150,6 +154,8 @@ class Database:
                 await db.execute("ALTER TABLE orders ADD COLUMN promocode TEXT;")
             if "discount_amount" not in o_cols:
                 await db.execute("ALTER TABLE orders ADD COLUMN discount_amount INTEGER DEFAULT 0;")
+            if "bonus_used" not in o_cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN bonus_used INTEGER DEFAULT 0;")
 
             # Индексы
             await db.execute("CREATE INDEX IF NOT EXISTS idx_users_telegram_id ON users(telegram_id);")
@@ -182,7 +188,7 @@ class Database:
         language: str = "ru",
         referrer_id: Optional[int] = None,
     ) -> User:
-        """Получает или создает пользователя в базе."""
+        """Получает или создает пользователя в базе (с начислением приветственного бонуса при реферальном входе)."""
         async with aiosqlite.connect(self.db_path) as db:
             db.row_factory = aiosqlite.Row
             cursor = await db.execute(
@@ -205,18 +211,20 @@ class Database:
                     first_name=first_name or row["first_name"],
                     language=row["language"] or "ru",
                     referrer_id=row["referrer_id"] if "referrer_id" in row.keys() else None,
+                    bonus_balance=row["bonus_balance"] if "bonus_balance" in row.keys() else 0,
                     created_at=str(row["created_at"]),
                 )
 
             # Если пользователь новый и указан реферер (и реферер не сам пользователь)
             valid_referrer = referrer_id if referrer_id and referrer_id != telegram_id else None
+            initial_bonus = config.REFERRAL_WELCOME_BONUS if valid_referrer else 0
 
             cursor = await db.execute(
                 """
-                INSERT INTO users (telegram_id, username, first_name, language, referrer_id)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO users (telegram_id, username, first_name, language, referrer_id, bonus_balance)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """,
-                (telegram_id, username, first_name, language, valid_referrer),
+                (telegram_id, username, first_name, language, valid_referrer, initial_bonus),
             )
             user_id = cursor.lastrowid
             await db.commit()
@@ -228,6 +236,7 @@ class Database:
                 first_name=first_name,
                 language=language,
                 referrer_id=valid_referrer,
+                bonus_balance=initial_bonus,
                 created_at=datetime.utcnow().isoformat(),
             )
 
@@ -253,8 +262,44 @@ class Database:
             )
             await db.commit()
 
+    async def get_user_bonus_balance(self, telegram_id: int) -> int:
+        """Возвращает баланс бонусов пользователя."""
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute(
+                "SELECT bonus_balance FROM users WHERE telegram_id = ?",
+                (telegram_id,),
+            )
+            row = await cursor.fetchone()
+            if row and "bonus_balance" in row.keys() and row["bonus_balance"]:
+                return row["bonus_balance"]
+            return 0
+
+    async def add_user_bonus(self, telegram_id: int, amount: int) -> int:
+        """Начисляет бонусы пользователю и возвращает новый баланс."""
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute(
+                "UPDATE users SET bonus_balance = COALESCE(bonus_balance, 0) + ? WHERE telegram_id = ?",
+                (amount, telegram_id),
+            )
+            await db.commit()
+            return await self.get_user_bonus_balance(telegram_id)
+
+    async def deduct_user_bonus(self, telegram_id: int, amount: int) -> bool:
+        """Списывает бонусы пользователя при оплате заказа."""
+        current_balance = await self.get_user_bonus_balance(telegram_id)
+        if current_balance < amount:
+            return False
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute(
+                "UPDATE users SET bonus_balance = bonus_balance - ? WHERE telegram_id = ?",
+                (amount, telegram_id),
+            )
+            await db.commit()
+            return True
+
     async def get_referral_stats(self, telegram_id: int) -> dict[str, int]:
-        """Возвращает количество приглашенных друзей и количество оформленных ими заказов."""
+        """Возвращает количество приглашенных друзей, оформленных заказов и текущий баланс бонусов."""
         async with aiosqlite.connect(self.db_path) as db:
             # Число зарегистрированных по ссылке
             cursor = await db.execute(
@@ -264,7 +309,7 @@ class Database:
             row = await cursor.fetchone()
             invited_count = row[0] if row else 0
 
-            # Число заказов от рефералов со статусом оплаты PAID или успешных
+            # Число оплаченных заказов от рефералов
             cursor = await db.execute(
                 """
                 SELECT COUNT(o.id) as orders_count
@@ -278,9 +323,12 @@ class Database:
             row = await cursor.fetchone()
             orders_count = row[0] if row else 0
 
+            bonus_balance = await self.get_user_bonus_balance(telegram_id)
+
             return {
                 "invited_count": invited_count,
                 "orders_count": orders_count,
+                "bonus_balance": bonus_balance,
             }
 
     async def get_all_users(self) -> list[User]:
@@ -297,6 +345,7 @@ class Database:
                     first_name=row["first_name"],
                     language=row["language"] or "ru",
                     referrer_id=row["referrer_id"] if "referrer_id" in row.keys() else None,
+                    bonus_balance=row["bonus_balance"] if "bonus_balance" in row.keys() else 0,
                     created_at=str(row["created_at"]),
                 )
                 for row in rows
@@ -423,6 +472,7 @@ class Database:
             total_price=row["total_price"],
             promocode=row["promocode"] if "promocode" in keys else None,
             discount_amount=row["discount_amount"] if "discount_amount" in keys else 0,
+            bonus_used=row["bonus_used"] if "bonus_used" in keys else 0,
             payment_status=row["payment_status"],
             payment_receipt_file_id=row["payment_receipt_file_id"],
             website_url=row["website_url"],
@@ -459,9 +509,10 @@ class Database:
         age_or_details: Optional[str] = None,
         promocode: Optional[str] = None,
         discount_amount: int = 0,
+        bonus_used: int = 0,
         status: str = OrderStatus.WAITING_PAYMENT.value,
     ) -> int:
-        """Создает новый заказ в базе данных."""
+        """Создает новый заказ в базе данных с учетом промокода и списанных бонусов."""
         async with aiosqlite.connect(self.db_path) as db:
             cursor = await db.execute(
                 """
@@ -472,7 +523,7 @@ class Database:
                     venue, address, phone, rsvp_enabled, map_enabled,
                     music_enabled, gallery_enabled, dresscode_enabled,
                     schedule_enabled, second_language_enabled, total_price,
-                    promocode, discount_amount, payment_status
+                    promocode, discount_amount, bonus_used, payment_status
                 ) VALUES (
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
@@ -480,7 +531,7 @@ class Database:
                     ?, ?, ?, ?, ?,
                     ?, ?, ?,
                     ?, ?, ?,
-                    ?, ?, ?
+                    ?, ?, ?, ?
                 )
                 """,
                 (
@@ -511,6 +562,7 @@ class Database:
                     total_price,
                     promocode,
                     discount_amount,
+                    bonus_used,
                     PaymentStatus.UNPAID.value,
                 ),
             )
@@ -520,6 +572,12 @@ class Database:
                 await db.execute(
                     "UPDATE promocodes SET used_count = used_count + 1 WHERE code = ?",
                     (promocode.strip().upper(),),
+                )
+
+            if bonus_used > 0:
+                await db.execute(
+                    "UPDATE users SET bonus_balance = MAX(0, bonus_balance - ?) WHERE telegram_id = ?",
+                    (bonus_used, telegram_id),
                 )
 
             await db.commit()
@@ -579,7 +637,6 @@ class Database:
     async def get_orders_due_soon(self, days_ahead: int) -> list[Order]:
         """Возвращает заказы, дата проведения которых наступит через days_ahead дней."""
         target_date_obj = datetime.now() + timedelta(days=days_ahead)
-        # Формат даты в заказах: DD.MM.YYYY
         target_str = target_date_obj.strftime("%d.%m.%Y")
 
         async with aiosqlite.connect(self.db_path) as db:
@@ -728,7 +785,6 @@ class Database:
         async with aiosqlite.connect(self.db_path) as db:
             db.row_factory = aiosqlite.Row
 
-            # Пользователи
             cursor = await db.execute("SELECT COUNT(*) as total_users FROM users")
             total_users = (await cursor.fetchone())["total_users"] or 0
 
@@ -746,11 +802,9 @@ class Database:
             cursor = await db.execute("SELECT COUNT(*) as ru_users FROM users WHERE language = 'ru'")
             ru_users = (await cursor.fetchone())["ru_users"] or 0
 
-            # Всего заказов
             cursor = await db.execute("SELECT COUNT(*) as total FROM orders")
             total_orders = (await cursor.fetchone())["total"] or 0
 
-            # Разбивка по статусам
             cursor = await db.execute("""
                 SELECT status, COUNT(*) as count 
                 FROM orders 
@@ -759,7 +813,6 @@ class Database:
             status_counts_raw = await cursor.fetchall()
             status_counts = {row["status"]: row["count"] for row in status_counts_raw}
 
-            # Общая выручка (по оплаченным заказам)
             cursor = await db.execute("""
                 SELECT SUM(total_price) as revenue 
                 FROM orders 
@@ -769,7 +822,6 @@ class Database:
             total_revenue_row = await cursor.fetchone()
             total_revenue = total_revenue_row["revenue"] or 0
 
-            # Выручка и заказы за текущий месяц
             cursor = await db.execute(
                 """
                 SELECT COUNT(*) as month_orders, SUM(total_price) as month_revenue
@@ -813,6 +865,7 @@ class Database:
                     first_name=row["first_name"],
                     language=row["language"] or "ru",
                     referrer_id=row["referrer_id"] if "referrer_id" in row.keys() else None,
+                    bonus_balance=row["bonus_balance"] if "bonus_balance" in row.keys() else 0,
                     created_at=str(row["created_at"]),
                 )
                 for row in rows

@@ -147,6 +147,9 @@ async def callback_referral(callback: CallbackQuery) -> None:
         referral_link=ref_link,
         invited_count=stats["invited_count"],
         orders_count=stats["orders_count"],
+        bonus_balance=format_currency(stats.get("bonus_balance", 0), lang),
+        reward_bonus=format_currency(config.REFERRAL_REWARD_BONUS, lang),
+        welcome_bonus=format_currency(config.REFERRAL_WELCOME_BONUS, lang),
     )
 
     await callback.message.edit_text(

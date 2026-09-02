@@ -229,11 +229,23 @@ def get_music_upload_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     )
 
 
-def get_order_preview_keyboard(has_promo: bool = False, lang: str = "ru") -> InlineKeyboardMarkup:
-    """Клавиатура подтверждения заказа."""
+def get_order_preview_keyboard(
+    has_promo: bool = False,
+    bonus_balance: int = 0,
+    bonus_applied: bool = False,
+    lang: str = "ru",
+) -> InlineKeyboardMarkup:
+    """Клавиатура подтверждения заказа с поддержкой бонусов и промокодов."""
     buttons = [
         [InlineKeyboardButton(text=get_text(lang, "btn_confirm_order"), callback_data="wizard_order:confirm")],
     ]
+    if bonus_balance > 0 and not bonus_applied:
+        bonus_btn_text = f"🎁 Списать бонусы (-{bonus_balance:,} сум)" if lang == "ru" else f"🎁 Bonuslarni ishlatish (-{bonus_balance:,} so‘m)"
+        buttons.append([InlineKeyboardButton(text=bonus_btn_text, callback_data="wizard_order:apply_bonus")])
+    elif bonus_applied:
+        cancel_bonus_text = "❌ Убрать списание бонусов" if lang == "ru" else "❌ Bonuslarni bekor qilish"
+        buttons.append([InlineKeyboardButton(text=cancel_bonus_text, callback_data="wizard_order:cancel_bonus")])
+
     if not has_promo:
         buttons.append([InlineKeyboardButton(text=get_text(lang, "btn_enter_promo"), callback_data="wizard_order:enter_promo")])
     buttons.append([InlineKeyboardButton(text=get_text(lang, "btn_edit_order"), callback_data="wizard_order:edit")])
