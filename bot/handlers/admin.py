@@ -16,6 +16,7 @@ from bot.keyboards import (
     get_admin_status_selection_keyboard,
     get_admin_orders_list_keyboard,
     get_admin_back_keyboard,
+    get_admin_users_keyboard,
 )
 from bot.services import order_service, notifications, site_generator
 from bot.states.admin import AdminStates
@@ -44,10 +45,13 @@ async def cmd_admin(message: Message, state: FSMContext) -> None:
     stats = await order_service.get_system_statistics()
     text = (
         "👑 <b>ПАНЕЛЬ АДМИНИСТРАТОРА TAKLIVO</b>\n\n"
+        f"👥 <b>Пользователей в боте:</b> <code>{stats['total_users']}</code> чел. "
+        f"(сегодня: +<code>{stats['today_users']}</code>, за месяц: +<code>{stats['month_users_reg']}</code>)\n"
+        f"🌐 <b>Языки:</b> 🇺🇿 {stats['uz_users']} | 🇷🇺 {stats['ru_users']}\n\n"
         f"📊 <b>Всего заказов:</b> {stats['total_orders']}\n"
         f"💰 <b>Общая выручка:</b> {format_currency(stats['total_revenue'], 'ru')}\n"
         f"📅 <b>За текущий месяц:</b> {stats['month_orders']} заказов ({format_currency(stats['month_revenue'], 'ru')})\n\n"
-        "Выберите раздел для управления заказами:"
+        "Выберите раздел для управления:"
     )
 
     await message.answer(
@@ -67,10 +71,13 @@ async def callback_admin_main(callback: CallbackQuery, state: FSMContext) -> Non
     stats = await order_service.get_system_statistics()
     text = (
         "👑 <b>ПАНЕЛЬ АДМИНИСТРАТОРА TAKLIVO</b>\n\n"
+        f"👥 <b>Пользователей в боте:</b> <code>{stats['total_users']}</code> чел. "
+        f"(сегодня: +<code>{stats['today_users']}</code>, за месяц: +<code>{stats['month_users_reg']}</code>)\n"
+        f"🌐 <b>Языки:</b> 🇺🇿 {stats['uz_users']} | 🇷🇺 {stats['ru_users']}\n\n"
         f"📊 <b>Всего заказов:</b> {stats['total_orders']}\n"
         f"💰 <b>Общая выручка:</b> {format_currency(stats['total_revenue'], 'ru')}\n"
         f"📅 <b>За текущий месяц:</b> {stats['month_orders']} заказов ({format_currency(stats['month_revenue'], 'ru')})\n\n"
-        "Выберите раздел для управления заказами:"
+        "Выберите раздел для управления:"
     )
 
     await callback.message.edit_text(
@@ -87,6 +94,51 @@ async def callback_admin_refresh(callback: CallbackQuery, state: FSMContext) -> 
     if not is_admin(callback.from_user.id):
         return
     await callback_admin_main(callback, state)
+
+
+# --- Просмотр пользователей бота ---
+
+@router.callback_query(F.data == "adm:users")
+async def callback_admin_users(callback: CallbackQuery) -> None:
+    """Отображение детального списка и аналитики пользователей бота."""
+    if not is_admin(callback.from_user.id):
+        return
+
+    stats = await order_service.get_system_statistics()
+    recent_users = await db.get_recent_users(limit=15)
+
+    user_lines = []
+    for i, u in enumerate(recent_users, 1):
+        uname = f"@{escape(u.username)}" if u.username else "<i>(без юзернейма)</i>"
+        fname = escape(u.first_name or "Пользователь")
+        lang_icon = "🇺🇿" if u.language == "uz" else "🇷🇺"
+        date_str = u.created_at[:10] if u.created_at else "—"
+        user_lines.append(f"{i}. <b>{fname}</b> ({uname})\n   └ ID: <code>{u.telegram_id}</code> | {lang_icon} {u.language.upper()} | <i>{date_str}</i>")
+
+    users_list_text = "\n\n".join(user_lines) if user_lines else "<i>Пока нет зарегистрированных пользователей.</i>"
+
+    total = max(stats['total_users'], 1)
+    uz_pct = round((stats['uz_users'] / total) * 100)
+    ru_pct = round((stats['ru_users'] / total) * 100)
+
+    text = (
+        "👥 <b>ПОЛЬЗОВАТЕЛИ БОТА TAKLIVO</b>\n\n"
+        f"📈 <b>Общая статистика аудитории:</b>\n"
+        f"• Всего пользователей в базе: <b>{stats['total_users']}</b> чел.\n"
+        f"• Новых сегодня: +<b>{stats['today_users']}</b>\n"
+        f"• Новых за текущий месяц: +<b>{stats['month_users_reg']}</b>\n\n"
+        f"🌐 <b>Языковые предпочтения:</b>\n"
+        f"• 🇺🇿 O‘zbek tili: <b>{stats['uz_users']}</b> ({uz_pct}%)\n"
+        f"• 🇷🇺 Русский язык: <b>{stats['ru_users']}</b> ({ru_pct}%)\n\n"
+        f"📋 <b>Последние 15 пользователей:</b>\n\n{users_list_text}"
+    )
+
+    await callback.message.edit_text(
+        text=text,
+        reply_markup=get_admin_users_keyboard(),
+        parse_mode="HTML",
+    )
+    await callback.answer()
 
 
 # --- Резервная копия базы данных (Backup) ---
@@ -136,12 +188,14 @@ async def callback_admin_stats(callback: CallbackQuery) -> None:
 
     text = (
         "📊 <b>ДЕТАЛЬНАЯ АНАЛИТИКА TAKLIVO</b>\n\n"
+        f"👥 <b>Пользователи в боте:</b> {stats['total_users']} чел. (сегодня: +{stats['today_users']})\n"
         f"📦 <b>Всего оформлено заказов:</b> {stats['total_orders']}\n"
         f"💰 <b>Общий подтвержденный доход:</b> {format_currency(stats['total_revenue'], 'ru')}\n\n"
         f"📅 <b>В этом месяце:</b>\n"
+        f"• Новых пользователей: <b>+{stats['month_users_reg']}</b>\n"
         f"• Заказов: <b>{stats['month_orders']}</b>\n"
         f"• Выручка: <b>{format_currency(stats['month_revenue'], 'ru')}</b>\n\n"
-        f"📈 <b>Распределение по статусам:</b>\n{status_text}"
+        f"📈 <b>Распределение заказов по статусам:</b>\n{status_text}"
     )
 
     await callback.message.edit_text(

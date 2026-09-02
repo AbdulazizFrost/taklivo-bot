@@ -506,13 +506,31 @@ class Database:
     # --- Статистика ---
 
     async def get_statistics(self) -> dict[str, Any]:
-        """Возвращает сводные данные по заказам и выручке."""
+        """Возвращает сводные данные по пользователям, заказам и выручке."""
         async with aiosqlite.connect(self.db_path) as db:
             db.row_factory = aiosqlite.Row
 
+            # Пользователи
+            cursor = await db.execute("SELECT COUNT(*) as total_users FROM users")
+            total_users = (await cursor.fetchone())["total_users"] or 0
+
+            today_date = datetime.utcnow().strftime("%Y-%m-%d")
+            cursor = await db.execute("SELECT COUNT(*) as today_users FROM users WHERE date(created_at) = ?", (today_date,))
+            today_users = (await cursor.fetchone())["today_users"] or 0
+
+            current_month = datetime.utcnow().strftime("%Y-%m")
+            cursor = await db.execute("SELECT COUNT(*) as month_users FROM users WHERE strftime('%Y-%m', created_at) = ?", (current_month,))
+            month_users_reg = (await cursor.fetchone())["month_users"] or 0
+
+            cursor = await db.execute("SELECT COUNT(*) as uz_users FROM users WHERE language = 'uz'")
+            uz_users = (await cursor.fetchone())["uz_users"] or 0
+
+            cursor = await db.execute("SELECT COUNT(*) as ru_users FROM users WHERE language = 'ru'")
+            ru_users = (await cursor.fetchone())["ru_users"] or 0
+
             # Всего заказов
             cursor = await db.execute("SELECT COUNT(*) as total FROM orders")
-            total_orders = (await cursor.fetchone())["total"]
+            total_orders = (await cursor.fetchone())["total"] or 0
 
             # Разбивка по статусам
             cursor = await db.execute("""
@@ -534,7 +552,6 @@ class Database:
             total_revenue = total_revenue_row["revenue"] or 0
 
             # Выручка и заказы за текущий месяц
-            current_month = datetime.utcnow().strftime("%Y-%m")
             cursor = await db.execute(
                 """
                 SELECT COUNT(*) as month_orders, SUM(total_price) as month_revenue
@@ -549,12 +566,38 @@ class Database:
             month_revenue = month_stats["month_revenue"] or 0
 
             return {
+                "total_users": total_users,
+                "today_users": today_users,
+                "month_users_reg": month_users_reg,
+                "uz_users": uz_users,
+                "ru_users": ru_users,
                 "total_orders": total_orders,
                 "status_counts": status_counts,
                 "total_revenue": total_revenue,
                 "month_orders": month_orders,
                 "month_revenue": month_revenue,
             }
+
+    async def get_recent_users(self, limit: int = 20) -> list[User]:
+        """Возвращает список последних зарегистрированных пользователей."""
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute(
+                "SELECT * FROM users ORDER BY id DESC LIMIT ?",
+                (limit,),
+            )
+            rows = await cursor.fetchall()
+            return [
+                User(
+                    id=row["id"],
+                    telegram_id=row["telegram_id"],
+                    username=row["username"],
+                    first_name=row["first_name"],
+                    language=row["language"] or "ru",
+                    created_at=str(row["created_at"]),
+                )
+                for row in rows
+            ]
 
 
 db = Database()

@@ -22,10 +22,23 @@ def get_admin_main_keyboard() -> InlineKeyboardMarkup:
                 InlineKeyboardButton(text="📋 Все заказы", callback_data="adm_filter:ALL"),
             ],
             [
+                InlineKeyboardButton(text="👥 Пользователи бота", callback_data="adm:users"),
                 InlineKeyboardButton(text="📊 Аналитика и выручка", callback_data="adm:stats"),
-                InlineKeyboardButton(text="💾 Скачать бэкап БД", callback_data="adm:backup_db"),
             ],
-            [InlineKeyboardButton(text="🔄 Обновить список", callback_data="adm:refresh")],
+            [
+                InlineKeyboardButton(text="💾 Скачать бэкап БД", callback_data="adm:backup_db"),
+                InlineKeyboardButton(text="🔄 Обновить", callback_data="adm:refresh"),
+            ],
+        ]
+    )
+
+
+def get_admin_users_keyboard() -> InlineKeyboardMarkup:
+    """Кнопки в разделе списка пользователей."""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="🔄 Обновить", callback_data="adm:users")],
+            [InlineKeyboardButton(text="⬅️ Назад в главное меню", callback_data="adm:main")],
         ]
     )
 

@@ -28,6 +28,7 @@ from bot.keyboards.admin import (
     get_admin_status_selection_keyboard,
     get_admin_orders_list_keyboard,
     get_admin_back_keyboard,
+    get_admin_users_keyboard,
 )
 
 __all__ = [
@@ -55,4 +56,5 @@ __all__ = [
     "get_admin_status_selection_keyboard",
     "get_admin_orders_list_keyboard",
     "get_admin_back_keyboard",
+    "get_admin_users_keyboard",
 ]
