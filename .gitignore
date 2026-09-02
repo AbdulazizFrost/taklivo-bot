@@ -12,17 +12,13 @@ ENV/
 # Environment variables
 .env
 
-# Database
-*.db
-*.sqlite3
-data/
+# Backups and temporary files
+data/backups/
+*.log
+logs/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# Logs
-*.log
-logs/

@@ -29,6 +29,7 @@ from aiogram.types import (
 
 from bot.database import db
 from bot.handlers import client_router, order_router, admin_router
+from bot.middlewares import UserTrackerMiddleware
 from bot.services import reminder
 from config import config
 
@@ -124,6 +125,8 @@ async def main() -> None:
 
     # Регистрация обработчиков
     dp.errors.register(global_error_handler)
+    dp.message.middleware(UserTrackerMiddleware())
+    dp.callback_query.middleware(UserTrackerMiddleware())
     dp.include_router(admin_router)
     dp.include_router(order_router)
     dp.include_router(client_router)

@@ -71,18 +71,19 @@ TEXTS = {
         "🎁 <b>TAKLIVO HAMKORLIK DASTURI</b>\n\n"
         "Do‘stlaringizni taklif qiling va o‘zingizning taklifnomangiz uchun bonuslarga ega bo‘ling!\n\n"
         "🌟 <b>Har ikki tomon uchun foydali:</b>\n"
-        "• <b>Siz olasiz:</b> do‘stingizning har bir to‘langan buyurtmasi uchun <code>+{reward_bonus}</code>!\n"
+        "• <b>Siz olasiz:</b> do‘stingizning har bir buyurtmasi uchun <code>+{reward_bonus}</code>!\n"
         "• <b>Do‘stingiz oladi:</b> ilk buyurtmasi uchun <code>{welcome_bonus}</code> chegirma!\n"
-        "• <b>1 bonus = 1 so‘m:</b> to‘plangan bonuslar bilan o‘z saytingiz narxini 100% gacha to‘lashingiz mumkin.\n\n"
+        "• <b>1 bonus = 1 so‘m</b> — to‘plangan bonuslar bilan o‘z saytingiz narxini 100% gacha to‘lashingiz mumkin.\n\n"
         "💰 <b>Sizning bonus balansingiz:</b> <b>{bonus_balance}</b>\n\n"
         "📊 <b>Sizning statistikangiz:</b>\n"
         "• Taklif qilingan do‘stlar: <b>{invited_count}</b> ta\n"
         "• Rasmiylashtirilgan buyurtmalar: <b>{orders_count}</b> ta\n\n"
-        "🔗 <b>Sizning shaxsiy havolangiz:</b>\n"
+        "🔗 <b>Taklif qilish havolangiz:</b>\n"
         "<code>{referral_link}</code>\n\n"
-        "<i>Tez orada to‘yi yoki bayrami bo‘ladigan do‘stlaringizga yuboring!</i>"
+        "📋 <b>Do‘stingizga yuborish uchun tayyor matn</b> <i>(nusxalash uchun bosing)</i>:\n"
+        "<code>💍 Salom! Agar sizda to‘y, tug‘ilgan kun yoki sunnat to‘y bo‘layotgan bo‘lsa — TAKLIVO xizmatini tavsiya qilaman! Ushbu havola orqali o‘tib 10 000 so‘m chegirmaga ega bo‘ling: {referral_link}</code>"
     ),
-    "btn_share_ref": "📲 Havolani ulashish (+bonuslar)",
+    "btn_share_ref": "📲 Telegram orqali ulashish",
 
     # Promokodlar
     "btn_enter_promo": "🎟 Promokodni kiritish",

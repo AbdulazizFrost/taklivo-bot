@@ -67,9 +67,17 @@ def get_faq_answer_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
 
 
 def get_referral_keyboard(referral_link: str, lang: str = "ru") -> InlineKeyboardMarkup:
-    """Кнопки в разделе реферальной программы."""
-    share_text = "🎉 Создай онлайн-приглашение на свадьбу или день рождения в TAKLIVO!" if lang == "ru" else "🎉 TAKLIVO-da to‘y yoki tug‘ilgan kuningiz uchun zamonaviy taklifnoma yarating!"
-    share_url = f"https://t.me/share/url?url={referral_link}&text={share_text}"
+    """Кнопки в разделе реферальной программы с корректным URL-кодированием без артефактов."""
+    import urllib.parse
+    if lang == "uz":
+        share_text = "💍 TAKLIVO — To‘y va marosimlar uchun zamonaviy onlayn taklifnomalar! Havolam orqali o‘ting va 10 000 so‘m chegirmaga ega bo‘ling ✨"
+    else:
+        share_text = "💍 TAKLIVO — Стильные онлайн-приглашения на свадьбу и торжества! Переходи по моей ссылке и получи скидку 10 000 сум ✨"
+
+    encoded_url = urllib.parse.quote(referral_link, safe="")
+    encoded_text = urllib.parse.quote(share_text, safe="")
+    share_url = f"https://t.me/share/url?url={encoded_url}&text={encoded_text}"
+
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text=get_text(lang, "btn_share_ref"), url=share_url)],
