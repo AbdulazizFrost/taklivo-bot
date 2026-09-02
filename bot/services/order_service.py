@@ -126,9 +126,24 @@ class OrderService:
             referrer_id = row[0] if row and row[0] else None
 
         if referrer_id and referrer_id != order.telegram_id:
-            reward = config.REFERRAL_REWARD_BONUS
-            new_balance = await db.add_user_bonus(referrer_id, reward)
-            logger.info(f"Начислен реферальный бонус +{reward} пользователю {referrer_id} за заказ #{order_id}")
+            # Начисляем бонус пригласившему только за первый оплаченный заказ друга (защита от злоупотреблений)
+            async with aiosqlite_conn(db.db_path) as conn:
+                cursor = await conn.execute(
+                    """
+                    SELECT COUNT(*) FROM orders 
+                    WHERE telegram_id = ? 
+                      AND status IN ('PAID', 'IN_PROGRESS', 'PREVIEW', 'REVISION', 'COMPLETED') 
+                      AND id != ?
+                    """,
+                    (order.telegram_id, order_id),
+                )
+                prev_row = await cursor.fetchone()
+                prev_orders = prev_row[0] if prev_row else 0
+
+            if prev_orders == 0:
+                reward = config.REFERRAL_REWARD_BONUS
+                new_balance = await db.add_user_bonus(referrer_id, reward)
+                logger.info(f"Начислен реферальный бонус +{reward} пользователю {referrer_id} за первый заказ #{order_id}")
 
             if bot:
                 try:

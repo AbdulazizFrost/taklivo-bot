@@ -19,7 +19,11 @@ class UserTrackerMiddleware(BaseMiddleware):
         data: Dict[str, Any],
     ) -> Any:
         event_user: TgUser | None = data.get("event_from_user")
-        if event_user and not event_user.is_bot:
+        is_start_cmd = False
+        if hasattr(event, "text") and event.text and event.text.startswith("/start"):
+            is_start_cmd = True
+
+        if event_user and not event_user.is_bot and not is_start_cmd:
             try:
                 await db.get_or_create_user(
                     telegram_id=event_user.id,
