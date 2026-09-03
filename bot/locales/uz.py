@@ -276,6 +276,17 @@ TEXTS = {
         "Agar barchasi ma’qul bo‘lsa — «Barchasi ajoyib» tugmasini bosing. Agar tuzatishlar kerak bo‘lsa — «O‘zgartirish kiritish» tugmasini bosing."
     ),
 
+    # Havola orqali maxsus dizayn
+    "btn_custom_template": "🌐 O‘z namunangiz (havola orqali)",
+    "step_reference_url": (
+        "🌐 <b>2.1-qadam: O‘zingizga yoqqan sayt havolasini yuboring</b>\n\n"
+        "Internetda sizga yoqqan istalgan taklifnoma saytining havolasini (linkini) yuboring. "
+        "Biz aynan shunday dizayn, animatsiyalar va uslubda siz uchun maxsus taklifnoma yaratamiz! ✨\n\n"
+        "<i>Masalan: https://taklivo.uz/demo/floral yoki boshqa veb-havola</i>"
+    ),
+    "err_invalid_url": "⚠️ <b>Noto‘g‘ri havola!</b> Iltimos, <code>http://</code> yoki <code>https://</code> bilan boshlanuvchi to‘liq havolani yuboring.",
+    "reference_url_received": "✅ <b>Havola muvaffaqiyatli qabul qilindi!</b>\n\nEndi saytingiz uchun kerakli funksiyalarni tanlang:",
+
     # Holatlar (badge)
     "status_NEW": "🆕 Yangi",
     "status_WAITING_PAYMENT": "💳 To‘lov kutilmoqda",

@@ -77,6 +77,7 @@ class ExporterService:
                 "Статус заказа",
                 "Статус оплаты",
                 "Ссылка на сайт",
+                "Пример сайта клиента (URL)",
                 "Telegram ID клиента",
                 "Дата создания заказа",
             ])
@@ -109,6 +110,7 @@ class ExporterService:
                     o.status,
                     o.payment_status,
                     o.website_url or "—",
+                    getattr(o, "reference_url", "") or "—",
                     o.telegram_id,
                     o.created_at,
                 ])

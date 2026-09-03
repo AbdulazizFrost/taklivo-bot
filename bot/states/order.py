@@ -10,6 +10,7 @@ class OrderStates(StatesGroup):
 
     # Выбор дизайна, тарифа и опций
     choosing_template = State()
+    entering_reference_url = State()
     choosing_plan = State()
     choosing_options = State()
 

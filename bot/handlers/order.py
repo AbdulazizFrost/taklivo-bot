@@ -26,7 +26,7 @@ from bot.locales import get_text
 from bot.services import calculate_total, order_service, notifications
 from bot.states.order import OrderStates
 from bot.utils.helpers import format_currency, escape
-from bot.utils.validators import validate_date, validate_time, validate_phone
+from bot.utils.validators import validate_date, validate_time, validate_phone, validate_url
 from config import config
 
 router = Router(name="order_wizard_router")
@@ -127,15 +127,18 @@ async def start_order_wizard(callback: CallbackQuery, state: FSMContext) -> None
 
 @router.callback_query(F.data.startswith("order_select_tmpl:"))
 async def process_select_tmpl_from_portfolio(callback: CallbackQuery, state: FSMContext) -> None:
-    """Старт визарда из портфолио с уже выбранным дизайном."""
+    """Старт визарда из портфолио с уже выбранным дизайном или своим примером."""
     tmpl_id = callback.data.split(":")[1]
-    tmpl = config.TEMPLATES.get(tmpl_id)
-    if not tmpl:
-        await callback.answer("Шаблон не найден", show_alert=True)
-        return
-
     lang = await db.get_user_language(callback.from_user.id)
-    tmpl_name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
+
+    if tmpl_id == "custom":
+        tmpl_name = get_text(lang, "btn_custom_template")
+    else:
+        tmpl = config.TEMPLATES.get(tmpl_id)
+        if not tmpl:
+            await callback.answer("Шаблон не найден", show_alert=True)
+            return
+        tmpl_name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
 
     await state.clear()
     await state.update_data(
@@ -177,6 +180,17 @@ async def process_step_event_type(callback: CallbackQuery, state: FSMContext) ->
     template_id = data.get("template_id")
 
     await state.update_data(event_type=event_type)
+
+    # Если выбран свой пример сайта (custom), запрашиваем ссылку
+    if template_id == "custom":
+        await state.set_state(OrderStates.entering_reference_url)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_reference_url"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_event", lang=lang),
+            parse_mode="HTML",
+        )
+        await callback.answer()
+        return
 
     # Если шаблон уже выбран в каталоге портфолио, переходим сразу к шагу 3 (опции)
     if template_id and template_id in config.TEMPLATES:
@@ -221,12 +235,26 @@ async def process_step_event_type(callback: CallbackQuery, state: FSMContext) ->
 
 @router.callback_query(OrderStates.choosing_template, F.data.startswith("wizard_tmpl:"))
 async def process_step_template(callback: CallbackQuery, state: FSMContext) -> None:
-    """Обработка выбора шаблона и переход к конструктору функций."""
+    """Обработка выбора шаблона или перехода к вводу ссылки на свой пример."""
     tmpl_id = callback.data.split(":")[1]
     data = await state.get_data()
     lang = data.get("lang", "ru")
-    tmpl = config.TEMPLATES.get(tmpl_id)
 
+    if tmpl_id == "custom":
+        await state.update_data(
+            template_id="custom",
+            template_name=get_text(lang, "btn_custom_template"),
+        )
+        await state.set_state(OrderStates.entering_reference_url)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_reference_url"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_tmpl", lang=lang),
+            parse_mode="HTML",
+        )
+        await callback.answer()
+        return
+
+    tmpl = config.TEMPLATES.get(tmpl_id)
     if not tmpl:
         await callback.answer("Ошибка шаблона", show_alert=True)
         return
@@ -247,6 +275,7 @@ async def process_step_template(callback: CallbackQuery, state: FSMContext) -> N
     await state.update_data(
         template_id=tmpl_id,
         template_name=tmpl_name,
+        reference_url=None,
         options=options,
         total_price=calc_res.total_price,
     )
@@ -264,6 +293,52 @@ async def process_step_template(callback: CallbackQuery, state: FSMContext) -> N
         parse_mode="HTML",
     )
     await callback.answer()
+
+
+@router.message(OrderStates.entering_reference_url, F.text)
+async def process_reference_url(message: Message, state: FSMContext) -> None:
+    """Прием и валидация ссылки на понравившийся сайт от клиента."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+    url = message.text.strip()
+
+    if not validate_url(url):
+        await message.answer(
+            text=get_text(lang, "err_invalid_url"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_tmpl", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+
+    options = data.get("options", {
+        "timer": True,
+        "rsvp": False,
+        "map": True,
+        "gallery": False,
+        "music": False,
+        "dresscode": False,
+        "schedule": False,
+        "second_language": False,
+    })
+    calc_res = calculate_total(options, lang=lang)
+
+    await state.update_data(
+        reference_url=url,
+        template_id="custom",
+        template_name=get_text(lang, "btn_custom_template"),
+        options=options,
+        total_price=calc_res.total_price,
+    )
+
+    await state.set_state(OrderStates.choosing_options)
+    await message.answer(
+        text=(
+            f"{get_text(lang, 'reference_url_received')}\n\n"
+            f"{get_text(lang, 'step_options', base_price=format_currency(calc_res.base_price, lang=lang), extra_price=format_currency(calc_res.extra_options_total, lang=lang), total_price=format_currency(calc_res.total_price, lang=lang))}"
+        ),
+        reply_markup=get_options_toggle_keyboard(options, lang=lang),
+        parse_mode="HTML",
+    )
 
 
 # --- Шаг 3: Конструктор опций (Toggle переключатели) ---
@@ -938,6 +1013,7 @@ async def _show_order_preview(message_or_msg: Message, state: FSMContext, is_edi
         promocode=promocode,
         discount_amount=discount_amount,
         bonus_used=bonus_used,
+        reference_url=data.get("reference_url"),
         total_price=final_price,
         lang=lang,
     )

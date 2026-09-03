@@ -63,6 +63,7 @@ class OrderService:
             promocode=promocode,
             discount_amount=discount_amount,
             bonus_used=bonus_used,
+            reference_url=data.get("reference_url"),
             status=OrderStatus.WAITING_PAYMENT.value,
         )
 
@@ -271,6 +272,7 @@ class OrderService:
         promocode: Optional[str] = None,
         discount_amount: int = 0,
         bonus_used: int = 0,
+        reference_url: Optional[str] = None,
         lang: str = "ru",
     ) -> str:
         """Форматирует сводку заказа перед подтверждением клиентом."""
@@ -326,6 +328,11 @@ class OrderService:
         if bonus_used > 0:
             promo_line += f"🎁 <b>Оплачено бонусами:</b> -{format_currency(bonus_used, lang)}\n" if lang == "ru" else f"🎁 <b>Bonuslar orqali to‘landi:</b> -{format_currency(bonus_used, lang)}\n"
 
+        tmpl_display = escape(template_name)
+        if reference_url:
+            ref_label = "🔗 <b>Пример сайта:</b>" if lang == "ru" else "🔗 <b>Sayt namunasi:</b>"
+            tmpl_display += f"\n{ref_label} {escape(reference_url)}"
+
         return get_text(
             lang,
             "preview_title",
@@ -337,7 +344,7 @@ class OrderService:
             venue=escape(venue),
             address=escape(address),
             phone=escape(phone),
-            template_name=escape(template_name),
+            template_name=tmpl_display,
             features_list=features_str,
             photos_count=photos_count,
             music_status=music_status,
@@ -390,6 +397,10 @@ class OrderService:
         if order.bonus_used > 0:
             promo_block += f"🎁 <b>Оплачено бонусами:</b> {format_currency(order.bonus_used, 'ru')}\n"
 
+        ref_block = ""
+        if getattr(order, "reference_url", None):
+            ref_block = f"🔗 <b>Пример сайта клиента:</b> {escape(order.reference_url)}\n"
+
         return (
             f"🔔 <b>НОВЫЙ ЗАКАЗ #{order.id} [{event_badge}]</b>\n\n"
             f"{hero_block}\n"
@@ -397,7 +408,8 @@ class OrderService:
             f"🏰 <b>Место:</b> {escape(order.venue)}\n"
             f"📍 <b>Адрес:</b> {escape(order.address)}\n"
             f"📞 <b>Телефон:</b> {escape(order.phone)}\n\n"
-            f"🎨 <b>Дизайн:</b> {escape(order.template_name)}\n\n"
+            f"🎨 <b>Дизайн:</b> {escape(order.template_name)}\n"
+            f"{ref_block}\n"
             f"<b>Включенные опции:</b>\n{features_str}\n\n"
             f"{promo_block}"
             f"💰 <b>Сумма к оплате:</b> {format_currency(order.total_price, 'ru')}\n"

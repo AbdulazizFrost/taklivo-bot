@@ -113,7 +113,11 @@ for k in ru_keys & uz_keys:
     if r_ph != u_ph:
         ph_mismatches.append((k, r_ph, u_ph))
 
-required_keys = ["portfolio_title", "btn_demo_link", "btn_choose_template", "btn_portfolio", "cancel_success", "err_text_too_long", "order_paid_bonuses_success"]
+required_keys = [
+    "portfolio_title", "btn_demo_link", "btn_choose_template", "btn_portfolio",
+    "cancel_success", "err_text_too_long", "order_paid_bonuses_success",
+    "btn_custom_template", "step_reference_url", "err_invalid_url", "reference_url_received",
+]
 missing_required = [k for k in required_keys if k not in ru_keys or k not in uz_keys]
 
 log_test_result(
@@ -389,6 +393,48 @@ async def run_async_tests():
                 "TEST 13: Field length boundary check (>100 chars)",
                 len(long_text) > 100 and len(normal_text) <= 100,
                 f"101-символьный ввод корректно детектируется для ограничения",
+            )
+
+            # ----------------------------------------------------
+            # TEST 14: Заказ по своей ссылке (custom template & reference_url)
+            # ----------------------------------------------------
+            print("\n--- TEST 14: Проверка заказа с индивидуальной ссылкой на сайт ---")
+            from bot.utils.validators import validate_url
+
+            url_valid = validate_url("https://taklivo.uz/demo/floral")
+            url_invalid = validate_url("not_a_valid_url")
+            log_test_result(
+                "TEST 14a: URL validator functionality",
+                url_valid and not url_invalid,
+                "https://... принимается, некорректная строка отклоняется",
+            )
+
+            order_data_custom = {
+                "template_id": "custom",
+                "template_name": "🌐 Свой пример сайта (по ссылке)",
+                "reference_url": "https://example.com/sample-invitation",
+                "event_type": "wedding",
+                "bride_name": "Сабина",
+                "groom_name": "Жасур",
+                "wedding_date": "25.12.2026",
+                "wedding_time": "18:00",
+                "venue": "Versal",
+                "address": "Navoi str 1",
+                "phone": "+998901234567",
+                "options": {"timer": True, "rsvp": True},
+            }
+            custom_order_id = await OrderService.create_new_order(
+                user_id=friend.id,
+                telegram_id=friend.telegram_id,
+                data=order_data_custom,
+            )
+            custom_order = await OrderService.get_order_by_id(custom_order_id)
+            admin_card = OrderService.format_admin_notification(custom_order)
+
+            log_test_result(
+                "TEST 14b: Reference URL stored in DB and shown to admin",
+                custom_order.reference_url == "https://example.com/sample-invitation" and "https://example.com/sample-invitation" in admin_card,
+                f"reference_url в заказе: {custom_order.reference_url}",
             )
 
             # ----------------------------------------------------

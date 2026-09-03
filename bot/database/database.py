@@ -101,6 +101,7 @@ class Database:
                     payment_status TEXT DEFAULT 'UNPAID',
                     payment_receipt_file_id TEXT,
                     website_url TEXT,
+                    reference_url TEXT,
                     revision_text TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -156,6 +157,8 @@ class Database:
                 await db.execute("ALTER TABLE orders ADD COLUMN discount_amount INTEGER DEFAULT 0;")
             if "bonus_used" not in o_cols:
                 await db.execute("ALTER TABLE orders ADD COLUMN bonus_used INTEGER DEFAULT 0;")
+            if "reference_url" not in o_cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN reference_url TEXT;")
 
             # Индексы
             await db.execute("CREATE INDEX IF NOT EXISTS idx_users_telegram_id ON users(telegram_id);")
@@ -476,6 +479,7 @@ class Database:
             payment_status=row["payment_status"],
             payment_receipt_file_id=row["payment_receipt_file_id"],
             website_url=row["website_url"],
+            reference_url=row["reference_url"] if "reference_url" in keys else None,
             revision_text=row["revision_text"],
             created_at=str(row["created_at"]),
             updated_at=str(row["updated_at"]),
@@ -510,9 +514,10 @@ class Database:
         promocode: Optional[str] = None,
         discount_amount: int = 0,
         bonus_used: int = 0,
+        reference_url: Optional[str] = None,
         status: str = OrderStatus.WAITING_PAYMENT.value,
     ) -> int:
-        """Создает новый заказ в базе данных с учетом промокода и списанных бонусов."""
+        """Создает новый заказ в базе данных с учетом промокода, списанных бонусов и ссылки на пример."""
         async with aiosqlite.connect(self.db_path) as db:
             cursor = await db.execute(
                 """
@@ -523,7 +528,7 @@ class Database:
                     venue, address, phone, rsvp_enabled, map_enabled,
                     music_enabled, gallery_enabled, dresscode_enabled,
                     schedule_enabled, second_language_enabled, total_price,
-                    promocode, discount_amount, bonus_used, payment_status
+                    promocode, discount_amount, bonus_used, payment_status, reference_url
                 ) VALUES (
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
@@ -531,7 +536,7 @@ class Database:
                     ?, ?, ?, ?, ?,
                     ?, ?, ?,
                     ?, ?, ?,
-                    ?, ?, ?, ?
+                    ?, ?, ?, ?, ?
                 )
                 """,
                 (
@@ -564,6 +569,7 @@ class Database:
                     discount_amount,
                     bonus_used,
                     PaymentStatus.UNPAID.value,
+                    reference_url,
                 ),
             )
             order_id = cursor.lastrowid

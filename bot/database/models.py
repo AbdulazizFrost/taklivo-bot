@@ -96,10 +96,11 @@ class Order:
     bonus_used: int
     payment_status: str
     payment_receipt_file_id: Optional[str]
-    website_url: Optional[str]
-    revision_text: Optional[str]
-    created_at: str
-    updated_at: str
+    website_url: Optional[str] = None
+    reference_url: Optional[str] = None
+    revision_text: Optional[str] = None
+    created_at: str = ""
+    updated_at: str = ""
 
 
 @dataclass

@@ -107,6 +107,9 @@ def get_portfolio_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
             InlineKeyboardButton(text=name, callback_data=f"tmpl_view:{tmpl_id}")
         ])
     buttons.append([
+        InlineKeyboardButton(text=get_text(lang, "btn_custom_template"), callback_data="order_select_tmpl:custom")
+    ])
+    buttons.append([
         InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:main_menu")
     ])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
@@ -163,6 +166,9 @@ def get_template_selection_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
         buttons.append([
             InlineKeyboardButton(text=name, callback_data=f"wizard_tmpl:{tmpl_id}")
         ])
+    buttons.append([
+        InlineKeyboardButton(text=get_text(lang, "btn_custom_template"), callback_data="wizard_tmpl:custom")
+    ])
     buttons.append([
         InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="wizard_back:to_event"),
         InlineKeyboardButton(text=get_text(lang, "btn_cancel"), callback_data="wizard:cancel"),
