@@ -1,10 +1,14 @@
 """
 Сервис отправки уведомлений клиентам и администраторам TAKLIVO.
 Изолирует работу с сообщениями, фото и обработку исключений Telegram API.
+Поддерживает многоязычность (автоматическое определение UZ/RU) и совместимость сигнатур.
 """
 import logging
+from typing import Optional
 from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
+
+from bot.database import db
 from bot.database.models import Order
 from bot.keyboards.admin import get_admin_order_actions_keyboard
 from bot.keyboards.client import get_client_website_review_keyboard
@@ -18,11 +22,21 @@ logger = logging.getLogger(__name__)
 
 class NotificationService:
     @staticmethod
+    async def _resolve_lang(telegram_id: int, lang: Optional[str] = None) -> str:
+        """Определяет язык пользователя: переданный явно -> язык из БД -> fallback 'ru'."""
+        if lang:
+            return lang
+        try:
+            return await db.get_user_language(telegram_id)
+        except Exception:
+            return "ru"
+
+    @staticmethod
     async def notify_admin_new_order(
         bot: Bot,
         order: Order,
-        username: str | None = None,
-        receipt_file_id: str | None = None,
+        username: Optional[str] = None,
+        receipt_file_id: Optional[str] = None,
         photos_count: int = 0,
         has_music: bool = False,
     ) -> None:
@@ -62,7 +76,7 @@ class NotificationService:
         bot: Bot,
         order: Order,
         receipt_file_id: str,
-        username: str | None = None,
+        username: Optional[str] = None,
         photos_count: int = 0,
         has_music: bool = False,
     ) -> None:
@@ -76,70 +90,134 @@ class NotificationService:
             has_music=has_music,
         )
 
-    @staticmethod
+    @classmethod
     async def notify_client_payment_confirmed(
+        cls,
         bot: Bot,
-        order: Order,
-        lang: str = "ru",
+        order: Optional[Order] = None,
+        order_id: Optional[int] = None,
+        telegram_id: Optional[int] = None,
+        lang: Optional[str] = None,
+        **kwargs,
     ) -> bool:
-        """Уведомляет клиента об успешном подтверждении оплаты."""
-        text = get_text(lang, "notify_payment_confirmed", order_id=order.id)
+        """
+        Уведомляет клиента об успешном подтверждении оплаты.
+        Поддерживает вызов как через объект order, так и через order_id/telegram_id.
+        """
+        if not order and order_id:
+            order = await db.get_order(order_id)
+
+        target_tg_id = telegram_id or (order.telegram_id if order else None)
+        target_order_id = order_id or (order.id if order else 0)
+
+        if not target_tg_id:
+            logger.error("notify_client_payment_confirmed: telegram_id не определен")
+            return False
+
+        user_lang = await cls._resolve_lang(target_tg_id, lang)
+        text = get_text(user_lang, "notify_payment_confirmed", order_id=target_order_id)
+
         try:
             await bot.send_message(
-                chat_id=order.telegram_id,
+                chat_id=target_tg_id,
                 text=text,
                 parse_mode="HTML",
             )
             return True
         except TelegramAPIError as e:
-            logger.error(f"Failed to notify client #{order.telegram_id} of payment confirmation: {e}")
+            logger.error(f"Failed to notify client #{target_tg_id} of payment confirmation: {e}")
             return False
 
-    @staticmethod
+    @classmethod
     async def notify_client_payment_rejected(
+        cls,
         bot: Bot,
-        order: Order,
-        lang: str = "ru",
+        order: Optional[Order] = None,
+        order_id: Optional[int] = None,
+        telegram_id: Optional[int] = None,
+        lang: Optional[str] = None,
+        **kwargs,
     ) -> bool:
-        """Уведомляет клиента об отклонении чека."""
-        text = get_text(lang, "notify_payment_rejected", order_id=order.id, support_admin=config.SUPPORT_ADMIN)
+        """
+        Уведомляет клиента об отклонении чека.
+        Поддерживает вызов как через объект order, так и через order_id/telegram_id.
+        """
+        if not order and order_id:
+            order = await db.get_order(order_id)
+
+        target_tg_id = telegram_id or (order.telegram_id if order else None)
+        target_order_id = order_id or (order.id if order else 0)
+
+        if not target_tg_id:
+            logger.error("notify_client_payment_rejected: telegram_id не определен")
+            return False
+
+        user_lang = await cls._resolve_lang(target_tg_id, lang)
+        text = get_text(
+            user_lang,
+            "notify_payment_rejected",
+            order_id=target_order_id,
+            support_admin=config.SUPPORT_ADMIN,
+        )
+
         try:
             await bot.send_message(
-                chat_id=order.telegram_id,
+                chat_id=target_tg_id,
                 text=text,
                 parse_mode="HTML",
             )
             return True
         except TelegramAPIError as e:
-            logger.error(f"Failed to notify client #{order.telegram_id} of payment rejection: {e}")
+            logger.error(f"Failed to notify client #{target_tg_id} of payment rejection: {e}")
             return False
 
-    @staticmethod
+    @classmethod
     async def notify_client_site_ready(
+        cls,
         bot: Bot,
-        order: Order,
-        website_url: str,
-        lang: str = "ru",
+        order: Optional[Order] = None,
+        website_url: str = "",
+        order_id: Optional[int] = None,
+        telegram_id: Optional[int] = None,
+        lang: Optional[str] = None,
+        **kwargs,
     ) -> bool:
-        """Отправляет клиенту ссылку на готовый сайт и кнопки проверки/правок."""
-        if order.event_type == "birthday":
-            hero_title = order.celebrant_name or "Tug‘ilgan kun"
-        elif order.event_type == "sunnat":
-            hero_title = order.celebrant_name or "Sunnat to‘y"
-        else:
-            hero_title = f"{order.bride_name} & {order.groom_name}"
+        """
+        Отправляет клиенту ссылку на готовый сайт и кнопки проверки/правок.
+        Поддерживает вызов как через объект order, так и через telegram_id / order_id.
+        """
+        if not order and order_id:
+            order = await db.get_order(order_id)
+
+        target_tg_id = telegram_id or (order.telegram_id if order else None)
+        target_order_id = order_id or (order.id if order else 0)
+
+        if not target_tg_id:
+            logger.error("notify_client_site_ready: telegram_id не определен")
+            return False
+
+        user_lang = await cls._resolve_lang(target_tg_id, lang)
+
+        hero_title = "Taklifnoma"
+        if order:
+            if order.event_type == "birthday":
+                hero_title = order.celebrant_name or "Tug‘ilgan kun"
+            elif order.event_type == "sunnat":
+                hero_title = order.celebrant_name or "Sunnat to‘y"
+            else:
+                hero_title = f"{order.bride_name} & {order.groom_name}"
 
         text = get_text(
-            lang,
+            user_lang,
             "notify_website_ready",
             hero_title=escape(hero_title),
             website_url=website_url,
         )
-        keyboard = get_client_website_review_keyboard(order.id, website_url, lang=lang)
+        keyboard = get_client_website_review_keyboard(target_order_id, website_url, lang=user_lang)
 
         try:
             await bot.send_message(
-                chat_id=order.telegram_id,
+                chat_id=target_tg_id,
                 text=text,
                 reply_markup=keyboard,
                 parse_mode="HTML",
@@ -147,15 +225,18 @@ class NotificationService:
             )
             return True
         except TelegramAPIError as e:
-            logger.error(f"Failed to send website URL to client #{order.telegram_id}: {e}")
+            logger.error(f"Failed to send website URL to client #{target_tg_id}: {e}")
             return False
+
+    # Алиас для полной обратной совместимости
+    notify_client_website_ready = notify_client_site_ready
 
     @staticmethod
     async def notify_admin_revision(
         bot: Bot,
         order: Order,
         revision_text: str,
-        username: str | None = None,
+        username: Optional[str] = None,
     ) -> None:
         """Уведомляет администраторов о поступивших правках по заказу."""
         user_mention = f"@{escape(username)}" if username else "<i>(без @username)</i>"

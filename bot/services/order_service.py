@@ -145,26 +145,26 @@ class OrderService:
                 new_balance = await db.add_user_bonus(referrer_id, reward)
                 logger.info(f"Начислен реферальный бонус +{reward} пользователю {referrer_id} за первый заказ #{order_id}")
 
-            if bot:
-                try:
-                    ref_lang = await db.get_user_language(referrer_id)
-                    if ref_lang == "uz":
-                        ref_text = (
-                            f"🎉 <b>Do‘stingiz buyurtma berdi!</b>\n\n"
-                            f"Sizga hamkorlik dasturi bo‘yicha <b>+{reward:,} so‘m</b> bonus taqdim etildi! ✨\n\n"
-                            f"💰 <b>Joriy bonus balansingiz:</b> {new_balance:,} so‘m\n"
-                            f"<i>Ushbu bonuslarni o‘zingizning keyingi buyurtmangizda chegirma sifatida ishlatishingiz mumkin!</i>"
-                        )
-                    else:
-                        ref_text = (
-                            f"🎉 <b>Ваш приглашенный друг оформил заказ!</b>\n\n"
-                            f"Вам начислено <b>+{reward:,} бонусов</b> (сум) по партнерской программе! ✨\n\n"
-                            f"💰 <b>Ваш бонусный баланс:</b> {new_balance:,} сум\n"
-                            f"<i>Вы можете использовать эти бонусы для оплаты своего собственного сайта-приглашения!</i>"
-                        )
-                    await bot.send_message(chat_id=referrer_id, text=ref_text, parse_mode="HTML")
-                except Exception as e:
-                    logger.warning(f"Не удалось отправить уведомление о бонусе рефереру {referrer_id}: {e}")
+                if bot:
+                    try:
+                        ref_lang = await db.get_user_language(referrer_id)
+                        if ref_lang == "uz":
+                            ref_text = (
+                                f"🎉 <b>Do‘stingiz buyurtma berdi!</b>\n\n"
+                                f"Sizga hamkorlik dasturi bo‘yicha <b>+{reward:,} so‘m</b> bonus taqdim etildi! ✨\n\n"
+                                f"💰 <b>Joriy bonus balansingiz:</b> {new_balance:,} so‘m\n"
+                                f"<i>Ushbu bonuslarni o‘zingizning keyingi buyurtmangizda chegirma sifatida ishlatishingiz mumkin!</i>"
+                            )
+                        else:
+                            ref_text = (
+                                f"🎉 <b>Ваш приглашенный друг оформил заказ!</b>\n\n"
+                                f"Вам начислено <b>+{reward:,} бонусов</b> (сум) по партнерской программе! ✨\n\n"
+                                f"💰 <b>Ваш бонусный баланс:</b> {new_balance:,} сум\n"
+                                f"<i>Вы можете использовать эти бонусы для оплаты своего собственного сайта-приглашения!</i>"
+                            )
+                        await bot.send_message(chat_id=referrer_id, text=ref_text, parse_mode="HTML")
+                    except Exception as e:
+                        logger.warning(f"Не удалось отправить уведомление о бонусе рефереру {referrer_id}: {e}")
 
         return True, updated
 
@@ -213,11 +213,32 @@ class OrderService:
 
     @staticmethod
     async def cancel_order(order_id: int) -> bool:
-        """Отменяет заказ."""
+        """Отменяет заказ с безопасным и однократным возвратом бонусов и промокода."""
         order = await db.get_order(order_id)
         if not order:
             return False
+
+        # Защита от повторного списания/возврата (идемпотентность)
+        if order.status == OrderStatus.CANCELLED.value:
+            return True
+
         await db.update_order_status(order_id, OrderStatus.CANCELLED.value)
+
+        # 1. Возврат списанных бонусов на баланс пользователя
+        if order.bonus_used and order.bonus_used > 0:
+            await db.add_user_bonus(order.telegram_id, order.bonus_used)
+            logger.info(f"Возвращено {order.bonus_used} бонусов пользователю {order.telegram_id} при отмене заказа #{order_id}")
+
+        # 2. Безопасный откат счетчика промокода
+        if order.promocode:
+            async with aiosqlite_conn(db.db_path) as conn:
+                await conn.execute(
+                    "UPDATE promocodes SET used_count = MAX(0, used_count - 1) WHERE code = ?",
+                    (order.promocode.strip().upper(),),
+                )
+                await conn.commit()
+            logger.info(f"Откачен счетчик использования промокода {order.promocode} при отмене заказа #{order_id}")
+
         return True
 
     @staticmethod

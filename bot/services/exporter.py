@@ -31,6 +31,7 @@ class ExporterService:
                 "Имя (First Name)",
                 "Username (@)",
                 "Язык интерфейса",
+                "Бонусный баланс (сум)",
                 "Приглашен кем (Referrer ID)",
                 "Дата первого входа (UTC)",
             ])
@@ -42,6 +43,7 @@ class ExporterService:
                     u.first_name or "",
                     f"@{u.username}" if u.username else "",
                     u.language.upper(),
+                    getattr(u, "bonus_balance", 0) or 0,
                     u.referrer_id or "—",
                     u.created_at,
                 ])
@@ -68,7 +70,8 @@ class ExporterService:
                 "Адрес",
                 "Телефон клиента",
                 "Дизайн (Шаблон)",
-                "Сумма (сум)",
+                "Сумма к оплате (сум)",
+                "Списано бонусов (сум)",
                 "Промокод",
                 "Скидка (сум)",
                 "Статус заказа",
@@ -100,6 +103,7 @@ class ExporterService:
                     o.phone,
                     o.template_name,
                     o.total_price,
+                    getattr(o, "bonus_used", 0) or 0,
                     o.promocode or "—",
                     o.discount_amount,
                     o.status,

@@ -24,6 +24,7 @@ TEXTS = {
         "Nima qilmoqchisiz?"
     ),
     "btn_create_invitation": "✨ Taklifnoma yaratish",
+    "btn_portfolio": "🎨 Dizaynlar katalogi",
     "btn_pricing": "💰 Funksiyalar narxlari",
     "btn_my_orders": "📦 Mening buyurtmalarim",
     "btn_faq": "❓ Ko‘p beriladigan savollar",
@@ -31,6 +32,23 @@ TEXTS = {
     "btn_about": "ℹ️ Xizmat haqida",
     "btn_instagram": "📸 Bizning Instagram",
     "btn_change_language": "🌐 Tilni o‘zgartirish",
+
+    # Portfolio va namunalar
+    "portfolio_title": (
+        "🎨 <b>TAKLIVO tayyor dizaynlar katalogi</b>\n\n"
+        "Namunani ko‘rish va ma’lumot olish uchun quyidagi dizaynlardan birini tanlang:"
+    ),
+    "btn_demo_link": "🌐 Namunani ko‘rish",
+    "btn_choose_template": "✨ Tanlash va buyurtma berish",
+
+    # Muvaffaqiyat va xatoliklar
+    "cancel_success": "❌ Amal bekor qilindi. Siz asosiy menyudasiz.",
+    "err_text_too_long": "⚠️ <b>Matn juda uzun!</b> Iltimos, qisqaroq yozing (maksimal {max_len} ta belgi).",
+    "order_paid_bonuses_success": (
+        "🎉 <b>#{order_id}-raqamli buyurtmangiz muvaffaqiyatli qabul qilindi va bonuslar orqali to‘landi!</b>\n\n"
+        "Biz sizning shaxsiy veb-saytingizni tayyorlashga kirishdik ✨\n"
+        "Sayt tayyor bo‘lishi bilan sizga tekshirish uchun havola yuboramiz!"
+    ),
 
     # Xizmat haqida
     "about_text": (

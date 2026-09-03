@@ -401,6 +401,14 @@ async def process_revision_text(message: Message, state: FSMContext) -> None:
         await state.clear()
         return
 
+    if len(revision_text) > 1000:
+        await message.answer(
+            text=get_text(lang, "err_text_too_long", max_len=1000),
+            reply_markup=get_cancel_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
+        return
+
     success, updated_order = await order_service.submit_revisions(order_id, revision_text)
     await state.clear()
 

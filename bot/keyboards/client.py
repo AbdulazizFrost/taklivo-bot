@@ -26,18 +26,19 @@ def get_main_menu_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
         inline_keyboard=[
             [InlineKeyboardButton(text=get_text(lang, "btn_create_invitation"), callback_data="client:create_order")],
             [
+                InlineKeyboardButton(text=get_text(lang, "btn_portfolio"), callback_data="client:portfolio"),
                 InlineKeyboardButton(text=get_text(lang, "btn_pricing"), callback_data="client:pricing"),
+            ],
+            [
                 InlineKeyboardButton(text=get_text(lang, "btn_my_orders"), callback_data="client:my_orders"),
+                InlineKeyboardButton(text=get_text(lang, "btn_referral"), callback_data="client:referral"),
             ],
             [
                 InlineKeyboardButton(text=get_text(lang, "btn_faq"), callback_data="client:faq"),
-                InlineKeyboardButton(text=get_text(lang, "btn_referral"), callback_data="client:referral"),
+                InlineKeyboardButton(text=get_text(lang, "btn_about"), callback_data="client:about"),
             ],
             [InlineKeyboardButton(text=get_text(lang, "btn_instagram"), url=config.INSTAGRAM_URL)],
-            [
-                InlineKeyboardButton(text=get_text(lang, "btn_about"), callback_data="client:about"),
-                InlineKeyboardButton(text=get_text(lang, "btn_change_language"), callback_data="client:change_lang"),
-            ],
+            [InlineKeyboardButton(text=get_text(lang, "btn_change_language"), callback_data="client:change_lang")],
         ]
     )
 

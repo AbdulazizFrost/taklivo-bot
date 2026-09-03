@@ -345,6 +345,7 @@ async def callback_confirm_broadcast(callback: CallbackQuery, state: FSMContext)
     failed = 0
 
     from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+    from aiogram.exceptions import TelegramRetryAfter, TelegramForbiddenError
     keyboard = None
     if btn_label and btn_url:
         keyboard = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=btn_label, url=btn_url)]])
@@ -359,8 +360,24 @@ async def callback_confirm_broadcast(callback: CallbackQuery, state: FSMContext)
                 reply_markup=keyboard,
             )
             sent += 1
-        except Exception:
+        except TelegramForbiddenError:
             blocked += 1
+        except TelegramRetryAfter as e:
+            logger.warning(f"Flood control: ожидание {e.retry_after} сек.")
+            await asyncio.sleep(e.retry_after)
+            try:
+                await callback.bot.copy_message(
+                    chat_id=u.telegram_id,
+                    from_chat_id=chat_id,
+                    message_id=msg_id,
+                    reply_markup=keyboard,
+                )
+                sent += 1
+            except Exception:
+                failed += 1
+        except Exception as e:
+            logger.error(f"Ошибка доставки пользователю {u.telegram_id}: {e}")
+            failed += 1
         await asyncio.sleep(0.04)
 
     await callback.message.answer(
@@ -368,7 +385,8 @@ async def callback_confirm_broadcast(callback: CallbackQuery, state: FSMContext)
             "✅ <b>РАССЫЛКА ЗАВЕРШЕНА!</b>\n\n"
             f"• Всего пользователей: <b>{len(users)}</b>\n"
             f"• Успешно доставлено: <b>{sent}</b>\n"
-            f"• Заблокировали/Недоступны: <b>{blocked}</b>"
+            f"• Заблокировали бота: <b>{blocked}</b>\n"
+            f"• Ошибок отправки: <b>{failed}</b>"
         ),
         reply_markup=get_admin_main_keyboard(),
         parse_mode="HTML",
@@ -651,8 +669,7 @@ async def callback_admin_confirm_payment(callback: CallbackQuery) -> None:
     await callback.answer("Оплата подтверждена!", show_alert=True)
     await notifications.notify_client_payment_confirmed(
         bot=callback.bot,
-        telegram_id=updated_order.telegram_id,
-        order_id=updated_order.id,
+        order=updated_order,
     )
 
     await callback.message.edit_text(
@@ -678,8 +695,7 @@ async def callback_admin_reject_payment(callback: CallbackQuery) -> None:
     await callback.answer("Оплата отклонена", show_alert=True)
     await notifications.notify_client_payment_rejected(
         bot=callback.bot,
-        telegram_id=updated_order.telegram_id,
-        order_id=updated_order.id,
+        order=updated_order,
     )
 
     await callback.message.edit_text(
@@ -736,12 +752,10 @@ async def process_admin_entered_url(message: Message, state: FSMContext) -> None
         await message.answer("Ошибка обновления заказа.")
         return
 
-    await notifications.notify_client_website_ready(
+    await notifications.notify_client_site_ready(
         bot=message.bot,
-        telegram_id=updated_order.telegram_id,
-        order_id=updated_order.id,
-        website_url=url,
         order=updated_order,
+        website_url=url,
     )
 
     await message.answer(

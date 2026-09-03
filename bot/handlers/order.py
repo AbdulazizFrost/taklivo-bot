@@ -5,6 +5,7 @@ FSM-обработчик визарда оформления заказа онл
 """
 import logging
 from aiogram import Router, F
+from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
@@ -34,12 +35,34 @@ logger = logging.getLogger(__name__)
 
 # --- Отмена визарда на любом шаге ---
 
+@router.message(Command("cancel"))
+@router.message(F.text.lower().in_(["отмена", "bekor qilish", "/cancel", "cancel"]))
+async def cmd_cancel_wizard(message: Message, state: FSMContext) -> None:
+    """Глобальная отмена любого шага визарда через команду /cancel или текст."""
+    current_state = await state.get_state()
+    if not current_state:
+        return
+
+    data = await state.get_data()
+    lang = data.get("lang", await db.get_user_language(message.from_user.id))
+    current_order_id = data.get("current_order_id")
+    if current_order_id:
+        await order_service.cancel_order(current_order_id)
+
+    await state.clear()
+    await message.answer(
+        text=get_text(lang, "cancel_success"),
+        reply_markup=get_main_menu_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+
+
 @router.callback_query(F.data == "wizard:cancel")
 async def callback_cancel_wizard(callback: CallbackQuery, state: FSMContext) -> None:
     """Отмена оформления заказа и возврат в главное меню."""
     data = await state.get_data()
     lang = data.get("lang", await db.get_user_language(callback.from_user.id))
-    
+
     current_order_id = data.get("current_order_id")
     if current_order_id:
         await order_service.cancel_order(current_order_id)
@@ -102,6 +125,47 @@ async def start_order_wizard(callback: CallbackQuery, state: FSMContext) -> None
     await callback.answer()
 
 
+@router.callback_query(F.data.startswith("order_select_tmpl:"))
+async def process_select_tmpl_from_portfolio(callback: CallbackQuery, state: FSMContext) -> None:
+    """Старт визарда из портфолио с уже выбранным дизайном."""
+    tmpl_id = callback.data.split(":")[1]
+    tmpl = config.TEMPLATES.get(tmpl_id)
+    if not tmpl:
+        await callback.answer("Шаблон не найден", show_alert=True)
+        return
+
+    lang = await db.get_user_language(callback.from_user.id)
+    tmpl_name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
+
+    await state.clear()
+    await state.update_data(
+        lang=lang,
+        template_id=tmpl_id,
+        template_name=tmpl_name,
+        options={
+            "timer": True,
+            "rsvp": False,
+            "map": True,
+            "gallery": False,
+            "music": False,
+            "dresscode": False,
+            "schedule": False,
+            "second_language": False,
+        },
+        photos=[],
+        music_file_id=None,
+        music_filename=None,
+    )
+    await state.set_state(OrderStates.choosing_event_type)
+
+    await callback.message.edit_text(
+        text=get_text(lang, "step_event_type"),
+        reply_markup=get_event_type_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
 # --- Шаг 1: Выбор типа события -> Шаг 2: Выбор дизайна ---
 
 @router.callback_query(OrderStates.choosing_event_type, F.data.startswith("wizard_event:"))
@@ -110,10 +174,41 @@ async def process_step_event_type(callback: CallbackQuery, state: FSMContext) ->
     event_type = callback.data.split(":")[1]
     data = await state.get_data()
     lang = data.get("lang", "ru")
+    template_id = data.get("template_id")
 
     await state.update_data(event_type=event_type)
-    await state.set_state(OrderStates.choosing_template)
 
+    # Если шаблон уже выбран в каталоге портфолио, переходим сразу к шагу 3 (опции)
+    if template_id and template_id in config.TEMPLATES:
+        options = data.get("options", {
+            "timer": True,
+            "rsvp": False,
+            "map": True,
+            "gallery": False,
+            "music": False,
+            "dresscode": False,
+            "schedule": False,
+            "second_language": False,
+        })
+        calc_res = calculate_total(options, lang=lang)
+        await state.update_data(options=options, total_price=calc_res.total_price)
+        await state.set_state(OrderStates.choosing_options)
+
+        await callback.message.edit_text(
+            text=get_text(
+                lang,
+                "step_options",
+                base_price=format_currency(calc_res.base_price, lang=lang),
+                extra_price=format_currency(calc_res.extra_options_total, lang=lang),
+                total_price=format_currency(calc_res.total_price, lang=lang),
+            ),
+            reply_markup=get_options_toggle_keyboard(options, lang=lang),
+            parse_mode="HTML",
+        )
+        await callback.answer()
+        return
+
+    await state.set_state(OrderStates.choosing_template)
     await callback.message.edit_text(
         text=get_text(lang, "step_template"),
         reply_markup=get_template_selection_keyboard(lang=lang),
@@ -366,7 +461,14 @@ async def process_bride_name(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     lang = data.get("lang", "ru")
     name = message.text.strip()
-    if len(name) < 2 or len(name) > 60:
+    if len(name) > 100:
+        await message.answer(
+            text=get_text(lang, "err_text_too_long", max_len=100),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+    if len(name) < 2:
         await message.answer(
             get_text(lang, "step_bride_name"),
             reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
@@ -390,7 +492,14 @@ async def process_groom_name(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     lang = data.get("lang", "ru")
     name = message.text.strip()
-    if len(name) < 2 or len(name) > 60:
+    if len(name) > 100:
+        await message.answer(
+            text=get_text(lang, "err_text_too_long", max_len=100),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_bride", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+    if len(name) < 2:
         await message.answer(
             get_text(lang, "step_groom_name"),
             reply_markup=get_back_cancel_keyboard("wizard_back:to_bride", lang=lang),
@@ -416,7 +525,14 @@ async def process_birthday_name(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     lang = data.get("lang", "ru")
     name = message.text.strip()
-    if len(name) < 2 or len(name) > 60:
+    if len(name) > 100:
+        await message.answer(
+            text=get_text(lang, "err_text_too_long", max_len=100),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+    if len(name) < 2:
         await message.answer(
             get_text(lang, "step_birthday_name"),
             reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
@@ -440,6 +556,13 @@ async def process_birthday_age(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     lang = data.get("lang", "ru")
     age = message.text.strip()
+    if len(age) > 100:
+        await message.answer(
+            text=get_text(lang, "err_text_too_long", max_len=100),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_birthday_name", lang=lang),
+            parse_mode="HTML",
+        )
+        return
 
     await state.update_data(age_or_details=age)
     await state.set_state(OrderStates.wedding_date)
@@ -459,7 +582,14 @@ async def process_sunnat_child_name(message: Message, state: FSMContext) -> None
     data = await state.get_data()
     lang = data.get("lang", "ru")
     name = message.text.strip()
-    if len(name) < 2 or len(name) > 60:
+    if len(name) > 100:
+        await message.answer(
+            text=get_text(lang, "err_text_too_long", max_len=100),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+    if len(name) < 2:
         await message.answer(
             get_text(lang, "step_sunnat_child_name"),
             reply_markup=get_back_cancel_keyboard("wizard_back:to_options", lang=lang),
@@ -483,6 +613,13 @@ async def process_sunnat_parents_name(message: Message, state: FSMContext) -> No
     data = await state.get_data()
     lang = data.get("lang", "ru")
     parents = message.text.strip()
+    if len(parents) > 100:
+        await message.answer(
+            text=get_text(lang, "err_text_too_long", max_len=100),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_sunnat_child", lang=lang),
+            parse_mode="HTML",
+        )
+        return
 
     await state.update_data(parents_name=parents)
     await state.set_state(OrderStates.wedding_date)
@@ -561,7 +698,19 @@ async def process_venue(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     lang = data.get("lang", "ru")
     venue = message.text.strip()
-    if not venue:
+    if len(venue) > 100:
+        await message.answer(
+            text=get_text(lang, "err_text_too_long", max_len=100),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_time", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+    if len(venue) < 2:
+        await message.answer(
+            text=get_text(lang, "step_venue"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_time", lang=lang),
+            parse_mode="HTML",
+        )
         return
 
     await state.update_data(venue=venue)
@@ -580,7 +729,19 @@ async def process_address(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     lang = data.get("lang", "ru")
     address = message.text.strip()
-    if not address:
+    if len(address) > 120:
+        await message.answer(
+            text=get_text(lang, "err_text_too_long", max_len=120),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_venue", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+    if len(address) < 2:
+        await message.answer(
+            text=get_text(lang, "step_address"),
+            reply_markup=get_back_cancel_keyboard("wizard_back:to_venue", lang=lang),
+            parse_mode="HTML",
+        )
         return
 
     await state.update_data(address=address)
@@ -980,11 +1141,40 @@ async def process_confirm_and_create_order(callback: CallbackQuery, state: FSMCo
         telegram_id=callback.from_user.id,
         data=data,
     )
+    order = await order_service.get_order_by_id(order_id)
+    if not order:
+        await callback.answer("Ошибка создания заказа", show_alert=True)
+        return
+
+    # Если заказ полностью оплачен бонусами / скидкой (total_price == 0)
+    if order.total_price == 0:
+        await order_service.confirm_order_payment(order_id, bot=callback.bot)
+        updated_order = await order_service.get_order_by_id(order_id)
+        photos = await db.get_order_photos(order_id)
+        music = await db.get_order_music(order_id)
+
+        await state.clear()
+        await callback.message.edit_text(
+            text=get_text(lang, "order_paid_bonuses_success", order_id=order_id),
+            reply_markup=get_main_menu_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
+        await callback.answer()
+
+        if updated_order:
+            await notifications.notify_admin_new_order(
+                bot=callback.bot,
+                order=updated_order,
+                username=callback.from_user.username,
+                photos_count=len(photos),
+                has_music=music is not None,
+            )
+        return
 
     await state.update_data(current_order_id=order_id)
     await state.set_state(OrderStates.waiting_receipt)
 
-    total_price = data.get("total_price", 0)
+    total_price = order.total_price
     payment_text = get_text(
         lang,
         "payment_screen",
@@ -1010,6 +1200,31 @@ async def process_pay_existing_order(callback: CallbackQuery, state: FSMContext)
 
     if not order or order.telegram_id != callback.from_user.id:
         await callback.answer("Заказ не найден", show_alert=True)
+        return
+
+    # Если заказ полностью покрыт бонусами
+    if order.total_price == 0:
+        await order_service.confirm_order_payment(order_id, bot=callback.bot)
+        updated_order = await order_service.get_order_by_id(order_id)
+        photos = await db.get_order_photos(order_id)
+        music = await db.get_order_music(order_id)
+
+        await state.clear()
+        await callback.message.edit_text(
+            text=get_text(lang, "order_paid_bonuses_success", order_id=order_id),
+            reply_markup=get_main_menu_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
+        await callback.answer()
+
+        if updated_order:
+            await notifications.notify_admin_new_order(
+                bot=callback.bot,
+                order=updated_order,
+                username=callback.from_user.username,
+                photos_count=len(photos),
+                has_music=music is not None,
+            )
         return
 
     await state.update_data(current_order_id=order_id, lang=lang)
