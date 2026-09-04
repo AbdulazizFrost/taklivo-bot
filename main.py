@@ -108,9 +108,12 @@ async def main() -> None:
     # Проверка переменных окружения
     config.validate()
 
-    # Инициализация базы данных SQLite с WAL-режимом
+    # Инициализация базы данных
     await db.init()
-    logger.info(f"База данных успешно подключена ({config.DATABASE_PATH}).")
+    if config.DATABASE_URL and config.DATABASE_URL.startswith(("postgres://", "postgresql://")):
+        logger.info("База данных успешно подключена (Облачный PostgreSQL / Supabase).")
+    else:
+        logger.info(f"База данных успешно подключена ({config.DATABASE_PATH}).")
 
     # Инициализация HTTP сервера для бесплатного хостинга (Render / Koyeb)
     web_runner = await start_web_server()

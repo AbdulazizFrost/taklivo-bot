@@ -121,25 +121,11 @@ class OrderService:
         updated = await db.get_order(order_id)
 
         # Проверяем, есть ли реферер у клиента
-        async with aiosqlite_conn(db.db_path) as conn:
-            cursor = await conn.execute("SELECT referrer_id FROM users WHERE telegram_id = ?", (order.telegram_id,))
-            row = await cursor.fetchone()
-            referrer_id = row[0] if row and row[0] else None
+        referrer_id = await db.get_user_referrer_id(order.telegram_id)
 
         if referrer_id and referrer_id != order.telegram_id:
             # Начисляем бонус пригласившему только за первый оплаченный заказ друга (защита от злоупотреблений)
-            async with aiosqlite_conn(db.db_path) as conn:
-                cursor = await conn.execute(
-                    """
-                    SELECT COUNT(*) FROM orders 
-                    WHERE telegram_id = ? 
-                      AND status IN ('PAID', 'IN_PROGRESS', 'PREVIEW', 'REVISION', 'COMPLETED') 
-                      AND id != ?
-                    """,
-                    (order.telegram_id, order_id),
-                )
-                prev_row = await cursor.fetchone()
-                prev_orders = prev_row[0] if prev_row else 0
+            prev_orders = await db.get_user_paid_orders_count(order.telegram_id, exclude_order_id=order_id)
 
             if prev_orders == 0:
                 reward = config.REFERRAL_REWARD_BONUS
@@ -232,12 +218,7 @@ class OrderService:
 
         # 2. Безопасный откат счетчика промокода
         if order.promocode:
-            async with aiosqlite_conn(db.db_path) as conn:
-                await conn.execute(
-                    "UPDATE promocodes SET used_count = MAX(0, used_count - 1) WHERE code = ?",
-                    (order.promocode.strip().upper(),),
-                )
-                await conn.commit()
+            await db.rollback_promocode_usage(order.promocode)
             logger.info(f"Откачен счетчик использования промокода {order.promocode} при отмене заказа #{order_id}")
 
         return True
@@ -418,12 +399,6 @@ class OrderService:
             f"👤 <b>Клиент:</b> {user_mention}\n"
             f"🆔 <b>Telegram ID:</b> <code>{order.telegram_id}</code>"
         )
-
-
-def aiosqlite_conn(db_path: str):
-    """Вспомогательный контекстный менеджер подключения к SQLite."""
-    import aiosqlite
-    return aiosqlite.connect(db_path)
 
 
 order_service = OrderService()

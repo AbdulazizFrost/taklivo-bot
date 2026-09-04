@@ -27,6 +27,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 # Путь к проекту
 sys.path.insert(0, r"c:\Users\Abdulaziz\Desktop\работы\идеи")
+os.environ["DATABASE_URL"] = ""
 sys.stdout.reconfigure(encoding="utf-8")
 
 PASSED_COUNT = 0

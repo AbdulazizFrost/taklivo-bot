@@ -49,6 +49,8 @@ class Config:
     ).replace(r"\n", "\n")
 
     # База данных
+    DEFAULT_POSTGRES_URL: str = "postgresql://postgres.kwospklwdjtpxdkqdbtz:Sidiqov0503@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+    DATABASE_URL: str = os.getenv("DATABASE_URL", DEFAULT_POSTGRES_URL).strip()
     DATABASE_PATH: str = os.getenv("DATABASE_PATH", os.getenv("DB_PATH", "data/wedding_bot.db"))
 
     # Базовая стоимость создания сайта
