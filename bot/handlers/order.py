@@ -95,12 +95,17 @@ async def callback_cancel_unpaid_order(callback: CallbackQuery, state: FSMContex
 
 @router.callback_query(F.data == "client:create_order")
 async def start_order_wizard(callback: CallbackQuery, state: FSMContext) -> None:
-    """Старт визарда: Шаг 1 — Выбор типа мероприятия."""
+    """Старт визарда: Шаг 1 — Выбор типа мероприятия с авто-подстановкой активного промокода."""
     lang = await db.get_user_language(callback.from_user.id)
+    active_promo_code = await db.get_user_active_promocode(callback.from_user.id)
+    promo_obj = await db.get_promocode(active_promo_code) if active_promo_code else None
+    promocode = promo_obj.code if (promo_obj and promo_obj.is_active and promo_obj.used_count < promo_obj.max_uses) else None
+
     await state.clear()
     await state.update_data(
         lang=lang,
         event_type="wedding",
+        promocode=promocode,
         options={
             "timer": True,
             "rsvp": False,
@@ -140,11 +145,16 @@ async def process_select_tmpl_from_portfolio(callback: CallbackQuery, state: FSM
             return
         tmpl_name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
 
+    active_promo_code = await db.get_user_active_promocode(callback.from_user.id)
+    promo_obj = await db.get_promocode(active_promo_code) if active_promo_code else None
+    promocode = promo_obj.code if (promo_obj and promo_obj.is_active and promo_obj.used_count < promo_obj.max_uses) else None
+
     await state.clear()
     await state.update_data(
         lang=lang,
         template_id=tmpl_id,
         template_name=tmpl_name,
+        promocode=promocode,
         options={
             "timer": True,
             "rsvp": False,
@@ -984,6 +994,15 @@ async def _show_order_preview(message_or_msg: Message, state: FSMContext, is_edi
 
     promocode = data.get("promocode")
     discount_amount = data.get("discount_amount", 0)
+    if promocode and discount_amount == 0:
+        promo_obj = await db.get_promocode(promocode)
+        if promo_obj and promo_obj.is_active and promo_obj.used_count < promo_obj.max_uses:
+            if promo_obj.discount_percent > 0:
+                discount_amount = int(calc_res.total_price * (promo_obj.discount_percent / 100))
+            else:
+                discount_amount = promo_obj.discount_amount
+            await state.update_data(discount_amount=discount_amount)
+
     bonus_used = data.get("bonus_used", 0)
 
     # Максимальная скидка не может превышать стоимость
@@ -1217,6 +1236,9 @@ async def process_confirm_and_create_order(callback: CallbackQuery, state: FSMCo
         telegram_id=callback.from_user.id,
         data=data,
     )
+    # Сбрасываем активный промокод пользователя
+    await db.set_user_active_promocode(callback.from_user.id, None)
+
     order = await order_service.get_order_by_id(order_id)
     if not order:
         await callback.answer("Ошибка создания заказа", show_alert=True)

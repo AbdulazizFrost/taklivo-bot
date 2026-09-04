@@ -21,10 +21,12 @@ from bot.keyboards import (
     get_my_orders_keyboard,
     get_order_card_keyboard,
     get_cancel_keyboard,
+    get_back_cancel_keyboard,
+    get_promo_activated_keyboard,
 )
 from bot.locales import get_text
 from bot.services import order_service, notifications
-from bot.states.order import OrderStates
+from bot.states import OrderStates, ClientStates
 from bot.utils.helpers import format_currency, get_status_badge, escape
 from config import config
 
@@ -36,18 +38,26 @@ logger = logging.getLogger(__name__)
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext) -> None:
-    """Обработка команды /start с поддержкой реферальных ссылок."""
+    """Обработка команды /start с поддержкой реферальных ссылок и промокодов."""
     await state.clear()
 
-    # Проверка наличия реферера в deep link: /start ref_123456
+    # Проверка параметров в deep link: /start ref_123456 или /start promo_TAKLIVO50
     referrer_id = None
+    promo_code_to_activate = None
     args = message.text.split()
-    if len(args) > 1 and args[1].startswith("ref_"):
-        try:
-            ref_str = args[1].replace("ref_", "")
-            referrer_id = int(ref_str)
-        except ValueError:
-            referrer_id = None
+    if len(args) > 1:
+        param = args[1].strip()
+        if param.startswith("ref_"):
+            try:
+                ref_str = param.replace("ref_", "")
+                referrer_id = int(ref_str)
+            except ValueError:
+                referrer_id = None
+        elif param.startswith("promo_") or param.upper().startswith("TAKLIVO"):
+            promo_raw = param.replace("promo_", "").strip().upper()
+            promo = await db.get_promocode(promo_raw)
+            if promo and promo.is_active and promo.used_count < promo.max_uses:
+                promo_code_to_activate = promo.code
 
     user = await db.get_or_create_user(
         telegram_id=message.from_user.id,
@@ -55,6 +65,9 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
         first_name=message.from_user.first_name,
         referrer_id=referrer_id,
     )
+
+    if promo_code_to_activate:
+        await db.set_user_active_promocode(user.telegram_id, promo_code_to_activate)
 
     await message.answer(
         text=get_text(user.language, "select_language"),
@@ -64,14 +77,63 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(F.data.startswith("lang:"))
 async def callback_select_language(callback: CallbackQuery, state: FSMContext) -> None:
-    """Сохранение выбранного языка и показ главного меню."""
+    """Сохранение выбранного языка и показ главного меню с учетом активного промокода."""
     lang = callback.data.split(":")[1]
     await db.set_user_language(callback.from_user.id, lang)
     await callback.answer(get_text(lang, "language_selected"))
 
+    active_promo_code = await db.get_user_active_promocode(callback.from_user.id)
+    promo_banner = ""
+    if active_promo_code:
+        promo = await db.get_promocode(active_promo_code)
+        if promo and promo.is_active and promo.used_count < promo.max_uses:
+            disc_str = f"{promo.discount_percent}%" if promo.discount_percent > 0 else format_currency(promo.discount_amount, lang)
+            promo_banner = f"\n\n{get_text(lang, 'start_promo_activated', code=promo.code, discount=disc_str)}"
+
     await callback.message.edit_text(
-        text=get_text(lang, "main_menu_title"),
+        text=get_text(lang, "main_menu_title") + promo_banner,
         reply_markup=get_main_menu_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+
+
+@router.callback_query(F.data == "client:enter_promo")
+async def callback_enter_promo(callback: CallbackQuery, state: FSMContext) -> None:
+    """Запрос ввода промокода из главного меню."""
+    lang = await db.get_user_language(callback.from_user.id)
+    await state.set_state(ClientStates.entering_menu_promocode)
+    await callback.message.edit_text(
+        text=get_text(lang, "menu_promo_prompt"),
+        reply_markup=get_back_cancel_keyboard("client:main_menu", lang=lang),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.message(ClientStates.entering_menu_promocode, F.text)
+async def process_menu_promocode(message: Message, state: FSMContext) -> None:
+    """Обработка и активация промокода из главного меню."""
+    lang = await db.get_user_language(message.from_user.id)
+    code = message.text.strip().upper()
+
+    promo = await db.get_promocode(code)
+    if not promo or not promo.is_active or promo.used_count >= promo.max_uses:
+        await message.answer(
+            text=get_text(lang, "menu_promo_invalid"),
+            reply_markup=get_back_cancel_keyboard("client:main_menu", lang=lang),
+            parse_mode="HTML",
+        )
+        return
+
+    # Сохраняем активный промокод для пользователя в базе
+    await db.set_user_active_promocode(message.from_user.id, promo.code)
+    await state.clear()
+
+    discount_str = f"{promo.discount_percent}%" if promo.discount_percent > 0 else format_currency(promo.discount_amount, lang)
+
+    await message.answer(
+        text=get_text(lang, "menu_promo_success", code=promo.code, discount=discount_str),
+        reply_markup=get_promo_activated_keyboard(lang=lang),
         parse_mode="HTML",
     )
 

@@ -48,7 +48,8 @@ class User:
     language: str
     referrer_id: Optional[int]
     bonus_balance: int
-    created_at: str
+    active_promocode: Optional[str] = None
+    created_at: str = ""
 
 
 @dataclass

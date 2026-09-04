@@ -48,6 +48,7 @@ class Database:
                     language TEXT DEFAULT 'ru',
                     referrer_id INTEGER,
                     bonus_balance INTEGER DEFAULT 0,
+                    active_promocode TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
@@ -140,6 +141,8 @@ class Database:
                 await db.execute("ALTER TABLE users ADD COLUMN referrer_id INTEGER;")
             if "bonus_balance" not in u_cols:
                 await db.execute("ALTER TABLE users ADD COLUMN bonus_balance INTEGER DEFAULT 0;")
+            if "active_promocode" not in u_cols:
+                await db.execute("ALTER TABLE users ADD COLUMN active_promocode TEXT;")
 
             cursor = await db.execute("PRAGMA table_info(orders);")
             o_cols = [row["name"] for row in await cursor.fetchall()]
@@ -215,6 +218,7 @@ class Database:
                     language=row["language"] or "ru",
                     referrer_id=row["referrer_id"] if "referrer_id" in row.keys() else None,
                     bonus_balance=row["bonus_balance"] if "bonus_balance" in row.keys() else 0,
+                    active_promocode=row["active_promocode"] if "active_promocode" in row.keys() else None,
                     created_at=str(row["created_at"]),
                 )
 
@@ -240,8 +244,31 @@ class Database:
                 language=language,
                 referrer_id=valid_referrer,
                 bonus_balance=initial_bonus,
+                active_promocode=None,
                 created_at=datetime.utcnow().isoformat(),
             )
+
+    async def set_user_active_promocode(self, telegram_id: int, promo_code: Optional[str]) -> None:
+        """Сохраняет активированный пользователем промокод (или сбрасывает его)."""
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute(
+                "UPDATE users SET active_promocode = ? WHERE telegram_id = ?",
+                (promo_code.strip().upper() if promo_code else None, telegram_id),
+            )
+            await db.commit()
+
+    async def get_user_active_promocode(self, telegram_id: int) -> Optional[str]:
+        """Возвращает текущий активный промокод пользователя."""
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute(
+                "SELECT active_promocode FROM users WHERE telegram_id = ?",
+                (telegram_id,),
+            )
+            row = await cursor.fetchone()
+            if row and "active_promocode" in row.keys():
+                return row["active_promocode"]
+            return None
 
     async def get_user_language(self, telegram_id: int) -> str:
         """Получает язык интерфейса пользователя."""

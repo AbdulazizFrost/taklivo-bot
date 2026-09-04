@@ -287,6 +287,29 @@ TEXTS = {
     "err_invalid_url": "⚠️ <b>Noto‘g‘ri havola!</b> Iltimos, <code>http://</code> yoki <code>https://</code> bilan boshlanuvchi to‘liq havolani yuboring.",
     "reference_url_received": "✅ <b>Havola muvaffaqiyatli qabul qilindi!</b>\n\nEndi saytingiz uchun kerakli funksiyalarni tanlang:",
 
+    # Menyu va havolalardan promokodlar
+    "btn_promo_code": "🎟 Promokod kiritish",
+    "btn_order_with_discount": "✨ Chegirma bilan buyurtma berish",
+    "menu_promo_prompt": (
+        "🎟 <b>Promokodni kiriting:</b>\n\n"
+        "Buyurtmangizga shaxsiy chegirma olish uchun promokodni yuboring (masalan, <code>TAKLIVO50</code>)! ✨"
+    ),
+    "menu_promo_success": (
+        "✅ <b>«{code}» promokodi muvaffaqiyatli faollashtirildi!</b>\n\n"
+        "Sizga onlayn taklifnoma yaratish uchun <b>{discount}</b> chegirma taqdim etildi. "
+        "Chegirma siz uchun biriktirildi va buyurtma berish vaqtida avtomatik ravishda hisoblanadi! 🎉"
+    ),
+    "menu_promo_invalid": (
+        "⚠️ <b>Noto‘g‘ri promokod!</b>\n"
+        "Promokod topilmadi, muddati tugagan yoki undan foydalanish soni cheklangan. "
+        "Iltimos, kodni to‘g‘ri kiritganingizni tekshiring."
+    ),
+    "start_promo_activated": (
+        "🎉 <b>TAKLIVO servisiga xush kelibsiz!</b>\n\n"
+        "<code>{code}</code> promokodi muvaffaqiyatli faollashtirildi! "
+        "Shaxsiy onlayn taklifnomangiz uchun sizga <b>{discount}</b> chegirma taqdim etildi! ✨"
+    ),
+
     # Holatlar (badge)
     "status_NEW": "🆕 Yangi",
     "status_WAITING_PAYMENT": "💳 To‘lov kutilmoqda",

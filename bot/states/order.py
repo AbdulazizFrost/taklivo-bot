@@ -45,3 +45,8 @@ class OrderStates(StatesGroup):
 
     # Правки по готовому сайту
     revising = State()
+
+
+class ClientStates(StatesGroup):
+    # Ввод промокода из главного меню
+    entering_menu_promocode = State()

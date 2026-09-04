@@ -117,6 +117,7 @@ required_keys = [
     "portfolio_title", "btn_demo_link", "btn_choose_template", "btn_portfolio",
     "cancel_success", "err_text_too_long", "order_paid_bonuses_success",
     "btn_custom_template", "step_reference_url", "err_invalid_url", "reference_url_received",
+    "btn_promo_code", "btn_order_with_discount", "menu_promo_prompt", "menu_promo_success", "menu_promo_invalid", "start_promo_activated",
 ]
 missing_required = [k for k in required_keys if k not in ru_keys or k not in uz_keys]
 
@@ -435,6 +436,47 @@ async def run_async_tests():
                 "TEST 14b: Reference URL stored in DB and shown to admin",
                 custom_order.reference_url == "https://example.com/sample-invitation" and "https://example.com/sample-invitation" in admin_card,
                 f"reference_url в заказе: {custom_order.reference_url}",
+            )
+
+            # ----------------------------------------------------
+            # TEST 15: Промокод из меню и deep-link авто-активация
+            # ----------------------------------------------------
+            print("\n--- TEST 15: Проверка пред-активации промокода из меню и авто-скидки ---")
+            await test_db.create_promocode(code="TAKLIVO50", discount_percent=50, max_uses=50)
+            await test_db.set_user_active_promocode(friend.telegram_id, "TAKLIVO50")
+            stored_promo = await test_db.get_user_active_promocode(friend.telegram_id)
+            log_test_result(
+                "TEST 15a: Active promocode stored for user",
+                stored_promo == "TAKLIVO50",
+                f"Активный промокод пользователя: {stored_promo}",
+            )
+
+            # Проверяем расчет заказа с промокодом TAKLIVO50
+            order_data_promo = {
+                "template_id": "luxury_gold",
+                "template_name": "Luxury Gold",
+                "promocode": "TAKLIVO50",
+                "event_type": "wedding",
+                "bride_name": "Азиза",
+                "groom_name": "Бобур",
+                "wedding_date": "10.10.2026",
+                "wedding_time": "19:00",
+                "venue": "Versal",
+                "address": "Tashkent",
+                "phone": "+998901112233",
+                "options": {"timer": True, "map": True},
+                "discount_amount": 35000,
+            }
+            promo_order_id = await OrderService.create_new_order(
+                user_id=friend.id,
+                telegram_id=friend.telegram_id,
+                data=order_data_promo,
+            )
+            promo_order = await OrderService.get_order_by_id(promo_order_id)
+            log_test_result(
+                "TEST 15b: Order created with 50% promo discount",
+                promo_order.discount_amount == 35000 and promo_order.promocode == "TAKLIVO50",
+                f"Скидка по промокоду: {promo_order.discount_amount}, промокод: {promo_order.promocode}",
             )
 
             # ----------------------------------------------------

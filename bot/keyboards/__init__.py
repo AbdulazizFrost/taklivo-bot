@@ -24,6 +24,7 @@ from bot.keyboards.client import (
     get_client_website_review_keyboard,
     get_cancel_keyboard,
     get_back_cancel_keyboard,
+    get_promo_activated_keyboard,
 )
 from bot.keyboards.admin import (
     get_admin_main_keyboard,
@@ -60,6 +61,7 @@ __all__ = [
     "get_client_website_review_keyboard",
     "get_cancel_keyboard",
     "get_back_cancel_keyboard",
+    "get_promo_activated_keyboard",
     "get_admin_main_keyboard",
     "get_admin_order_actions_keyboard",
     "get_admin_status_selection_keyboard",
