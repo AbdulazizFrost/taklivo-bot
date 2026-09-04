@@ -293,7 +293,11 @@ TEXTS = {
     "btn_order_with_discount": "✨ Chegirma bilan buyurtma berish",
     "menu_promo_prompt": (
         "🎟 <b>Promokodni kiriting:</b>\n\n"
-        "Buyurtmangizga shaxsiy chegirma olish uchun promokodni yuboring (masalan, <code>TAKLIVO50</code>)! ✨"
+        "Buyurtmangizga shaxsiy chegirma olish uchun promokodni yuboring (masalan, <code>PROMO2026</code>)! ✨"
+    ),
+    "menu_promo_already_active": (
+        "⚠️ <b>Sizda allaqachon faol promokod mavjud:</b> <code>{code}</code> ({discount} chegirma)!\n\n"
+        "Boshqa promokodni faqat joriy promokod bilan buyurtma berganingizdan so‘ng faollashtirishingiz mumkin. Chegirmadan foydalanishga shoshiling! ✨"
     ),
     "menu_promo_success": (
         "✅ <b>«{code}» promokodi muvaffaqiyatli faollashtirildi!</b>\n\n"

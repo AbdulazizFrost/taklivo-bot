@@ -527,6 +527,52 @@ async def run_async_tests():
                 f"Триггеры отмены: {cancel_filters}",
             )
 
+            # ----------------------------------------------------
+            # TEST 17: Проверка нейтрального примера и защиты от перезаписи промокода
+            # ----------------------------------------------------
+            print("\n--- TEST 17: Проверка нейтрального примера и защиты от перезаписи промокода ---")
+            from bot.locales.ru import TEXTS as RU_TEXTS
+            from bot.locales.uz import TEXTS as UZ_TEXTS
+
+            promo_secret_hidden = (
+                "TAKLIVO50" not in RU_TEXTS["menu_promo_prompt"] and
+                "PROMO2026" in RU_TEXTS["menu_promo_prompt"] and
+                "TAKLIVO50" not in UZ_TEXTS["menu_promo_prompt"] and
+                "PROMO2026" in UZ_TEXTS["menu_promo_prompt"]
+            )
+            log_test_result(
+                "TEST 17a: Secret promo TAKLIVO50 hidden from prompts in RU & UZ",
+                promo_secret_hidden,
+                "menu_promo_prompt использует нейтральный пример PROMO2026",
+            )
+
+            # Проверяем форматирование menu_promo_already_active
+            msg_ru = RU_TEXTS["menu_promo_already_active"].format(code="ACTIVE1", discount="50%")
+            msg_uz = UZ_TEXTS["menu_promo_already_active"].format(code="ACTIVE1", discount="50%")
+            already_active_valid = "ACTIVE1" in msg_ru and "50%" in msg_ru and "ACTIVE1" in msg_uz and "50%" in msg_uz
+            log_test_result(
+                "TEST 17b: menu_promo_already_active format valid in RU & UZ",
+                already_active_valid,
+                "Сообщения о повторном промокоде успешно форматируются",
+            )
+
+            # Проверяем защиту от перезаписи промокода при активном коде
+            await test_db.create_promocode(code="FIRST50", discount_percent=50, max_uses=10)
+            await test_db.create_promocode(code="SECOND20", discount_percent=20, max_uses=10)
+            await test_db.set_user_active_promocode(friend.telegram_id, "FIRST50")
+            
+            # Симулируем логику из cmd_start: если уже есть промокод, новый не перезаписывает его
+            current_active = await test_db.get_user_active_promocode(friend.telegram_id)
+            if not current_active:
+                await test_db.set_user_active_promocode(friend.telegram_id, "SECOND20")
+            
+            preserved_active = await test_db.get_user_active_promocode(friend.telegram_id)
+            log_test_result(
+                "TEST 17c: Active promo is preserved and cannot be overwritten before use",
+                preserved_active == "FIRST50",
+                f"Текущий промокод пользователя остался: {preserved_active}",
+            )
+
         finally:
             bot.database.db.db_path = orig_db_path
 

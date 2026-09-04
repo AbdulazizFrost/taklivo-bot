@@ -67,7 +67,9 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
     )
 
     if promo_code_to_activate:
-        await db.set_user_active_promocode(user.telegram_id, promo_code_to_activate)
+        current_promo = await db.get_user_active_promocode(user.telegram_id)
+        if not current_promo:
+            await db.set_user_active_promocode(user.telegram_id, promo_code_to_activate)
 
     await message.answer(
         text=get_text(user.language, "select_language"),
@@ -99,8 +101,23 @@ async def callback_select_language(callback: CallbackQuery, state: FSMContext) -
 
 @router.callback_query(F.data == "client:enter_promo")
 async def callback_enter_promo(callback: CallbackQuery, state: FSMContext) -> None:
-    """Запрос ввода промокода из главного меню."""
+    """Запрос ввода промокода из главного меню (с блокировкой, если уже есть активный)."""
     lang = await db.get_user_language(callback.from_user.id)
+
+    # Если уже есть активный неиспользованный промокод, запрещаем вводить второй
+    active_promo_code = await db.get_user_active_promocode(callback.from_user.id)
+    if active_promo_code:
+        promo = await db.get_promocode(active_promo_code)
+        if promo and promo.is_active and promo.used_count < promo.max_uses:
+            disc_str = f"{promo.discount_percent}%" if promo.discount_percent > 0 else format_currency(promo.discount_amount, lang)
+            await callback.message.edit_text(
+                text=get_text(lang, "menu_promo_already_active", code=promo.code, discount=disc_str),
+                reply_markup=get_promo_activated_keyboard(lang=lang),
+                parse_mode="HTML",
+            )
+            await callback.answer()
+            return
+
     await state.set_state(ClientStates.entering_menu_promocode)
     await callback.message.edit_text(
         text=get_text(lang, "menu_promo_prompt"),
@@ -114,6 +131,21 @@ async def callback_enter_promo(callback: CallbackQuery, state: FSMContext) -> No
 async def process_menu_promocode(message: Message, state: FSMContext) -> None:
     """Обработка и активация промокода из главного меню."""
     lang = await db.get_user_language(message.from_user.id)
+
+    # Дополнительная проверка на случай параллельного ввода
+    active_promo_code = await db.get_user_active_promocode(message.from_user.id)
+    if active_promo_code:
+        promo = await db.get_promocode(active_promo_code)
+        if promo and promo.is_active and promo.used_count < promo.max_uses:
+            disc_str = f"{promo.discount_percent}%" if promo.discount_percent > 0 else format_currency(promo.discount_amount, lang)
+            await state.clear()
+            await message.answer(
+                text=get_text(lang, "menu_promo_already_active", code=promo.code, discount=disc_str),
+                reply_markup=get_promo_activated_keyboard(lang=lang),
+                parse_mode="HTML",
+            )
+            return
+
     code = message.text.strip().upper()
 
     promo = await db.get_promocode(code)
