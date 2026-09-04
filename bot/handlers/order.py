@@ -218,14 +218,9 @@ async def process_step_event_type(callback: CallbackQuery, state: FSMContext) ->
         await state.update_data(options=options, total_price=calc_res.total_price)
         await state.set_state(OrderStates.choosing_options)
 
+        options_text = await _format_step_options_text(data, calc_res, lang)
         await callback.message.edit_text(
-            text=get_text(
-                lang,
-                "step_options",
-                base_price=format_currency(calc_res.base_price, lang=lang),
-                extra_price=format_currency(calc_res.extra_options_total, lang=lang),
-                total_price=format_currency(calc_res.total_price, lang=lang),
-            ),
+            text=options_text,
             reply_markup=get_options_toggle_keyboard(options, lang=lang),
             parse_mode="HTML",
         )
@@ -239,6 +234,45 @@ async def process_step_event_type(callback: CallbackQuery, state: FSMContext) ->
         parse_mode="HTML",
     )
     await callback.answer()
+
+
+async def _format_step_options_text(data: dict, calc_res, lang: str) -> str:
+    """Форматирует текст Шага 3 (конструктора опций) с зачеркиванием цены при активном промокоде."""
+    base_total = calc_res.total_price
+    promocode = data.get("promocode")
+    discount = 0
+    promo_line = ""
+
+    if promocode:
+        promo_obj = await db.get_promocode(promocode)
+        if promo_obj and promo_obj.is_active and promo_obj.used_count < promo_obj.max_uses:
+            if promo_obj.discount_percent > 0:
+                discount = int(base_total * (promo_obj.discount_percent / 100))
+                disc_label = f"(-{promo_obj.discount_percent}%)"
+            else:
+                discount = min(promo_obj.discount_amount, base_total)
+                disc_label = ""
+
+            if discount > 0:
+                if lang == "uz":
+                    promo_line = f"• 🎟 <b>Promokod ({escape(promocode)}):</b> -{format_currency(discount, lang)} {disc_label}\n"
+                else:
+                    promo_line = f"• 🎟 <b>Промокод ({escape(promocode)}):</b> -{format_currency(discount, lang)} {disc_label}\n"
+
+    final_total = max(0, base_total - discount)
+    if discount > 0:
+        total_display = f"<s>{format_currency(base_total, lang)}</s> <b>{format_currency(final_total, lang)}</b>"
+    else:
+        total_display = f"<b>{format_currency(base_total, lang)}</b>"
+
+    return get_text(
+        lang,
+        "step_options",
+        base_price=format_currency(calc_res.base_price, lang=lang),
+        extra_price=format_currency(calc_res.extra_options_total, lang=lang),
+        promo_line=promo_line,
+        total_price=total_display,
+    )
 
 
 # --- Шаг 2: Выбор шаблона -> Шаг 3: Конструктор опций ---
@@ -291,14 +325,9 @@ async def process_step_template(callback: CallbackQuery, state: FSMContext) -> N
     )
     await state.set_state(OrderStates.choosing_options)
 
+    options_text = await _format_step_options_text(data, calc_res, lang)
     await callback.message.edit_text(
-        text=get_text(
-            lang,
-            "step_options",
-            base_price=format_currency(calc_res.base_price, lang=lang),
-            extra_price=format_currency(calc_res.extra_options_total, lang=lang),
-            total_price=format_currency(calc_res.total_price, lang=lang),
-        ),
+        text=options_text,
         reply_markup=get_options_toggle_keyboard(options, lang=lang),
         parse_mode="HTML",
     )
@@ -341,10 +370,11 @@ async def process_reference_url(message: Message, state: FSMContext) -> None:
     )
 
     await state.set_state(OrderStates.choosing_options)
+    options_text = await _format_step_options_text(data, calc_res, lang)
     await message.answer(
         text=(
             f"{get_text(lang, 'reference_url_received')}\n\n"
-            f"{get_text(lang, 'step_options', base_price=format_currency(calc_res.base_price, lang=lang), extra_price=format_currency(calc_res.extra_options_total, lang=lang), total_price=format_currency(calc_res.total_price, lang=lang))}"
+            f"{options_text}"
         ),
         reply_markup=get_options_toggle_keyboard(options, lang=lang),
         parse_mode="HTML",
@@ -365,14 +395,9 @@ async def process_option_toggle(callback: CallbackQuery, state: FSMContext) -> N
     calc_res = calculate_total(options, lang=lang)
     await state.update_data(options=options, total_price=calc_res.total_price)
 
+    options_text = await _format_step_options_text(data, calc_res, lang)
     await callback.message.edit_text(
-        text=get_text(
-            lang,
-            "step_options",
-            base_price=format_currency(calc_res.base_price, lang=lang),
-            extra_price=format_currency(calc_res.extra_options_total, lang=lang),
-            total_price=format_currency(calc_res.total_price, lang=lang),
-        ),
+        text=options_text,
         reply_markup=get_options_toggle_keyboard(options, lang=lang),
         parse_mode="HTML",
     )
@@ -438,14 +463,9 @@ async def process_wizard_back(callback: CallbackQuery, state: FSMContext) -> Non
         options = data.get("options", {})
         calc_res = calculate_total(options, lang=lang)
         await state.set_state(OrderStates.choosing_options)
+        options_text = await _format_step_options_text(data, calc_res, lang)
         await callback.message.edit_text(
-            text=get_text(
-                lang,
-                "step_options",
-                base_price=format_currency(calc_res.base_price, lang=lang),
-                extra_price=format_currency(calc_res.extra_options_total, lang=lang),
-                total_price=format_currency(calc_res.total_price, lang=lang),
-            ),
+            text=options_text,
             reply_markup=get_options_toggle_keyboard(options, lang=lang),
             parse_mode="HTML",
         )
@@ -1202,14 +1222,9 @@ async def process_jump_to_field(callback: CallbackQuery, state: FSMContext) -> N
         options = data.get("options", {})
         calc_res = calculate_total(options, lang=lang)
         await state.set_state(OrderStates.choosing_options)
+        options_text = await _format_step_options_text(data, calc_res, lang)
         await callback.message.edit_text(
-            text=get_text(
-                lang,
-                "step_options",
-                base_price=format_currency(calc_res.base_price, lang=lang),
-                extra_price=format_currency(calc_res.extra_options_total, lang=lang),
-                total_price=format_currency(calc_res.total_price, lang=lang),
-            ),
+            text=options_text,
             reply_markup=get_options_toggle_keyboard(options, lang=lang),
             parse_mode="HTML",
         )

@@ -480,6 +480,41 @@ async def run_async_tests():
             )
 
             # ----------------------------------------------------
+            # TEST 16: Проверка отображения скидки и зачеркивания в Шаге 3 (Опции)
+            # ----------------------------------------------------
+            print("\n--- TEST 16: Проверка зачеркивания цены и промокода в Шаге 3 ---")
+            from bot.handlers.order import _format_step_options_text
+            from bot.services.calculator import calculate_total
+
+            sample_opts = {"timer": True, "map": True}
+            calc_sample = calculate_total(sample_opts, lang="ru")
+
+            # С промокодом TAKLIVO50 (скидка 50%)
+            text_with_promo = await _format_step_options_text({"promocode": "TAKLIVO50"}, calc_sample, lang="ru")
+            log_test_result(
+                "TEST 16a: Strikethrough price in RU options when promo active",
+                "<s>70 000 сум</s> <b>35 000 сум</b>" in text_with_promo and "• 🎟 <b>Промокод (TAKLIVO50):</b> -35 000 сум (-50%)" in text_with_promo,
+                f"Текст RU с промокодом: {text_with_promo.split('────────────────')[1].strip()}",
+            )
+
+            # На узбекском языке (UZ)
+            calc_sample_uz = calculate_total(sample_opts, lang="uz")
+            text_with_promo_uz = await _format_step_options_text({"promocode": "TAKLIVO50"}, calc_sample_uz, lang="uz")
+            log_test_result(
+                "TEST 16b: Strikethrough price in UZ options when promo active",
+                "<s>70 000 so‘m</s> <b>35 000 so‘m</b>" in text_with_promo_uz and "• 🎟 <b>Promokod (TAKLIVO50):</b> -35 000 so‘m (-50%)" in text_with_promo_uz,
+                f"Текст UZ с промокодом: {text_with_promo_uz.split('────────────────')[1].strip()}",
+            )
+
+            # Без промокода
+            text_no_promo = await _format_step_options_text({}, calc_sample, lang="ru")
+            log_test_result(
+                "TEST 16c: Normal price without promo in options",
+                "<s>" not in text_no_promo and "💰 <b>ИТОГО К ОПЛАТЕ:</b> <b>70 000 сум</b>" in text_no_promo,
+                f"Текст RU без промокода: {text_no_promo.split('────────────────')[1].strip()}",
+            )
+
+            # ----------------------------------------------------
             # TEST 3: Проверка универсальной отмены FSM
             # ----------------------------------------------------
             print("\n--- TEST 3: Проверка обработчиков отмены FSM ---")
