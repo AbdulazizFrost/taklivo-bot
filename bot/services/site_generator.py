@@ -18,9 +18,12 @@ class SiteGeneratorService:
         music: Optional[OrderMusic] = None,
     ) -> dict[str, Any]:
         """Преобразует данные заказа в структурированный словарь."""
+        is_demo = order.payment_status != "PAID"
         return {
             "order_id": order.id,
             "status": order.status,
+            "is_demo": is_demo,
+            "watermark": "TAKLIVO DEMO PREVIEW" if is_demo else None,
             "created_at": order.created_at,
             "event_type": order.event_type,
             "couple": {
@@ -43,6 +46,8 @@ class SiteGeneratorService:
                 "template_id": order.template_id,
                 "template_name": order.template_name,
                 "plan": order.plan,
+                "is_demo": is_demo,
+                "watermark": "TAKLIVO DEMO PREVIEW" if is_demo else None,
             },
             "options": {
                 "rsvp": order.rsvp_enabled,

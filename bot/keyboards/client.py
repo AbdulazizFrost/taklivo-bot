@@ -2,7 +2,7 @@
 Клавиатуры для взаимодействия с клиентом TAKLIVO.
 """
 from typing import Any, Optional
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from bot.database.models import Order
 from bot.locales import get_text
 from bot.utils.helpers import format_currency
@@ -372,6 +372,18 @@ def get_order_card_keyboard(order: Order, lang: str = "ru") -> InlineKeyboardMar
         InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="client:my_orders")
     ])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def get_phone_request_keyboard(lang: str = "ru") -> ReplyKeyboardMarkup:
+    """Клавиатура с кнопкой отправки подтвержденного номера телефона Telegram."""
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text=get_text(lang, "btn_send_contact"), request_contact=True)],
+            [KeyboardButton(text=get_text(lang, "btn_cancel"))],
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True,
+    )
 
 
 def get_client_website_review_keyboard(

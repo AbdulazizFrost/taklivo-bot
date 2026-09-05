@@ -641,9 +641,9 @@ async def run_async_tests():
             )
 
             # TEST 18e: Напоминание о сгорании 4-часовой скидки
-            from datetime import datetime, timedelta
+            from datetime import datetime, timedelta, timezone
             import aiosqlite
-            two_hours_left = (datetime.utcnow() + timedelta(hours=2)).isoformat()
+            two_hours_left = (datetime.now(timezone.utc) + timedelta(hours=2)).isoformat()
             async with aiosqlite.connect(test_db.db_path) as db_conn:
                 await db_conn.execute("UPDATE users SET promo_expires_at = ?, promo_reminder_sent = 0 WHERE telegram_id = 999111222", (two_hours_left,))
                 await db_conn.execute("DELETE FROM orders WHERE telegram_id = 999111222")
@@ -661,8 +661,149 @@ async def run_async_tests():
                 f"Пользователь найден до отметки: {found_user}, после отметки: {found_after}",
             )
 
+            # ----------------------------------------------------
+            # TEST 19: Защита от недобросовестных клиентов (Методы 4, 2, 1)
+            # ----------------------------------------------------
+            print("\n--- TEST 19: Защита от недобросовестных клиентов (Методы 4, 2, 1) ---")
+
+            # TEST 19a: Валидация телефона из Telegram Contact (с плюсом и без)
+            from bot.utils.validators import validate_phone
+            val_no_plus, phone_no_plus = validate_phone("998901234567")
+            val_with_plus, phone_with_plus = validate_phone("+998901234567")
+            val_spaces, phone_spaces = validate_phone("+998 (90) 123-45-67")
+            val_invalid, _ = validate_phone("12345")
+
+            test_19a_ok = (
+                val_no_plus and phone_no_plus == "+998901234567" and
+                val_with_plus and phone_with_plus == "+998901234567" and
+                val_spaces and phone_spaces == "+998901234567" and
+                not val_invalid
+            )
+            log_test_result(
+                "TEST 19a: Phone validation handles Telegram Contact format & manual input",
+                test_19a_ok,
+                f"99890... -> {phone_no_plus}, +99890... -> {phone_with_plus}, spaced -> {phone_spaces}",
+            )
+
+            # TEST 19b: Анти-спам лимит (максимум 1 активный неоплаченный заказ в работе)
+            spam_check_order_id = await OrderService.create_new_order(
+                user_id=timer_user.id,
+                telegram_id=timer_user.telegram_id,
+                data={
+                    "event_type": "wedding",
+                    "bride_name": "Madina",
+                    "groom_name": "Aziz",
+                    "wedding_date": "15.10.2026",
+                    "wedding_time": "18:00",
+                    "venue": "Tashkent Hall",
+                    "address": "Navoi",
+                    "phone": "+998901234567",
+                    "options": {"map": True},
+                },
+            )
+            user_orders_before = await test_db.get_user_orders(timer_user.telegram_id)
+            has_active_unpaid = any(
+                o.payment_status != PaymentStatus.PAID.value and
+                o.status in (OrderStatus.IN_PROGRESS.value, OrderStatus.PREVIEW.value, OrderStatus.REVISION.value, OrderStatus.WAITING_PAYMENT.value)
+                for o in user_orders_before
+            )
+            log_test_result(
+                "TEST 19b: Anti-spam detects active unpaid order preventing duplicate spam",
+                has_active_unpaid,
+                f"Наличие активного неоплаченного заказа: {has_active_unpaid} (ID: {spam_check_order_id})",
+            )
+
+            # TEST 19c: Водяной знак (Watermark) и флаг is_demo в экспорте сайта
+            from bot.services.site_generator import SiteGeneratorService
+            unpaid_order_obj = await OrderService.get_order_by_id(spam_check_order_id)
+            unpaid_dict = SiteGeneratorService.export_order_to_dict(unpaid_order_obj)
+            unpaid_json = SiteGeneratorService.export_order_to_json(unpaid_order_obj)
+
+            paid_order_id = await OrderService.create_new_order(
+                user_id=timer_user.id,
+                telegram_id=timer_user.telegram_id,
+                data={
+                    "event_type": "wedding",
+                    "bride_name": "Madina",
+                    "groom_name": "Aziz",
+                    "wedding_date": "15.10.2026",
+                    "wedding_time": "18:00",
+                    "venue": "Tashkent Hall",
+                    "address": "Navoi",
+                    "phone": "+998901234567",
+                    "options": {"map": True},
+                },
+            )
+            await OrderService.confirm_order_payment(paid_order_id)
+            paid_order_obj = await OrderService.get_order_by_id(paid_order_id)
+            paid_dict = SiteGeneratorService.export_order_to_dict(paid_order_obj)
+
+            test_19c_ok = (
+                unpaid_dict["is_demo"] is True and
+                unpaid_dict["watermark"] == "TAKLIVO DEMO PREVIEW" and
+                unpaid_dict["design"]["is_demo"] is True and
+                unpaid_dict["design"]["watermark"] == "TAKLIVO DEMO PREVIEW" and
+                '"is_demo": true' in unpaid_json and
+                paid_dict["is_demo"] is False and
+                paid_dict["watermark"] is None and
+                paid_dict["design"]["is_demo"] is False
+            )
+            log_test_result(
+                "TEST 19c: SiteGeneratorService export contains is_demo and watermark fields",
+                test_19c_ok,
+                f"Unpaid is_demo: {unpaid_dict['is_demo']}, watermark: {unpaid_dict['watermark']} | Paid is_demo: {paid_dict['is_demo']}",
+            )
+
+            # TEST 19d: Наличие клавиатуры отправки контакта с кнопкой отмены
+            from bot.keyboards.client import get_phone_request_keyboard
+            from aiogram.types import ReplyKeyboardMarkup
+            phone_kb_ru = get_phone_request_keyboard("ru")
+            phone_kb_uz = get_phone_request_keyboard("uz")
+
+            has_contact_btn_ru = any(
+                getattr(btn, "request_contact", False) is True for row in phone_kb_ru.keyboard for btn in row
+            )
+            has_cancel_btn_ru = any(
+                "Отменить" in getattr(btn, "text", "") for row in phone_kb_ru.keyboard for btn in row
+            )
+            has_contact_btn_uz = any(
+                getattr(btn, "request_contact", False) is True for row in phone_kb_uz.keyboard for btn in row
+            )
+            has_cancel_btn_uz = any(
+                "Bekor qilish" in getattr(btn, "text", "") for row in phone_kb_uz.keyboard for btn in row
+            )
+
+            log_test_result(
+                "TEST 19d: Phone request keyboard has request_contact and cancel buttons in RU & UZ",
+                isinstance(phone_kb_ru, ReplyKeyboardMarkup) and has_contact_btn_ru and has_cancel_btn_ru and has_contact_btn_uz and has_cancel_btn_uz,
+                f"RU contact: {has_contact_btn_ru}, cancel: {has_cancel_btn_ru} | UZ contact: {has_contact_btn_uz}, cancel: {has_cancel_btn_uz}",
+            )
+
+            # TEST 19e: Уведомления о 24-часовом демо-доступе и предупреждении за 4 часа
+            from bot.locales import get_text
+            demo_msg_ru = get_text("ru", "notify_website_ready", hero_title="Азиз & Мадина", website_url="https://taklivo.uz/demo/123", total_price="70 000 сум")
+            demo_msg_uz = get_text("uz", "notify_website_ready", hero_title="Aziz & Madina", website_url="https://taklivo.uz/demo/123", total_price="70 000 so‘m")
+            warn_msg_ru = get_text("ru", "notify_demo_expiry_warning_4h", order_id=123)
+            warn_msg_uz = get_text("uz", "notify_demo_expiry_warning_4h", order_id=123)
+            anti_spam_ru = get_text("ru", "err_already_has_active_order", order_id=123)
+            anti_spam_uz = get_text("uz", "err_already_has_active_order", order_id=123)
+
+            test_19e_ok = (
+                "24" in demo_msg_ru and "TAKLIVO" in demo_msg_ru and
+                "24" in demo_msg_uz and "TAKLIVO" in demo_msg_uz and
+                "4" in warn_msg_ru and "123" in warn_msg_ru and
+                "4" in warn_msg_uz and "123" in warn_msg_uz and
+                "#123" in anti_spam_ru and "#123" in anti_spam_uz
+            )
+            log_test_result(
+                "TEST 19e: Demo ready, 4h warning and anti-spam messages properly formatted in RU & UZ",
+                test_19e_ok,
+                f"RU demo: {'24' in demo_msg_ru}, UZ demo: {'24' in demo_msg_uz}, 4h warning: {'4' in warn_msg_ru}, anti-spam: {'#123' in anti_spam_ru}",
+            )
+
         finally:
             bot.database.db.db_path = orig_db_path
+
 
 
 asyncio.run(run_async_tests())

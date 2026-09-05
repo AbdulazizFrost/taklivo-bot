@@ -177,8 +177,18 @@ TEXTS = {
 
     "step_venue": "🏰 <b>6.1-qadam: To‘yxona / restoran / kafe nomini kiriting</b>\n\n<i>Masalan: «Oqsaroy» to‘yxonasi</i>",
     "step_address": "📍 <b>6.2-qadam: Manzil yoki mo‘ljalni kiriting</b>\n\n<i>Masalan: Toshkent sh., Navoiy ko‘chasi, 15-uy</i>",
-    "step_phone": "📞 <b>6.3-qadam: Bog‘lanish uchun telefon raqamingizni kiriting</b>\n\n<i>Masalan: +998901234567</i>",
+    "step_phone": (
+        "📞 <b>6.3-qadam: Bog‘lanish uchun telefon raqamingizni kiriting</b>\n\n"
+        "Quyidagi <b>«📱 Telefon raqamimni yuborish»</b> tugmasini bosing yoki raqamni xalqaro formatda qo‘lda yozing:\n"
+        "<i>Masalan: +998901234567</i>"
+    ),
+    "btn_send_contact": "📱 Telefon raqamimni yuborish",
     "err_invalid_phone": "⚠️ <b>Noto‘g‘ri telefon raqami!</b> Xalqaro formatda kiriting (masalan, <code>+998901234567</code>).",
+    "err_already_has_active_order": (
+        "⚠️ <b>Sizda allaqachon #{order_id}-raqamli buyurtma jarayonda!</b>\n\n"
+        "🎨 Dizaynerimiz hozirda taklifnomangizni tayyorlamoqda. Xizmat qoidalariga ko‘ra, joriy buyurtma yakunlangach yoki bekor qilingach yangi buyurtma berishingiz mumkin.\n\n"
+        "Holatni «Buyurtmalarim» bo‘limida ko‘rishingiz yoki biz bilan bog‘lanishingiz mumkin: @Abdulaziz5335."
+    ),
 
     # Media: Galereya va Musiqa
     "step_gallery_upload": (
@@ -280,11 +290,16 @@ TEXTS = {
     "notify_website_ready": (
         "🎉 <b>SIZNING TAKLIFNOMANGIZ TEKSHIRISHGA TAYYOR!</b>\n\n"
         "<b>{hero_title} ✨</b>\n\n"
-        "Biz sizning shaxsiy onlayn taklifnomangizni tayyorladik.\n"
-        "Iltimos, ochib ko‘rib barcha ma’lumotlarni tekshiring:\n\n"
+        "Biz onlayn taklifnomangizning demo versiyasini tayyorladik:\n\n"
         "🔗 <a href='{website_url}'>{website_url}</a>\n\n"
+        "🛡 <i>Diqqat: sayt TAKLIVO himoya suv belgisi (watermark) bilan demo rejimida ochilgan. Havola tekshirish uchun 24 soat davomida faol bo‘ladi.\n"
+        "To‘lov amalga oshirilgach, suv belgisi avtomatik tarzda o‘chiriladi va sayt doimiy premium rejimida faollashadi!</i>\n\n"
         "💰 Biriktirilgan chegirma bo‘yicha to‘lov: <b>{total_price}</b>\n\n"
         "Agar barchasi ma’qul bo‘lsa, saytni faollashtirish uchun quyidagi to‘lov tugmasini bosing. Agar tuzatishlar kerak bo‘lsa — «O‘zgartirish kiritish» tugmasini bosing."
+    ),
+    "notify_demo_expiry_warning_4h": (
+        "⏳ <b>#{order_id}-raqamli sayt demo muddatining tugashiga 4 soat qoldi!</b>\n\n"
+        "Suv belgisini olib tashlash va saytni doimiy xostingda faollashtirish uchun to‘lovni tasdiqlang ✨"
     ),
 
     # Havola orqali maxsus dizayn

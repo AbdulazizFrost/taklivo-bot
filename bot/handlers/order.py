@@ -6,10 +6,10 @@ FSM-обработчик визарда оформления заказа онл
 import logging
 from aiogram import Router, F
 from aiogram.filters import Command
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 
-from bot.database import db, OrderStatus
+from bot.database import db, OrderStatus, PaymentStatus
 from bot.keyboards import (
     get_main_menu_keyboard,
     get_event_type_keyboard,
@@ -21,6 +21,7 @@ from bot.keyboards import (
     get_edit_fields_keyboard,
     get_payment_keyboard,
     get_back_cancel_keyboard,
+    get_phone_request_keyboard,
 )
 from bot.locales import get_text
 from bot.services import calculate_total, order_service, notifications
@@ -36,7 +37,7 @@ logger = logging.getLogger(__name__)
 # --- Отмена визарда на любом шаге ---
 
 @router.message(Command("cancel"))
-@router.message(F.text.lower().in_(["отмена", "bekor qilish", "/cancel", "cancel"]))
+@router.message(F.text.lower().in_(["отмена", "bekor qilish", "/cancel", "cancel", "❌ отменить", "❌ bekor qilish"]))
 async def cmd_cancel_wizard(message: Message, state: FSMContext) -> None:
     """Глобальная отмена любого шага визарда через команду /cancel или текст."""
     current_state = await state.get_state()
@@ -52,6 +53,10 @@ async def cmd_cancel_wizard(message: Message, state: FSMContext) -> None:
     await state.clear()
     await message.answer(
         text=get_text(lang, "cancel_success"),
+        reply_markup=ReplyKeyboardRemove(),
+    )
+    await message.answer(
+        text=get_text(lang, "main_menu_title"),
         reply_markup=get_main_menu_keyboard(lang=lang),
         parse_mode="HTML",
     )
@@ -97,6 +102,31 @@ async def callback_cancel_unpaid_order(callback: CallbackQuery, state: FSMContex
 async def start_order_wizard(callback: CallbackQuery, state: FSMContext) -> None:
     """Старт визарда: Шаг 1 — Выбор типа мероприятия с авто-подстановкой активного промокода."""
     lang = await db.get_user_language(callback.from_user.id)
+
+    # Защита от спама: проверка наличия активного неоплаченного заказа в работе
+    user_orders = await db.get_user_orders(callback.from_user.id)
+    active_unpaid = next(
+        (
+            o for o in user_orders
+            if o.payment_status != PaymentStatus.PAID.value
+            and o.status in (
+                OrderStatus.IN_PROGRESS.value,
+                OrderStatus.PREVIEW.value,
+                OrderStatus.REVISION.value,
+                OrderStatus.WAITING_PAYMENT.value,
+            )
+        ),
+        None,
+    )
+    if active_unpaid:
+        await callback.message.edit_text(
+            text=get_text(lang, "err_already_has_active_order", order_id=active_unpaid.id),
+            reply_markup=get_main_menu_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
+        await callback.answer()
+        return
+
     active_promo_code = await db.get_user_active_promocode(callback.from_user.id)
     if active_promo_code == "TAKLIVO50":
         is_active, _, _, _ = await db.get_user_promo_timer(callback.from_user.id, lang=lang)
@@ -140,6 +170,30 @@ async def process_select_tmpl_from_portfolio(callback: CallbackQuery, state: FSM
     """Старт визарда из портфолио с уже выбранным дизайном или своим примером."""
     tmpl_id = callback.data.split(":")[1]
     lang = await db.get_user_language(callback.from_user.id)
+
+    # Защита от спама: проверка наличия активного неоплаченного заказа в работе
+    user_orders = await db.get_user_orders(callback.from_user.id)
+    active_unpaid = next(
+        (
+            o for o in user_orders
+            if o.payment_status != PaymentStatus.PAID.value
+            and o.status in (
+                OrderStatus.IN_PROGRESS.value,
+                OrderStatus.PREVIEW.value,
+                OrderStatus.REVISION.value,
+                OrderStatus.WAITING_PAYMENT.value,
+            )
+        ),
+        None,
+    )
+    if active_unpaid:
+        await callback.message.edit_text(
+            text=get_text(lang, "err_already_has_active_order", order_id=active_unpaid.id),
+            reply_markup=get_main_menu_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
+        await callback.answer()
+        return
 
     if tmpl_id == "custom":
         tmpl_name = get_text(lang, "btn_custom_template")
@@ -557,9 +611,13 @@ async def process_wizard_back(callback: CallbackQuery, state: FSMContext) -> Non
         )
     elif target == "to_phone":
         await state.set_state(OrderStates.phone)
-        await callback.message.edit_text(
+        try:
+            await callback.message.delete()
+        except Exception:
+            pass
+        await callback.message.answer(
             text=get_text(lang, "step_phone"),
-            reply_markup=get_back_cancel_keyboard("wizard_back:to_address", lang=lang),
+            reply_markup=get_phone_request_keyboard(lang=lang),
             parse_mode="HTML",
         )
     elif target == "to_preview":
@@ -864,28 +922,40 @@ async def process_address(message: Message, state: FSMContext) -> None:
 
     await message.answer(
         text=get_text(lang, "step_phone"),
-        reply_markup=get_back_cancel_keyboard("wizard_back:to_address", lang=lang),
+        reply_markup=get_phone_request_keyboard(lang=lang),
         parse_mode="HTML",
     )
 
 
-@router.message(OrderStates.phone, F.text)
+@router.message(OrderStates.phone, F.contact | F.text)
 async def process_phone(message: Message, state: FSMContext) -> None:
-    """Ввод и валидация контактного телефона."""
+    """Ввод и валидация контактного телефона (через кнопку контакта или текстом)."""
     data = await state.get_data()
     lang = data.get("lang", "ru")
-    is_valid, formatted_phone = validate_phone(message.text)
+
+    if message.contact:
+        raw_phone = message.contact.phone_number
+    else:
+        raw_phone = message.text
+
+    is_valid, formatted_phone = validate_phone(raw_phone)
 
     if not is_valid or not formatted_phone:
         await message.answer(
             text=get_text(lang, "err_invalid_phone"),
-            reply_markup=get_back_cancel_keyboard("wizard_back:to_address", lang=lang),
+            reply_markup=get_phone_request_keyboard(lang=lang),
             parse_mode="HTML",
         )
         return
 
     await state.update_data(phone=formatted_phone)
     options = data.get("options", {})
+
+    # Убираем Reply-клавиатуру перед переходом к следующим инлайн-шагам
+    await message.answer(
+        text=f"✅ {formatted_phone}",
+        reply_markup=ReplyKeyboardRemove(),
+    )
 
     # Проверяем, нужна ли загрузка фото
     if options.get("gallery"):
@@ -1224,7 +1294,15 @@ async def process_jump_to_field(callback: CallbackQuery, state: FSMContext) -> N
         await callback.message.edit_text(text=get_text(lang, "step_address"), reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang), parse_mode="HTML")
     elif field == "phone":
         await state.set_state(OrderStates.phone)
-        await callback.message.edit_text(text=get_text(lang, "step_phone"), reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang), parse_mode="HTML")
+        try:
+            await callback.message.delete()
+        except Exception:
+            pass
+        await callback.message.answer(
+            text=get_text(lang, "step_phone"),
+            reply_markup=get_phone_request_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
     elif field == "template":
         await state.set_state(OrderStates.choosing_template)
         await callback.message.edit_text(text=get_text(lang, "step_template"), reply_markup=get_template_selection_keyboard(lang=lang), parse_mode="HTML")
