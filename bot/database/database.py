@@ -40,6 +40,8 @@ class SqliteDatabase:
         self.backups_dir = Path(self.db_path).parent / "backups"
         Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
         self.backups_dir.mkdir(parents=True, exist_ok=True)
+        self._language_cache: dict[int, str] = {}
+        self._active_promo_cache: dict[int, Optional[str]] = {}
 
     async def init(self) -> None:
         """Инициализирует таблицы базы данных, индексы и миграции."""
@@ -224,12 +226,15 @@ class SqliteDatabase:
                         (username, first_name, telegram_id),
                     )
                     await db.commit()
+                lang = row["language"] or "ru"
+                self._language_cache[telegram_id] = lang
+                self._active_promo_cache[telegram_id] = row["active_promocode"] if "active_promocode" in row.keys() else None
                 return User(
                     id=row["id"],
                     telegram_id=row["telegram_id"],
                     username=username or row["username"],
                     first_name=first_name or row["first_name"],
-                    language=row["language"] or "ru",
+                    language=lang,
                     referrer_id=row["referrer_id"] if "referrer_id" in row.keys() else None,
                     bonus_balance=row["bonus_balance"] if "bonus_balance" in row.keys() else 0,
                     active_promocode=row["active_promocode"] if "active_promocode" in row.keys() else None,
@@ -248,6 +253,9 @@ class SqliteDatabase:
             )
             user_id = cursor.lastrowid
             await db.commit()
+
+            self._language_cache[telegram_id] = language
+            self._active_promo_cache[telegram_id] = None
 
             return User(
                 id=user_id,
@@ -287,32 +295,39 @@ class SqliteDatabase:
             return row[0] if row else 0
 
     async def set_user_active_promocode(self, telegram_id: int, promo_code: Optional[str]) -> None:
+        norm_code = promo_code.strip().upper() if promo_code else None
+        self._active_promo_cache[telegram_id] = norm_code
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(
                 "UPDATE users SET active_promocode = ? WHERE telegram_id = ?",
-                (promo_code.strip().upper() if promo_code else None, telegram_id),
+                (norm_code, telegram_id),
             )
             await db.commit()
 
     async def get_user_active_promocode(self, telegram_id: int) -> Optional[str]:
+        if telegram_id in self._active_promo_cache:
+            return self._active_promo_cache[telegram_id]
         async with aiosqlite.connect(self.db_path) as db:
             db.row_factory = aiosqlite.Row
             cursor = await db.execute("SELECT active_promocode FROM users WHERE telegram_id = ?", (telegram_id,))
             row = await cursor.fetchone()
-            if row and "active_promocode" in row.keys():
-                return row["active_promocode"]
-            return None
+            promo = row["active_promocode"] if row and "active_promocode" in row.keys() else None
+            self._active_promo_cache[telegram_id] = promo
+            return promo
 
     async def get_user_language(self, telegram_id: int) -> str:
+        if telegram_id in self._language_cache:
+            return self._language_cache[telegram_id]
         async with aiosqlite.connect(self.db_path) as db:
             db.row_factory = aiosqlite.Row
             cursor = await db.execute("SELECT language FROM users WHERE telegram_id = ?", (telegram_id,))
             row = await cursor.fetchone()
-            if row and row["language"]:
-                return row["language"]
-            return "ru"
+            lang = row["language"] if row and row["language"] else "ru"
+            self._language_cache[telegram_id] = lang
+            return lang
 
     async def set_user_language(self, telegram_id: int, language: str) -> None:
+        self._language_cache[telegram_id] = language
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute("UPDATE users SET language = ? WHERE telegram_id = ?", (language, telegram_id))
             await db.commit()
@@ -872,12 +887,21 @@ class PostgresDatabase:
     def __init__(self, database_url: str):
         self.database_url = database_url
         self._pool: Optional[asyncpg.Pool] = None
+        self._language_cache: dict[int, str] = {}
+        self._active_promo_cache: dict[int, Optional[str]] = {}
 
     async def _get_pool(self) -> asyncpg.Pool:
         if self._pool is None:
             if asyncpg is None:
                 raise RuntimeError("asyncpg is required for PostgreSQL connection. Run: pip install asyncpg")
-            self._pool = await asyncpg.create_pool(self.database_url, min_size=1, max_size=10)
+            self._pool = await asyncpg.create_pool(
+                self.database_url,
+                min_size=1,
+                max_size=10,
+                statement_cache_size=0,
+                command_timeout=15,
+                max_inactive_connection_lifetime=300,
+            )
         return self._pool
 
     async def init(self) -> None:
@@ -1003,12 +1027,15 @@ class PostgresDatabase:
                         "UPDATE users SET username = $1, first_name = $2 WHERE telegram_id = $3",
                         username, first_name, telegram_id
                     )
+                lang = row["language"] or "ru"
+                self._language_cache[telegram_id] = lang
+                self._active_promo_cache[telegram_id] = row["active_promocode"]
                 return User(
                     id=row["id"],
                     telegram_id=row["telegram_id"],
                     username=username or row["username"],
                     first_name=first_name or row["first_name"],
-                    language=row["language"] or "ru",
+                    language=lang,
                     referrer_id=row["referrer_id"],
                     bonus_balance=row["bonus_balance"] or 0,
                     active_promocode=row["active_promocode"],
@@ -1026,6 +1053,9 @@ class PostgresDatabase:
                 """,
                 telegram_id, username, first_name, language, valid_referrer, initial_bonus
             )
+
+            self._language_cache[telegram_id] = language
+            self._active_promo_cache[telegram_id] = None
 
             return User(
                 id=user_id,
@@ -1063,25 +1093,36 @@ class PostgresDatabase:
             return await conn.fetchval("SELECT COUNT(*) FROM users") or 0
 
     async def set_user_active_promocode(self, telegram_id: int, promo_code: Optional[str]) -> None:
+        norm_code = promo_code.strip().upper() if promo_code else None
+        self._active_promo_cache[telegram_id] = norm_code
         pool = await self._get_pool()
         async with pool.acquire() as conn:
             await conn.execute(
                 "UPDATE users SET active_promocode = $1 WHERE telegram_id = $2",
-                promo_code.strip().upper() if promo_code else None, telegram_id
+                norm_code, telegram_id
             )
 
     async def get_user_active_promocode(self, telegram_id: int) -> Optional[str]:
+        if telegram_id in self._active_promo_cache:
+            return self._active_promo_cache[telegram_id]
         pool = await self._get_pool()
         async with pool.acquire() as conn:
-            return await conn.fetchval("SELECT active_promocode FROM users WHERE telegram_id = $1", telegram_id)
+            promo = await conn.fetchval("SELECT active_promocode FROM users WHERE telegram_id = $1", telegram_id)
+            self._active_promo_cache[telegram_id] = promo
+            return promo
 
     async def get_user_language(self, telegram_id: int) -> str:
+        if telegram_id in self._language_cache:
+            return self._language_cache[telegram_id]
         pool = await self._get_pool()
         async with pool.acquire() as conn:
             lang = await conn.fetchval("SELECT language FROM users WHERE telegram_id = $1", telegram_id)
-            return lang or "ru"
+            selected_lang = lang or "ru"
+            self._language_cache[telegram_id] = selected_lang
+            return selected_lang
 
     async def set_user_language(self, telegram_id: int, language: str) -> None:
+        self._language_cache[telegram_id] = language
         pool = await self._get_pool()
         async with pool.acquire() as conn:
             await conn.execute("UPDATE users SET language = $1 WHERE telegram_id = $2", language, telegram_id)

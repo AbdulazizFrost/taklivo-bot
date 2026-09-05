@@ -15,6 +15,7 @@ if sys.platform == "win32":
     except Exception:
         pass
 
+import aiohttp
 from aiohttp import web
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
@@ -66,6 +67,24 @@ async def start_web_server() -> web.AppRunner | None:
     except Exception as e:
         logger.warning(f"HTTP Health-сервер не запущен (некритично для локального запуска): {e}")
         return None
+
+
+async def run_keep_alive_loop() -> None:
+    """Периодический опрос собственного сервера для предотвращения спящего режима на бесплатных тарифах."""
+    url = os.getenv("RENDER_EXTERNAL_URL")
+    if not url:
+        return
+    health_url = f"{url.rstrip('/')}/health"
+    logger.info(f"Keep-alive сервис активирован: {health_url}")
+    await asyncio.sleep(60)
+    while True:
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(health_url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                    logger.debug(f"Keep-alive ping status: {resp.status}")
+        except Exception as e:
+            logger.debug(f"Keep-alive ping warning: {e}")
+        await asyncio.sleep(600)
 
 
 async def set_bot_commands(bot: Bot) -> None:
@@ -137,14 +156,16 @@ async def main() -> None:
     # Настройка персонального меню
     await set_bot_commands(bot)
 
-    # Фоновые периодические задачи (напоминания клиентам)
+    # Фоновые периодические задачи
     reminder_task = asyncio.create_task(reminder.run_reminder_loop(bot))
+    keep_alive_task = asyncio.create_task(run_keep_alive_loop())
 
     logger.info(f"Бот TAKLIVO успешно запущен. ID администраторов: {config.ADMIN_IDS}")
     try:
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:
         reminder_task.cancel()
+        keep_alive_task.cancel()
         if web_runner:
             await web_runner.cleanup()
         await bot.session.close()
