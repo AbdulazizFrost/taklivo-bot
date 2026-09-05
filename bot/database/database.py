@@ -42,6 +42,7 @@ class SqliteDatabase:
         self.backups_dir.mkdir(parents=True, exist_ok=True)
         self._language_cache: dict[int, str] = {}
         self._active_promo_cache: dict[int, Optional[str]] = {}
+        self._promo_cache: dict[str, Optional[PromoCode]] = {}
 
     async def init(self) -> None:
         """Инициализирует таблицы базы данных, индексы и миграции."""
@@ -466,6 +467,7 @@ class SqliteDatabase:
         max_uses: int = 100,
     ) -> int:
         code_clean = code.strip().upper()
+        self._promo_cache.pop(code_clean, None)
         async with aiosqlite.connect(self.db_path) as db:
             cursor = await db.execute(
                 """
@@ -485,6 +487,8 @@ class SqliteDatabase:
 
     async def get_promocode(self, code: str) -> Optional[PromoCode]:
         code_clean = code.strip().upper()
+        if code_clean in self._promo_cache:
+            return self._promo_cache[code_clean]
         async with aiosqlite.connect(self.db_path) as db:
             db.row_factory = aiosqlite.Row
             cursor = await db.execute(
@@ -492,8 +496,9 @@ class SqliteDatabase:
                 (code_clean,),
             )
             row = await cursor.fetchone()
+            promo = None
             if row:
-                return PromoCode(
+                promo = PromoCode(
                     id=row["id"],
                     code=row["code"],
                     discount_percent=row["discount_percent"],
@@ -503,7 +508,8 @@ class SqliteDatabase:
                     is_active=bool(row["is_active"]),
                     created_at=str(row["created_at"]),
                 )
-            return None
+            self._promo_cache[code_clean] = promo
+            return promo
 
     async def get_all_promocodes(self) -> list[PromoCode]:
         async with aiosqlite.connect(self.db_path) as db:
@@ -525,6 +531,7 @@ class SqliteDatabase:
             ]
 
     async def delete_promocode(self, promocode_id: int) -> bool:
+        self._promo_cache.clear()
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute("DELETE FROM promocodes WHERE id = ?", (promocode_id,))
             await db.commit()
@@ -532,6 +539,7 @@ class SqliteDatabase:
 
     async def increment_promocode_usage(self, code: str) -> None:
         code_clean = code.strip().upper()
+        self._promo_cache.pop(code_clean, None)
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(
                 "UPDATE promocodes SET used_count = used_count + 1 WHERE code = ?",
@@ -541,6 +549,7 @@ class SqliteDatabase:
 
     async def rollback_promocode_usage(self, code: str) -> None:
         code_clean = code.strip().upper()
+        self._promo_cache.pop(code_clean, None)
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(
                 "UPDATE promocodes SET used_count = MAX(0, used_count - 1) WHERE code = ?",
@@ -660,6 +669,7 @@ class SqliteDatabase:
             order_id = cursor.lastrowid
 
             if promocode:
+                self._promo_cache.pop(promocode.strip().upper(), None)
                 await db.execute(
                     "UPDATE promocodes SET used_count = used_count + 1 WHERE code = ?",
                     (promocode.strip().upper(),),
@@ -889,6 +899,7 @@ class PostgresDatabase:
         self._pool: Optional[asyncpg.Pool] = None
         self._language_cache: dict[int, str] = {}
         self._active_promo_cache: dict[int, Optional[str]] = {}
+        self._promo_cache: dict[str, Optional[PromoCode]] = {}
 
     async def _get_pool(self) -> asyncpg.Pool:
         if self._pool is None:
@@ -1254,6 +1265,7 @@ class PostgresDatabase:
         max_uses: int = 100,
     ) -> int:
         code_clean = code.strip().upper()
+        self._promo_cache.pop(code_clean, None)
         pool = await self._get_pool()
         async with pool.acquire() as conn:
             promocode_id = await conn.fetchval(
@@ -1273,14 +1285,17 @@ class PostgresDatabase:
 
     async def get_promocode(self, code: str) -> Optional[PromoCode]:
         code_clean = code.strip().upper()
+        if code_clean in self._promo_cache:
+            return self._promo_cache[code_clean]
         pool = await self._get_pool()
         async with pool.acquire() as conn:
             row = await conn.fetchrow(
                 "SELECT * FROM promocodes WHERE code = $1 AND is_active = 1",
                 code_clean
             )
+            promo = None
             if row:
-                return PromoCode(
+                promo = PromoCode(
                     id=row["id"],
                     code=row["code"],
                     discount_percent=row["discount_percent"],
@@ -1290,7 +1305,8 @@ class PostgresDatabase:
                     is_active=bool(row["is_active"]),
                     created_at=str(row["created_at"]),
                 )
-            return None
+            self._promo_cache[code_clean] = promo
+            return promo
 
     async def get_all_promocodes(self) -> list[PromoCode]:
         pool = await self._get_pool()
@@ -1311,6 +1327,7 @@ class PostgresDatabase:
             ]
 
     async def delete_promocode(self, promocode_id: int) -> bool:
+        self._promo_cache.clear()
         pool = await self._get_pool()
         async with pool.acquire() as conn:
             await conn.execute("DELETE FROM promocodes WHERE id = $1", promocode_id)
@@ -1318,6 +1335,7 @@ class PostgresDatabase:
 
     async def increment_promocode_usage(self, code: str) -> None:
         code_clean = code.strip().upper()
+        self._promo_cache.pop(code_clean, None)
         pool = await self._get_pool()
         async with pool.acquire() as conn:
             await conn.execute(
@@ -1327,6 +1345,7 @@ class PostgresDatabase:
 
     async def rollback_promocode_usage(self, code: str) -> None:
         code_clean = code.strip().upper()
+        self._promo_cache.pop(code_clean, None)
         pool = await self._get_pool()
         async with pool.acquire() as conn:
             await conn.execute(
@@ -1443,6 +1462,7 @@ class PostgresDatabase:
             )
 
             if promocode:
+                self._promo_cache.pop(promocode.strip().upper(), None)
                 await conn.execute(
                     "UPDATE promocodes SET used_count = used_count + 1 WHERE code = $1",
                     promocode.strip().upper()
