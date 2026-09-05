@@ -278,9 +278,10 @@ TEXTS = {
 
     # Mijozga bildirishnomalar
     "notify_payment_confirmed": (
-        "✅ <b>To‘lov muvaffaqiyatli tasdiqlandi!</b>\n\n"
-        "Buyurtmangiz <b>#{order_id}</b> ishga qabul qilindi.\n"
-        "Biz sizning shaxsiy veb-saytingizni tayyorlashga kirishdik ✨"
+        "✅ <b>To‘lov tasdiqlandi!</b>\n\n"
+        "<b>#{order_id}</b>-raqamli buyurtmangiz muvaffaqiyatli to‘landi va faollashtirildi! 🎉\n\n"
+        "🛡 Taklifnomangizdan suv belgisi (watermark) avtomatik ravishda olib tashlandi va sayt doimiy premium rejimida ishga tushirildi ✨\n\n"
+        "Endi havolani bemalol barcha mehmonlarga yuborishingiz mumkin! Tantanangiz fayzli va unutilmas o‘tishini tilaymiz! ❤️"
     ),
     "notify_payment_rejected": (
         "❌ <b>#{order_id}-raqamli buyurtma to‘lovi tasdiqlanmadi.</b>\n\n"

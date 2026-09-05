@@ -117,10 +117,20 @@ class NotificationService:
         user_lang = await cls._resolve_lang(target_tg_id, lang)
         text = get_text(user_lang, "notify_payment_confirmed", order_id=target_order_id)
 
+        reply_markup = None
+        if order and order.website_url:
+            from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+            reply_markup = InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [InlineKeyboardButton(text=get_text(user_lang, "btn_open_website"), url=order.website_url)]
+                ]
+            )
+
         try:
             await bot.send_message(
                 chat_id=target_tg_id,
                 text=text,
+                reply_markup=reply_markup,
                 parse_mode="HTML",
             )
             return True

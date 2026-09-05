@@ -672,8 +672,9 @@ async def callback_admin_confirm_payment(callback: CallbackQuery) -> None:
         order=updated_order,
     )
 
+    status_title = "COMPLETED (Завершен)" if updated_order.status == "COMPLETED" else f"{updated_order.status} (В работе)"
     await callback.message.edit_text(
-        text=f"✅ <b>Оплата по заказу #{order_id} успешно подтверждена!</b>\n\nСтатус заказа изменен на <code>IN_PROGRESS</code> (В работе). Клиент получил оповещение.",
+        text=f"✅ <b>Оплата по заказу #{order_id} успешно подтверждена!</b>\n\nСтатус заказа изменен на <code>{status_title}</code>. Клиент получил оповещение об активации сайта.",
         reply_markup=get_admin_order_actions_keyboard(updated_order),
         parse_mode="HTML",
     )
