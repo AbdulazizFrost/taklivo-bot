@@ -50,6 +50,8 @@ class User:
     bonus_balance: int
     active_promocode: Optional[str] = None
     created_at: str = ""
+    promo_expires_at: Optional[str] = None
+    promo_reminder_sent: int = 0
 
 
 @dataclass

@@ -64,7 +64,7 @@ class OrderService:
             discount_amount=discount_amount,
             bonus_used=bonus_used,
             reference_url=data.get("reference_url"),
-            status=OrderStatus.WAITING_PAYMENT.value,
+            status=OrderStatus.PAID.value if final_price == 0 else OrderStatus.IN_PROGRESS.value,
         )
 
         # Сохраняем фото
@@ -108,14 +108,15 @@ class OrderService:
 
     @staticmethod
     async def confirm_order_payment(order_id: int, bot: Optional[Bot] = None) -> tuple[bool, Optional[Order]]:
-        """Подтверждает оплату заказа, переводит в работу (IN_PROGRESS) и начисляет реферальный бонус пригласившему."""
+        """Подтверждает оплату заказа, переводит в работу (IN_PROGRESS) или завершает (COMPLETED), если сайт уже сдан."""
         order = await db.get_order(order_id)
         if not order:
             return False, None
 
+        new_status = OrderStatus.COMPLETED.value if order.website_url else OrderStatus.IN_PROGRESS.value
         await db.update_order_status(
             order_id=order_id,
-            status=OrderStatus.IN_PROGRESS.value,
+            status=new_status,
             payment_status=PaymentStatus.PAID.value,
         )
         updated = await db.get_order(order_id)

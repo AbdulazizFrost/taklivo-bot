@@ -1,6 +1,7 @@
 """
 Клавиатуры для взаимодействия с клиентом TAKLIVO.
 """
+from typing import Any, Optional
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot.database.models import Order
 from bot.locales import get_text
@@ -373,12 +374,38 @@ def get_order_card_keyboard(order: Order, lang: str = "ru") -> InlineKeyboardMar
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-def get_client_website_review_keyboard(order_id: int, website_url: str, lang: str = "ru") -> InlineKeyboardMarkup:
-    """Кнопки под сообщением о готовности сайта."""
+def get_client_website_review_keyboard(
+    order_or_id: Any,
+    website_url: str,
+    lang: str = "ru",
+    is_paid: Optional[bool] = None,
+    total_price: int = 0,
+) -> InlineKeyboardMarkup:
+    """Кнопки под сообщением о готовности сайта (с поддержкой постоплаты)."""
+    if hasattr(order_or_id, "id"):
+        order_id = order_or_id.id
+        paid = (order_or_id.payment_status == "PAID" or order_or_id.total_price == 0) if is_paid is None else is_paid
+        price = order_or_id.total_price
+    else:
+        order_id = int(order_or_id)
+        paid = False if is_paid is None else is_paid
+        price = total_price
+
+    if not paid and price > 0:
+        action_btn = InlineKeyboardButton(
+            text=get_text(lang, "btn_pay_and_activate_website", total_price=format_currency(price, lang)),
+            callback_data=f"pay_order:{order_id}",
+        )
+    else:
+        action_btn = InlineKeyboardButton(
+            text=get_text(lang, "btn_approve_website"),
+            callback_data=f"client_approve:{order_id}",
+        )
+
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text=get_text(lang, "btn_open_website"), url=website_url)],
-            [InlineKeyboardButton(text=get_text(lang, "btn_approve_website"), callback_data=f"client_approve:{order_id}")],
+            [action_btn],
             [InlineKeyboardButton(text=get_text(lang, "btn_request_revisions"), callback_data=f"req_revision:{order_id}")],
         ]
     )

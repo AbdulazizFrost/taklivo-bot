@@ -216,9 +216,18 @@ TEXTS = {
         "🎵 <b>Musiqa:</b> {music_status}\n\n"
         "{promo_line}"
         "💰 <b>JAMI TO‘LOV SUMMASI:</b>\n"
-        "<b>{total_price}</b>"
+        "<b>{total_price}</b>\n\n"
+        "✨ <i>Oldindan to‘lovsiz: dizayner 24 soat ichida saytni tayyorlaydi. To‘lov faqat tayyor saytni ko‘rib tekshirganingizdan keyin amalga oshiriladi!</i>"
     ),
-    "btn_confirm_order": "✅ Barchasi to‘g‘ri, to‘lovga o‘tish",
+    "btn_confirm_order": "🚀 Buyurtmani yuborish (Oldindan to‘lovsiz)",
+    "order_submitted_without_payment": (
+        "🎉 <b>#{order_id}-raqamli buyurtma muvaffaqiyatli qabul qilindi!</b>\n\n"
+        "🎨 Dizaynerimiz shaxsiy taklifnomangizni tayyorlashga kirishdi.\n"
+        "⏳ <b>Tayyorlanish muddati:</b> 24 soat ichida (1 ish kuni).\n\n"
+        "🔔 Sayt tayyor bo‘lishi bilan bot sizga shaxsiy havolani yuboradi. "
+        "Siz saytni ochib, musiqasi, xaritasi va rasmlarini ko‘rib chiqasiz — va faqat barchasi sizga yoqqanidan so‘ng to‘lov qilasiz! ✨"
+    ),
+    "btn_pay_and_activate_website": "💳 {total_price} to‘lash va tasdiqlash",
     "btn_edit_order": "✏️ Ma’lumotlarni o‘zgartirish",
 
     # To‘lov
@@ -269,12 +278,13 @@ TEXTS = {
         "Iltimos, haqiqiy chekni yuboring yoki qo‘llab-quvvatlash bilan bog‘laning: @Abdulaziz5335."
     ),
     "notify_website_ready": (
-        "🎉 <b>SIZNING TAKLIFNOMANGIZ TAYYOR!</b>\n\n"
+        "🎉 <b>SIZNING TAKLIFNOMANGIZ TEKSHIRISHGA TAYYOR!</b>\n\n"
         "<b>{hero_title} ✨</b>\n\n"
         "Biz sizning shaxsiy onlayn taklifnomangizni tayyorladik.\n"
         "Iltimos, ochib ko‘rib barcha ma’lumotlarni tekshiring:\n\n"
         "🔗 <a href='{website_url}'>{website_url}</a>\n\n"
-        "Agar barchasi ma’qul bo‘lsa — «Barchasi ajoyib» tugmasini bosing. Agar tuzatishlar kerak bo‘lsa — «O‘zgartirish kiritish» tugmasini bosing."
+        "💰 Biriktirilgan chegirma bo‘yicha to‘lov: <b>{total_price}</b>\n\n"
+        "Agar barchasi ma’qul bo‘lsa, saytni faollashtirish uchun quyidagi to‘lov tugmasini bosing. Agar tuzatishlar kerak bo‘lsa — «O‘zgartirish kiritish» tugmasini bosing."
     ),
 
     # Havola orqali maxsus dizayn
@@ -311,8 +321,13 @@ TEXTS = {
     ),
     "start_promo_activated": (
         "🎉 <b>TAKLIVO servisiga xush kelibsiz!</b>\n\n"
-        "<code>{code}</code> promokodi muvaffaqiyatli faollashtirildi! "
-        "Shaxsiy onlayn taklifnomangiz uchun sizga <b>{discount}</b> chegirma taqdim etildi! ✨"
+        "🔥 <b>Sizning {discount} shaxsiy chegirmangiz (<code>{code}</code> promokodi) faol: {time_left}!</b> ({deadline} gacha)\n\n"
+        "70 000 so‘m o‘rniga 35 000 so‘m maxsus narxni biriktirib qolish uchun hoziroq oldindan to‘lovsiz buyurtma yuboring! To‘lov faqat tayyor saytni tekshirganingizdan so‘ng ✨"
+    ),
+    "promo_urgency_reminder_4h": (
+        "⏳ <b>50% chegirmangiz tugashiga atigi 4 soat qoldi!</b>\n\n"
+        "Eslatib o‘tamiz, eng yaxshi <b>35 000 so‘m</b> narxni biriktirib qolish uchun <b>hozirning o‘zida oldindan to‘lovsiz</b> buyurtma topshirishingiz mumkin.\n\n"
+        "Dizayner 24 soat ichida saytni tayyorlaydi, to‘lov esa faqat siz barchasini tekshirib chiqqaningizdan keyin talab qilinadi! ✨"
     ),
 
     # Holatlar (badge)

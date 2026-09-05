@@ -98,6 +98,11 @@ async def start_order_wizard(callback: CallbackQuery, state: FSMContext) -> None
     """Старт визарда: Шаг 1 — Выбор типа мероприятия с авто-подстановкой активного промокода."""
     lang = await db.get_user_language(callback.from_user.id)
     active_promo_code = await db.get_user_active_promocode(callback.from_user.id)
+    if active_promo_code == "TAKLIVO50":
+        is_active, _, _, _ = await db.get_user_promo_timer(callback.from_user.id, lang=lang)
+        if not is_active:
+            active_promo_code = None
+            await db.set_user_active_promocode(callback.from_user.id, None)
     promo_obj = await db.get_promocode(active_promo_code) if active_promo_code else None
     promocode = promo_obj.code if (promo_obj and promo_obj.is_active and promo_obj.used_count < promo_obj.max_uses) else None
 
@@ -146,6 +151,11 @@ async def process_select_tmpl_from_portfolio(callback: CallbackQuery, state: FSM
         tmpl_name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
 
     active_promo_code = await db.get_user_active_promocode(callback.from_user.id)
+    if active_promo_code == "TAKLIVO50":
+        is_active, _, _, _ = await db.get_user_promo_timer(callback.from_user.id, lang=lang)
+        if not is_active:
+            active_promo_code = None
+            await db.set_user_active_promocode(callback.from_user.id, None)
     promo_obj = await db.get_promocode(active_promo_code) if active_promo_code else None
     promocode = promo_obj.code if (promo_obj and promo_obj.is_active and promo_obj.used_count < promo_obj.max_uses) else None
 
@@ -1284,24 +1294,24 @@ async def process_confirm_and_create_order(callback: CallbackQuery, state: FSMCo
             )
         return
 
-    await state.update_data(current_order_id=order_id)
-    await state.set_state(OrderStates.waiting_receipt)
+    photos = await db.get_order_photos(order_id)
+    music = await db.get_order_music(order_id)
 
-    total_price = order.total_price
-    payment_text = get_text(
-        lang,
-        "payment_screen",
-        order_id=order_id,
-        total_price=format_currency(total_price, lang=lang),
-        payment_details=config.PAYMENT_DETAILS,
-    )
-
+    await state.clear()
     await callback.message.edit_text(
-        text=payment_text,
-        reply_markup=get_payment_keyboard(order_id, lang=lang),
+        text=get_text(lang, "order_submitted_without_payment", order_id=order_id),
+        reply_markup=get_main_menu_keyboard(lang=lang),
         parse_mode="HTML",
     )
     await callback.answer()
+
+    await notifications.notify_admin_new_order(
+        bot=callback.bot,
+        order=order,
+        username=callback.from_user.username,
+        photos_count=len(photos),
+        has_music=music is not None,
+    )
 
 
 @router.callback_query(F.data.startswith("pay_order:"))

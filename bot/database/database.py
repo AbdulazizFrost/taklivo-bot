@@ -63,6 +63,8 @@ class SqliteDatabase:
                     referrer_id INTEGER,
                     bonus_balance INTEGER DEFAULT 0,
                     active_promocode TEXT,
+                    promo_expires_at TEXT,
+                    promo_reminder_sent INTEGER DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
@@ -157,6 +159,10 @@ class SqliteDatabase:
                 await db.execute("ALTER TABLE users ADD COLUMN bonus_balance INTEGER DEFAULT 0;")
             if "active_promocode" not in u_cols:
                 await db.execute("ALTER TABLE users ADD COLUMN active_promocode TEXT;")
+            if "promo_expires_at" not in u_cols:
+                await db.execute("ALTER TABLE users ADD COLUMN promo_expires_at TEXT;")
+            if "promo_reminder_sent" not in u_cols:
+                await db.execute("ALTER TABLE users ADD COLUMN promo_reminder_sent INTEGER DEFAULT 0;")
 
             cursor = await db.execute("PRAGMA table_info(orders);")
             o_cols = [row["name"] for row in await cursor.fetchall()]
@@ -230,6 +236,8 @@ class SqliteDatabase:
                 lang = row["language"] or "ru"
                 self._language_cache[telegram_id] = lang
                 self._active_promo_cache[telegram_id] = row["active_promocode"] if "active_promocode" in row.keys() else None
+                promo_exp = str(row["promo_expires_at"]) if ("promo_expires_at" in row.keys() and row["promo_expires_at"]) else None
+                promo_rem = row["promo_reminder_sent"] if ("promo_reminder_sent" in row.keys() and row["promo_reminder_sent"] is not None) else 0
                 return User(
                     id=row["id"],
                     telegram_id=row["telegram_id"],
@@ -240,17 +248,21 @@ class SqliteDatabase:
                     bonus_balance=row["bonus_balance"] if "bonus_balance" in row.keys() else 0,
                     active_promocode=row["active_promocode"] if "active_promocode" in row.keys() else None,
                     created_at=str(row["created_at"]),
+                    promo_expires_at=promo_exp,
+                    promo_reminder_sent=promo_rem,
                 )
 
             valid_referrer = referrer_id if referrer_id and referrer_id != telegram_id else None
             initial_bonus = config.REFERRAL_WELCOME_BONUS if valid_referrer else 0
+            now = datetime.utcnow()
+            promo_expiry = (now + timedelta(hours=24)).isoformat()
 
             cursor = await db.execute(
                 """
-                INSERT INTO users (telegram_id, username, first_name, language, referrer_id, bonus_balance)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO users (telegram_id, username, first_name, language, referrer_id, bonus_balance, promo_expires_at, promo_reminder_sent)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 0)
                 """,
-                (telegram_id, username, first_name, language, valid_referrer, initial_bonus),
+                (telegram_id, username, first_name, language, valid_referrer, initial_bonus, promo_expiry),
             )
             user_id = cursor.lastrowid
             await db.commit()
@@ -267,7 +279,9 @@ class SqliteDatabase:
                 referrer_id=valid_referrer,
                 bonus_balance=initial_bonus,
                 active_promocode=None,
-                created_at=datetime.utcnow().isoformat(),
+                created_at=now.isoformat(),
+                promo_expires_at=promo_expiry,
+                promo_reminder_sent=0,
             )
 
     async def get_user(self, telegram_id: int) -> Optional[User]:
@@ -276,6 +290,8 @@ class SqliteDatabase:
             cursor = await db.execute("SELECT * FROM users WHERE telegram_id = ?", (telegram_id,))
             row = await cursor.fetchone()
             if row:
+                promo_exp = str(row["promo_expires_at"]) if ("promo_expires_at" in row.keys() and row["promo_expires_at"]) else None
+                promo_rem = row["promo_reminder_sent"] if ("promo_reminder_sent" in row.keys() and row["promo_reminder_sent"] is not None) else 0
                 return User(
                     id=row["id"],
                     telegram_id=row["telegram_id"],
@@ -286,8 +302,125 @@ class SqliteDatabase:
                     bonus_balance=row["bonus_balance"] if "bonus_balance" in row.keys() else 0,
                     active_promocode=row["active_promocode"] if "active_promocode" in row.keys() else None,
                     created_at=str(row["created_at"]),
+                    promo_expires_at=promo_exp,
+                    promo_reminder_sent=promo_rem,
                 )
             return None
+
+    @staticmethod
+    def _parse_datetime(dt_str: str) -> datetime:
+        if not dt_str:
+            return datetime.utcnow()
+        cleaned = str(dt_str).replace("Z", "").split("+")[0]
+        for fmt in (
+            "%Y-%m-%d %H:%M:%S.%f",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y-%m-%dT%H:%M:%S.%f",
+            "%Y-%m-%dT%H:%M:%S",
+        ):
+            try:
+                return datetime.strptime(cleaned, fmt)
+            except ValueError:
+                continue
+        try:
+            return datetime.fromisoformat(cleaned)
+        except Exception:
+            return datetime.utcnow()
+
+    async def get_user_promo_timer(self, telegram_id: int, lang: str = "ru") -> tuple[bool, str, str, int]:
+        """
+        Возвращает (is_active, time_left_str, deadline_str, remaining_seconds).
+        Отсчитывает 24-часовой персональный таймер со времени первого входа.
+        """
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute(
+                "SELECT created_at, promo_expires_at FROM users WHERE telegram_id = ?",
+                (telegram_id,),
+            )
+            row = await cursor.fetchone()
+            if not row:
+                return (False, "0 мин." if lang == "ru" else "0 daq.", "", 0)
+
+            expires_at_raw = row["promo_expires_at"] if "promo_expires_at" in row.keys() else None
+            now = datetime.utcnow()
+
+            if not expires_at_raw:
+                exp_dt = now + timedelta(hours=24)
+                expires_at_raw = exp_dt.isoformat()
+                await db.execute(
+                    "UPDATE users SET promo_expires_at = ? WHERE telegram_id = ?",
+                    (expires_at_raw, telegram_id),
+                )
+                await db.commit()
+            else:
+                exp_dt = self._parse_datetime(str(expires_at_raw))
+
+            diff = exp_dt - now
+            rem_sec = int(diff.total_seconds())
+
+            if rem_sec <= 0:
+                return (False, "0 мин." if lang == "ru" else "0 daq.", "", 0)
+
+            hours = rem_sec // 3600
+            mins = (rem_sec % 3600) // 60
+
+            if lang == "uz":
+                time_left = f"{hours} soat {mins} daq." if hours > 0 else f"{mins} daq."
+            else:
+                time_left = f"{hours} ч. {mins} мин." if hours > 0 else f"{mins} мин."
+
+            tashkent_dt = exp_dt + timedelta(hours=5)
+            deadline = tashkent_dt.strftime("%H:%M (%d.%m)")
+
+            return (True, time_left, deadline, rem_sec)
+
+    async def get_users_needing_promo_reminder(self) -> list[User]:
+        """
+        Возвращает пользователей, у которых до сгорания скидки осталось <= 4 часов (и > 0),
+        которые еще не получили напоминание (promo_reminder_sent = 0),
+        и у которых нет оформленных заказов.
+        """
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute(
+                """
+                SELECT u.* FROM users u
+                WHERE (u.promo_reminder_sent = 0 OR u.promo_reminder_sent IS NULL)
+                  AND u.promo_expires_at IS NOT NULL
+                  AND NOT EXISTS (SELECT 1 FROM orders o WHERE o.telegram_id = u.telegram_id)
+                """
+            )
+            rows = await cursor.fetchall()
+            now = datetime.utcnow()
+            result = []
+            for r in rows:
+                exp_dt = self._parse_datetime(str(r["promo_expires_at"]))
+                diff = exp_dt - now
+                rem_sec = int(diff.total_seconds())
+                if 0 < rem_sec <= 4 * 3600:
+                    result.append(
+                        User(
+                            id=r["id"],
+                            telegram_id=r["telegram_id"],
+                            username=r["username"],
+                            first_name=r["first_name"],
+                            language=r["language"] or "ru",
+                            referrer_id=r["referrer_id"] if "referrer_id" in r.keys() else None,
+                            bonus_balance=r["bonus_balance"] if "bonus_balance" in r.keys() else 0,
+                            active_promocode=r["active_promocode"] if "active_promocode" in r.keys() else None,
+                            created_at=str(r["created_at"]),
+                            promo_expires_at=str(r["promo_expires_at"]) if "promo_expires_at" in r.keys() else None,
+                            promo_reminder_sent=r["promo_reminder_sent"] if "promo_reminder_sent" in r.keys() else 0,
+                        )
+                    )
+            return result
+
+    async def mark_promo_reminder_sent(self, telegram_id: int) -> None:
+        """Отмечает, что напоминание о сгорании промокода отправлено."""
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute("UPDATE users SET promo_reminder_sent = 1 WHERE telegram_id = ?", (telegram_id,))
+            await db.commit()
 
     async def get_user_count(self) -> int:
         async with aiosqlite.connect(self.db_path) as db:
@@ -632,6 +765,19 @@ class SqliteDatabase:
         reference_url: Optional[str] = None,
         status: str = OrderStatus.WAITING_PAYMENT.value,
     ) -> int:
+        actual_status = status
+        actual_payment = PaymentStatus.UNPAID.value
+        if status == OrderStatus.WAITING_PAYMENT.value or status == OrderStatus.IN_PROGRESS.value:
+            if total_price == 0:
+                actual_status = OrderStatus.PAID.value
+                actual_payment = PaymentStatus.PAID.value
+            else:
+                actual_status = OrderStatus.IN_PROGRESS.value
+                actual_payment = PaymentStatus.UNPAID.value
+        elif status == OrderStatus.PAID.value or total_price == 0:
+            actual_status = OrderStatus.PAID.value
+            actual_payment = PaymentStatus.PAID.value
+
         async with aiosqlite.connect(self.db_path) as db:
             cursor = await db.execute(
                 """
@@ -654,7 +800,7 @@ class SqliteDatabase:
                 )
                 """,
                 (
-                    user_id, telegram_id, status, template_id, template_name, plan,
+                    user_id, telegram_id, actual_status, template_id, template_name, plan,
                     event_type, bride_name, groom_name, celebrant_name, parents_name, age_or_details,
                     wedding_date, wedding_time,
                     venue, address, phone,
@@ -663,7 +809,7 @@ class SqliteDatabase:
                     1 if dresscode_enabled else 0, 1 if schedule_enabled else 0,
                     1 if second_language_enabled else 0, total_price,
                     promocode, discount_amount, bonus_used,
-                    PaymentStatus.UNPAID.value, reference_url,
+                    actual_payment, reference_url,
                 ),
             )
             order_id = cursor.lastrowid
@@ -929,6 +1075,8 @@ class PostgresDatabase:
                     referrer_id BIGINT,
                     bonus_balance INTEGER DEFAULT 0,
                     active_promocode TEXT,
+                    promo_expires_at TIMESTAMP,
+                    promo_reminder_sent INTEGER DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
@@ -1007,6 +1155,9 @@ class PostgresDatabase:
                 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
                 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);
                 CREATE INDEX IF NOT EXISTS idx_promocodes_code ON promocodes(code);
+
+                ALTER TABLE users ADD COLUMN IF NOT EXISTS promo_expires_at TIMESTAMP;
+                ALTER TABLE users ADD COLUMN IF NOT EXISTS promo_reminder_sent INTEGER DEFAULT 0;
             """)
 
             # Авто-гарантия постоянного промокода TAKLIVO50
@@ -1041,6 +1192,8 @@ class PostgresDatabase:
                 lang = row["language"] or "ru"
                 self._language_cache[telegram_id] = lang
                 self._active_promo_cache[telegram_id] = row["active_promocode"]
+                promo_exp = str(row["promo_expires_at"]) if row["promo_expires_at"] else None
+                promo_rem = row["promo_reminder_sent"] or 0
                 return User(
                     id=row["id"],
                     telegram_id=row["telegram_id"],
@@ -1051,18 +1204,22 @@ class PostgresDatabase:
                     bonus_balance=row["bonus_balance"] or 0,
                     active_promocode=row["active_promocode"],
                     created_at=str(row["created_at"]),
+                    promo_expires_at=promo_exp,
+                    promo_reminder_sent=promo_rem,
                 )
 
             valid_referrer = referrer_id if referrer_id and referrer_id != telegram_id else None
             initial_bonus = config.REFERRAL_WELCOME_BONUS if valid_referrer else 0
+            now = datetime.utcnow()
+            promo_expiry = now + timedelta(hours=24)
 
             user_id = await conn.fetchval(
                 """
-                INSERT INTO users (telegram_id, username, first_name, language, referrer_id, bonus_balance)
-                VALUES ($1, $2, $3, $4, $5, $6)
+                INSERT INTO users (telegram_id, username, first_name, language, referrer_id, bonus_balance, promo_expires_at, promo_reminder_sent)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, 0)
                 RETURNING id
                 """,
-                telegram_id, username, first_name, language, valid_referrer, initial_bonus
+                telegram_id, username, first_name, language, valid_referrer, initial_bonus, promo_expiry
             )
 
             self._language_cache[telegram_id] = language
@@ -1077,7 +1234,9 @@ class PostgresDatabase:
                 referrer_id=valid_referrer,
                 bonus_balance=initial_bonus,
                 active_promocode=None,
-                created_at=datetime.utcnow().isoformat(),
+                created_at=now.isoformat(),
+                promo_expires_at=promo_expiry.isoformat(),
+                promo_reminder_sent=0,
             )
 
     async def get_user(self, telegram_id: int) -> Optional[User]:
@@ -1085,6 +1244,8 @@ class PostgresDatabase:
         async with pool.acquire() as conn:
             row = await conn.fetchrow("SELECT * FROM users WHERE telegram_id = $1", telegram_id)
             if row:
+                promo_exp = str(row["promo_expires_at"]) if row["promo_expires_at"] else None
+                promo_rem = row["promo_reminder_sent"] or 0
                 return User(
                     id=row["id"],
                     telegram_id=row["telegram_id"],
@@ -1095,8 +1256,102 @@ class PostgresDatabase:
                     bonus_balance=row["bonus_balance"] or 0,
                     active_promocode=row["active_promocode"],
                     created_at=str(row["created_at"]),
+                    promo_expires_at=promo_exp,
+                    promo_reminder_sent=promo_rem,
                 )
             return None
+
+    async def get_user_promo_timer(self, telegram_id: int, lang: str = "ru") -> tuple[bool, str, str, int]:
+        """
+        Возвращает (is_active, time_left_str, deadline_str, remaining_seconds).
+        Отсчитывает 24-часовой персональный таймер со времени первого входа.
+        """
+        pool = await self._get_pool()
+        async with pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT created_at, promo_expires_at FROM users WHERE telegram_id = $1",
+                telegram_id,
+            )
+            if not row:
+                return (False, "0 мин." if lang == "ru" else "0 daq.", "", 0)
+
+            expires_at_raw = row["promo_expires_at"]
+            now = datetime.utcnow()
+
+            if not expires_at_raw:
+                exp_dt = now + timedelta(hours=24)
+                await conn.execute(
+                    "UPDATE users SET promo_expires_at = $1 WHERE telegram_id = $2",
+                    exp_dt, telegram_id,
+                )
+            else:
+                exp_dt = expires_at_raw if isinstance(expires_at_raw, datetime) else SqliteDatabase._parse_datetime(str(expires_at_raw))
+
+            diff = exp_dt - now
+            rem_sec = int(diff.total_seconds())
+
+            if rem_sec <= 0:
+                return (False, "0 мин." if lang == "ru" else "0 daq.", "", 0)
+
+            hours = rem_sec // 3600
+            mins = (rem_sec % 3600) // 60
+
+            if lang == "uz":
+                time_left = f"{hours} soat {mins} daq." if hours > 0 else f"{mins} daq."
+            else:
+                time_left = f"{hours} ч. {mins} мин." if hours > 0 else f"{mins} мин."
+
+            tashkent_dt = exp_dt + timedelta(hours=5)
+            deadline = tashkent_dt.strftime("%H:%M (%d.%m)")
+
+            return (True, time_left, deadline, rem_sec)
+
+    async def get_users_needing_promo_reminder(self) -> list[User]:
+        """
+        Возвращает пользователей, у которых до сгорания скидки осталось <= 4 часов (и > 0),
+        которые еще не получили напоминание (promo_reminder_sent = 0),
+        и у которых нет оформленных заказов.
+        """
+        pool = await self._get_pool()
+        async with pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT u.* FROM users u
+                WHERE (u.promo_reminder_sent = 0 OR u.promo_reminder_sent IS NULL)
+                  AND u.promo_expires_at IS NOT NULL
+                  AND NOT EXISTS (SELECT 1 FROM orders o WHERE o.telegram_id = u.telegram_id)
+                """
+            )
+            now = datetime.utcnow()
+            result = []
+            for r in rows:
+                exp_raw = r["promo_expires_at"]
+                exp_dt = exp_raw if isinstance(exp_raw, datetime) else SqliteDatabase._parse_datetime(str(exp_raw))
+                diff = exp_dt - now
+                rem_sec = int(diff.total_seconds())
+                if 0 < rem_sec <= 4 * 3600:
+                    result.append(
+                        User(
+                            id=r["id"],
+                            telegram_id=r["telegram_id"],
+                            username=r["username"],
+                            first_name=r["first_name"],
+                            language=r["language"] or "ru",
+                            referrer_id=r["referrer_id"],
+                            bonus_balance=r["bonus_balance"] or 0,
+                            active_promocode=r["active_promocode"],
+                            created_at=str(r["created_at"]),
+                            promo_expires_at=str(r["promo_expires_at"]) if r["promo_expires_at"] else None,
+                            promo_reminder_sent=r["promo_reminder_sent"] or 0,
+                        )
+                    )
+            return result
+
+    async def mark_promo_reminder_sent(self, telegram_id: int) -> None:
+        """Отмечает, что напоминание о сгорании промокода отправлено."""
+        pool = await self._get_pool()
+        async with pool.acquire() as conn:
+            await conn.execute("UPDATE users SET promo_reminder_sent = 1 WHERE telegram_id = $1", telegram_id)
 
     async def get_user_count(self) -> int:
         pool = await self._get_pool()
@@ -1427,6 +1682,19 @@ class PostgresDatabase:
         reference_url: Optional[str] = None,
         status: str = OrderStatus.WAITING_PAYMENT.value,
     ) -> int:
+        actual_status = status
+        actual_payment = PaymentStatus.UNPAID.value
+        if status == OrderStatus.WAITING_PAYMENT.value or status == OrderStatus.IN_PROGRESS.value:
+            if total_price == 0:
+                actual_status = OrderStatus.PAID.value
+                actual_payment = PaymentStatus.PAID.value
+            else:
+                actual_status = OrderStatus.IN_PROGRESS.value
+                actual_payment = PaymentStatus.UNPAID.value
+        elif status == OrderStatus.PAID.value or total_price == 0:
+            actual_status = OrderStatus.PAID.value
+            actual_payment = PaymentStatus.PAID.value
+
         pool = await self._get_pool()
         async with pool.acquire() as conn:
             order_id = await conn.fetchval(
@@ -1449,7 +1717,7 @@ class PostgresDatabase:
                     $26, $27, $28, $29, $30
                 ) RETURNING id
                 """,
-                user_id, telegram_id, status, template_id, template_name, plan,
+                user_id, telegram_id, actual_status, template_id, template_name, plan,
                 event_type, bride_name, groom_name, celebrant_name, parents_name, age_or_details,
                 wedding_date, wedding_time,
                 venue, address, phone,
@@ -1458,7 +1726,7 @@ class PostgresDatabase:
                 1 if dresscode_enabled else 0, 1 if schedule_enabled else 0,
                 1 if second_language_enabled else 0, total_price,
                 promocode, discount_amount, bonus_used,
-                PaymentStatus.UNPAID.value, reference_url,
+                actual_payment, reference_url,
             )
 
             if promocode:

@@ -207,13 +207,21 @@ class NotificationService:
             else:
                 hero_title = f"{order.bride_name} & {order.groom_name}"
 
+        total_price_str = format_currency(order.total_price, lang=user_lang) if order else ""
         text = get_text(
             user_lang,
             "notify_website_ready",
             hero_title=escape(hero_title),
             website_url=website_url,
+            total_price=total_price_str,
         )
-        keyboard = get_client_website_review_keyboard(target_order_id, website_url, lang=user_lang)
+        keyboard = get_client_website_review_keyboard(
+            order or target_order_id,
+            website_url,
+            lang=user_lang,
+            is_paid=(order.payment_status == "PAID" or order.total_price == 0) if order else None,
+            total_price=order.total_price if order else 0,
+        )
 
         try:
             await bot.send_message(

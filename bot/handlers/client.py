@@ -7,7 +7,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 
-from bot.database import db, OrderStatus
+from bot.database import db, OrderStatus, PaymentStatus
 from bot.keyboards import (
     get_language_keyboard,
     get_main_menu_keyboard,
@@ -70,6 +70,13 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
         current_promo = await db.get_user_active_promocode(user.telegram_id)
         if not current_promo:
             await db.set_user_active_promocode(user.telegram_id, promo_code_to_activate)
+    else:
+        # Автоматическая выдача 24-часового велкам промокода TAKLIVO50 новым пользователям (без заказов)
+        current_promo = await db.get_user_active_promocode(user.telegram_id)
+        if not current_promo:
+            user_orders = await db.get_user_orders(user.telegram_id)
+            if not user_orders:
+                await db.set_user_active_promocode(user.telegram_id, "TAKLIVO50")
 
     await message.answer(
         text=get_text(user.language, "select_language"),
@@ -87,10 +94,16 @@ async def callback_select_language(callback: CallbackQuery, state: FSMContext) -
     active_promo_code = await db.get_user_active_promocode(callback.from_user.id)
     promo_banner = ""
     if active_promo_code:
-        promo = await db.get_promocode(active_promo_code)
-        if promo and promo.is_active and promo.used_count < promo.max_uses:
-            disc_str = f"{promo.discount_percent}%" if promo.discount_percent > 0 else format_currency(promo.discount_amount, lang)
-            promo_banner = f"\n\n{get_text(lang, 'start_promo_activated', code=promo.code, discount=disc_str)}"
+        is_active, time_left, deadline, _ = await db.get_user_promo_timer(callback.from_user.id, lang=lang)
+        if not is_active and active_promo_code == "TAKLIVO50":
+            await db.set_user_active_promocode(callback.from_user.id, None)
+            active_promo_code = None
+
+        if active_promo_code:
+            promo = await db.get_promocode(active_promo_code)
+            if promo and promo.is_active and promo.used_count < promo.max_uses:
+                disc_str = f"{promo.discount_percent}%" if promo.discount_percent > 0 else format_currency(promo.discount_amount, lang)
+                promo_banner = f"\n\n{get_text(lang, 'start_promo_activated', code=promo.code, discount=disc_str, time_left=time_left, deadline=deadline)}"
 
     await callback.message.edit_text(
         text=get_text(lang, "main_menu_title") + promo_banner,
@@ -183,11 +196,25 @@ async def callback_change_language(callback: CallbackQuery) -> None:
 
 @router.callback_query(F.data == "client:main_menu")
 async def callback_main_menu(callback: CallbackQuery, state: FSMContext) -> None:
-    """Возврат в главное меню."""
+    """Возврат в главное меню с отображением активного промокода."""
     await state.clear()
     lang = await db.get_user_language(callback.from_user.id)
+    active_promo_code = await db.get_user_active_promocode(callback.from_user.id)
+    promo_banner = ""
+    if active_promo_code:
+        is_active, time_left, deadline, _ = await db.get_user_promo_timer(callback.from_user.id, lang=lang)
+        if not is_active and active_promo_code == "TAKLIVO50":
+            await db.set_user_active_promocode(callback.from_user.id, None)
+            active_promo_code = None
+
+        if active_promo_code:
+            promo = await db.get_promocode(active_promo_code)
+            if promo and promo.is_active and promo.used_count < promo.max_uses:
+                disc_str = f"{promo.discount_percent}%" if promo.discount_percent > 0 else format_currency(promo.discount_amount, lang)
+                promo_banner = f"\n\n{get_text(lang, 'start_promo_activated', code=promo.code, discount=disc_str, time_left=time_left, deadline=deadline)}"
+
     await callback.message.edit_text(
-        text=get_text(lang, "main_menu_title"),
+        text=get_text(lang, "main_menu_title") + promo_banner,
         reply_markup=get_main_menu_keyboard(lang=lang),
         parse_mode="HTML",
     )
@@ -446,14 +473,22 @@ async def callback_view_single_order(callback: CallbackQuery) -> None:
 # --- Одобрение сайта клиентом ---
 
 @router.callback_query(F.data.startswith("client_approve:"))
-async def callback_client_approve(callback: CallbackQuery) -> None:
-    """Клиент одобряет готовый сайт."""
+async def callback_client_approve(callback: CallbackQuery, state: FSMContext) -> None:
+    """Клиент одобряет готовый сайт (с перенаправлением на оплату, если сайт не был оплачен)."""
     order_id = int(callback.data.split(":")[1])
     lang = await db.get_user_language(callback.from_user.id)
     order = await order_service.get_order_by_id(order_id)
 
     if not order or order.telegram_id != callback.from_user.id:
         await callback.answer("Ошибка заказа", show_alert=True)
+        return
+
+    # Если заказ еще не оплачен и сумма > 0, перенаправляем к оплате
+    if order.payment_status != PaymentStatus.PAID.value and order.total_price > 0:
+        await callback.answer()
+        from bot.handlers.order import process_pay_existing_order
+        callback.data = f"pay_order:{order_id}"
+        await process_pay_existing_order(callback, state)
         return
 
     await order_service.complete_order(order_id)

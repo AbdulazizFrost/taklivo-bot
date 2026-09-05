@@ -573,6 +573,94 @@ async def run_async_tests():
                 f"Текущий промокод пользователя остался: {preserved_active}",
             )
 
+            # ----------------------------------------------------
+            # TEST 18: Проверка механики Постоплаты и 24-часового таймера скидки
+            # ----------------------------------------------------
+            print("\n--- TEST 18: Проверка механики Постоплаты и 24-часового таймера скидки ---")
+            from bot.keyboards.client import get_client_website_review_keyboard
+
+            # TEST 18a: 24-часовой таймер
+            timer_user = await test_db.get_or_create_user(telegram_id=999111222, first_name="TimerTester")
+            is_act, time_str_ru, deadline_ru, rem_sec = await test_db.get_user_promo_timer(999111222, lang="ru")
+            _, time_str_uz, deadline_uz, _ = await test_db.get_user_promo_timer(999111222, lang="uz")
+            log_test_result(
+                "TEST 18a: 24-hour promo countdown timer calculation",
+                is_act and ("ч." in time_str_ru or "мин." in time_str_ru) and ("soat" in time_str_uz or "daq." in time_str_uz) and len(deadline_ru) > 0 and rem_sec > 0,
+                f"RU: {time_str_ru} (до {deadline_ru}), UZ: {time_str_uz} (до {deadline_uz}), rem_sec: {rem_sec}",
+            )
+
+            # TEST 18b: Создание заказа со статусом IN_PROGRESS (без предоплаты)
+            postpay_order_data = {
+                "template_id": "floral_rose",
+                "template_name": "Floral Rose",
+                "event_type": "wedding",
+                "bride_name": "Камилла",
+                "groom_name": "Данияр",
+                "wedding_date": "20.11.2026",
+                "wedding_time": "18:00",
+                "venue": "Rayhon",
+                "address": "Tashkent",
+                "phone": "+998909998877",
+                "options": {"timer": True, "map": True},
+                "discount_amount": 35000,
+            }
+            postpay_order_id = await OrderService.create_new_order(
+                user_id=timer_user.id,
+                telegram_id=timer_user.telegram_id,
+                data=postpay_order_data,
+            )
+            postpay_order = await OrderService.get_order_by_id(postpay_order_id)
+            log_test_result(
+                "TEST 18b: Order created with IN_PROGRESS status and UNPAID payment status (Post-payment)",
+                postpay_order.status == OrderStatus.IN_PROGRESS.value and postpay_order.payment_status == PaymentStatus.UNPAID.value and postpay_order.total_price == 35000,
+                f"Статус заказа: {postpay_order.status}, Оплата: {postpay_order.payment_status}, Сумма: {postpay_order.total_price}",
+            )
+
+            # TEST 18c: Кнопка под готовым сайтом: неоплаченный заказ показывает кнопку оплаты, оплаченный - одобрения
+            unpaid_kb = get_client_website_review_keyboard(postpay_order, "https://taklivo.uz/demo/test", lang="ru")
+            unpaid_buttons = [btn for row in unpaid_kb.inline_keyboard for btn in row]
+            has_pay_btn = any(btn.callback_data == f"pay_order:{postpay_order_id}" and "Оплатить" in btn.text for btn in unpaid_buttons)
+
+            paid_kb = get_client_website_review_keyboard(postpay_order_id, "https://taklivo.uz/demo/test", lang="ru", is_paid=True)
+            paid_buttons = [btn for row in paid_kb.inline_keyboard for btn in row]
+            has_approve_btn = any(btn.callback_data == f"client_approve:{postpay_order_id}" and "отлично" in btn.text for btn in paid_buttons)
+
+            log_test_result(
+                "TEST 18c: Website review keyboard shows pay button for unpaid, approve button for paid",
+                has_pay_btn and has_approve_btn,
+                f"Кнопка оплаты найдена: {has_pay_btn}, Кнопка одобрения найдена: {has_approve_btn}",
+            )
+
+            # TEST 18d: Завершение заказа (COMPLETED) после того, как админ сдал сайт и подтвердил оплату
+            await OrderService.set_website_url_for_order(postpay_order_id, "https://taklivo.uz/live/order18")
+            ok_pay, completed_order = await OrderService.confirm_order_payment(postpay_order_id)
+            log_test_result(
+                "TEST 18d: Confirm payment on order with website moves status to COMPLETED",
+                ok_pay and completed_order.status == OrderStatus.COMPLETED.value and completed_order.payment_status == PaymentStatus.PAID.value,
+                f"Итоговый статус: {completed_order.status}, Оплата: {completed_order.payment_status}",
+            )
+
+            # TEST 18e: Напоминание о сгорании 4-часовой скидки
+            from datetime import datetime, timedelta
+            import aiosqlite
+            two_hours_left = (datetime.utcnow() + timedelta(hours=2)).isoformat()
+            async with aiosqlite.connect(test_db.db_path) as db_conn:
+                await db_conn.execute("UPDATE users SET promo_expires_at = ?, promo_reminder_sent = 0 WHERE telegram_id = 999111222", (two_hours_left,))
+                await db_conn.execute("DELETE FROM orders WHERE telegram_id = 999111222")
+                await db_conn.commit()
+
+            needing_reminder = await test_db.get_users_needing_promo_reminder()
+            found_user = any(u.telegram_id == 999111222 for u in needing_reminder)
+            await test_db.mark_promo_reminder_sent(999111222)
+            needing_after_mark = await test_db.get_users_needing_promo_reminder()
+            found_after = any(u.telegram_id == 999111222 for u in needing_after_mark)
+
+            log_test_result(
+                "TEST 18e: Promo urgency reminder query and mark_sent flag work correctly",
+                found_user and not found_after,
+                f"Пользователь найден до отметки: {found_user}, после отметки: {found_after}",
+            )
+
         finally:
             bot.database.db.db_path = orig_db_path
 
