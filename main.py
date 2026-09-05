@@ -51,18 +51,22 @@ async def health_check(request: web.Request) -> web.Response:
 
 
 async def start_web_server() -> web.AppRunner | None:
-    """Запуск легковесного HTTP сервера для облачных платформ."""
+    """Запуск легковесного HTTP сервера для облачных платформ и REST API для сайтов."""
     port = int(os.getenv("PORT", "8080"))
     app = web.Application()
     app.router.add_get("/", health_check)
     app.router.add_get("/health", health_check)
+    
+    # Регистрация REST API для сайтов-приглашений (HTML / Next.js / Astro)
+    from bot.api import setup_api_routes
+    setup_api_routes(app)
     
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", port)
     try:
         await site.start()
-        logger.info(f"HTTP Health-сервер запущен на порту {port}")
+        logger.info(f"HTTP Health-сервер и REST API запущены на порту {port}")
         return runner
     except Exception as e:
         logger.warning(f"HTTP Health-сервер не запущен (некритично для локального запуска): {e}")

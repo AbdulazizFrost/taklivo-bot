@@ -801,6 +801,64 @@ async def run_async_tests():
                 f"RU demo: {'24' in demo_msg_ru}, UZ demo: {'24' in demo_msg_uz}, 4h warning: {'4' in warn_msg_ru}, anti-spam: {'#123' in anti_spam_ru}",
             )
 
+            # ----------------------------------------------------
+            # TEST 20: REST API для сайтов-приглашений (HTML / Next.js / Astro)
+            # ----------------------------------------------------
+            print("\n--- TEST 20: REST API для сайтов-приглашений (HTML / Next.js / Astro) ---")
+            from aiohttp.test_utils import make_mocked_request
+            from bot.api import get_order_status, get_order_full_data, handle_options
+            import json
+
+            # TEST 20a: CORS preflight OPTIONS
+            req_options = make_mocked_request("OPTIONS", "/api/order/1/status")
+            resp_options = await handle_options(req_options)
+            log_test_result(
+                "TEST 20a: REST API OPTIONS preflight returns 204 and CORS header",
+                resp_options.status == 204 and resp_options.headers.get("Access-Control-Allow-Origin") == "*",
+                f"Status: {resp_options.status}, CORS: {resp_options.headers.get('Access-Control-Allow-Origin')}",
+            )
+
+            # TEST 20b: Неоплаченный заказ отдает is_demo: True и водяной знак
+            req_unpaid = make_mocked_request("GET", f"/api/order/{spam_check_order_id}/status", match_info={"order_id": str(spam_check_order_id)})
+            resp_unpaid = await get_order_status(req_unpaid)
+            data_unpaid = json.loads(resp_unpaid.text)
+            log_test_result(
+                "TEST 20b: GET /api/order/{id}/status returns demo mode & watermark for unpaid order",
+                resp_unpaid.status == 200 and data_unpaid["is_demo"] is True and data_unpaid["is_paid"] is False and data_unpaid["watermark"] == "TAKLIVO DEMO PREVIEW",
+                f"is_demo: {data_unpaid.get('is_demo')}, watermark: {data_unpaid.get('watermark')}",
+            )
+
+            # TEST 20c: Оплаченный заказ отдает is_demo: False и watermark: None
+            req_paid = make_mocked_request("GET", f"/api/order/{paid_order_id}/status", match_info={"order_id": str(paid_order_id)})
+            resp_paid = await get_order_status(req_paid)
+            data_paid = json.loads(resp_paid.text)
+            log_test_result(
+                "TEST 20c: GET /api/order/{id}/status returns is_paid: True & watermark: None for paid order",
+                resp_paid.status == 200 and data_paid["is_demo"] is False and data_paid["is_paid"] is True and data_paid["watermark"] is None,
+                f"is_paid: {data_paid.get('is_paid')}, watermark: {data_paid.get('watermark')}",
+            )
+
+            # TEST 20d: Полный экспорт заказа через GET /api/order/{id}
+            req_full = make_mocked_request("GET", f"/api/order/{paid_order_id}", match_info={"order_id": str(paid_order_id)})
+            resp_full = await get_order_full_data(req_full)
+            data_full = json.loads(resp_full.text)
+            log_test_result(
+                "TEST 20d: GET /api/order/{id} returns full order dictionary with couple and event details",
+                resp_full.status == 200 and data_full["order_id"] == paid_order_id and "couple" in data_full and "event" in data_full,
+                f"Order ID: {data_full.get('order_id')}, couple: {data_full.get('couple')}",
+            )
+
+            # TEST 20e: Валидация ошибок 400 (невалидный ID) и 404 (несуществующий заказ)
+            req_invalid = make_mocked_request("GET", "/api/order/abc/status", match_info={"order_id": "abc"})
+            resp_invalid = await get_order_status(req_invalid)
+            req_404 = make_mocked_request("GET", "/api/order/9999999/status", match_info={"order_id": "9999999"})
+            resp_404 = await get_order_status(req_404)
+            log_test_result(
+                "TEST 20e: REST API handles 400 for bad ID and 404 for missing order",
+                resp_invalid.status == 400 and resp_404.status == 404,
+                f"Invalid status: {resp_invalid.status}, Missing status: {resp_404.status}",
+            )
+
         finally:
             bot.database.db.db_path = orig_db_path
 
