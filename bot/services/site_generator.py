@@ -45,6 +45,7 @@ class SiteGeneratorService:
             "design": {
                 "template_id": order.template_id,
                 "template_name": order.template_name,
+                "reference_url": getattr(order, "reference_url", None),
                 "plan": order.plan,
                 "is_demo": is_demo,
                 "watermark": "TAKLIVO DEMO PREVIEW" if is_demo else None,
@@ -109,6 +110,10 @@ class SiteGeneratorService:
         orders_dir = os.path.join(base_dir, "templates", "orders", str(order.id))
         template_name = (order.template_id or "luxury_gold").replace("_", "-")
         demo_tmpl_dir = os.path.join(base_dir, "templates", "demo", template_name)
+        if not os.path.exists(demo_tmpl_dir):
+            demo_tmpl_dir = os.path.join(base_dir, "templates", "demo", "modern")
+        if not os.path.exists(demo_tmpl_dir):
+            demo_tmpl_dir = os.path.join(base_dir, "templates", "demo", "luxury-gold")
 
         os.makedirs(orders_dir, exist_ok=True)
 
