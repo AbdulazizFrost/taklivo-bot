@@ -348,7 +348,10 @@ async def callback_confirm_broadcast(callback: CallbackQuery, state: FSMContext)
     from aiogram.exceptions import TelegramRetryAfter, TelegramForbiddenError
     keyboard = None
     if btn_label and btn_url:
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=btn_label, url=btn_url)]])
+        if btn_url.startswith(("http://", "https://", "tg://")):
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=btn_label, url=btn_url)]])
+        else:
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=btn_label, callback_data=btn_url)]])
 
     import asyncio
     for u in users:

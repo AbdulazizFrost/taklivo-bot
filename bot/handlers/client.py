@@ -137,30 +137,7 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
         )
         return
 
-    # Если пользователь уже зарегистрирован, сразу открываем главное меню на его языке
-    if existing_user:
-        active_promo_code = await db.get_user_active_promocode(user.telegram_id)
-        promo_banner = ""
-        if active_promo_code:
-            is_active, time_left, deadline, _ = await db.get_user_promo_timer(user.telegram_id, lang=lang)
-            if not is_active and active_promo_code == "TAKLIVO50":
-                await db.set_user_active_promocode(user.telegram_id, None)
-                active_promo_code = None
-
-            if active_promo_code:
-                promo = await db.get_promocode(active_promo_code)
-                if promo and promo.is_active and promo.used_count < promo.max_uses:
-                    disc_str = f"{promo.discount_percent}%" if promo.discount_percent > 0 else format_currency(promo.discount_amount, lang)
-                    promo_banner = f"\n\n{get_text(lang, 'start_promo_activated', code=promo.code, discount=disc_str, time_left=time_left, deadline=deadline)}"
-
-        await message.answer(
-            text=get_text(lang, "main_menu_title") + promo_banner,
-            reply_markup=get_main_menu_keyboard(lang=lang),
-            parse_mode="HTML",
-        )
-        return
-
-    # Для новых пользователей показываем экран выбора языка
+    # При обычном вызове /start ВСЕГДА спрашиваем язык (O'zbekcha / Русский)
     await message.answer(
         text=get_text(lang, "select_language"),
         reply_markup=get_language_keyboard(),
