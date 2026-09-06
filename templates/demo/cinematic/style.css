@@ -509,8 +509,8 @@ body.locked {
 .luxury-image-frame img {
     width: 100%;
     display: block;
-    border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-    transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.12));
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .luxury-image-frame:hover img {
