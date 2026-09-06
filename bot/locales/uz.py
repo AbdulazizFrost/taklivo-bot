@@ -194,12 +194,12 @@ TEXTS = {
     "step_gallery_upload": (
         "📸 <b>7-qadam: Sayt uchun fotosuratlar (Bepul 🎁)</b>\n\n"
         "Sayt galereyasi uchun 1 tadan 10 tagacha sifatli suratlarni yuborishingiz mumkin.\n"
-        "<i>(Agar fotosuratlar kerak bo‘lmasa, «❌ Kerak emas» tugmasini bosing)</i>\n\n"
+        "<i>(Agar fotosuratlar kerak bo‘lmasa, «⏩ Kerak emas» tugmasini bosing)</i>\n\n"
         "Yuklandi: <b>{count}/10</b>"
     ),
     "btn_add_more_photos": "➕ Yana rasm yuklash",
     "btn_photos_done": "✅ Rasmlar yuklashni yakunlash",
-    "btn_skip_media": "❌ Kerak emas",
+    "btn_skip_media": "⏩ Kerak emas",
     "photo_received": "📸 Rasm qabul qilindi! Jami: <b>{count}/10</b>",
     "photo_limit_reached": "⚠️ 10 ta rasm limiti to‘ldi. «Rasmlar yuklashni yakunlash» tugmasini bosing.",
     "err_not_photo": "⚠️ Iltimos, aynan fotosurat (rasm) yuboring.",
@@ -207,7 +207,7 @@ TEXTS = {
     "step_music_upload": (
         "🎵 <b>8-qadam: Fon musiqasi (Bepul 🎁)</b>\n\n"
         "Saytda yangraydigan yoqimli musiqa (MP3 yoki audio) yuborishingiz mumkin.\n"
-        "<i>(Agar musiqa kerak bo‘lmasa, «❌ Kerak emas» tugmasini bosing)</i>"
+        "<i>(Agar musiqa kerak bo‘lmasa, «⏩ Kerak emas» tugmasini bosing)</i>"
     ),
     "music_received": "🎵 Musiqa muvaffaqiyatli yuklandi: <b>{filename}</b>",
     "err_not_music": "⚠️ Iltimos, MP3 formatidagi audio fayl yuboring.",
