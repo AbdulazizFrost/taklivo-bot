@@ -142,6 +142,15 @@ class Config:
             demo_url=os.getenv("DEMO_MODERN_URL", f"{os.getenv('DEMO_BASE_URL', os.getenv('RENDER_EXTERNAL_URL', 'https://taklivo.uz')).rstrip('/')}/demo/modern/"),
             emoji="✨",
         ),
+        "cinematic": TemplateInfo(
+            id="cinematic",
+            name_ru="🎬 Cinematic",
+            name_uz="🎬 Cinematic",
+            description_ru="Кинематографичный шедевр из Instagram: живые оптические блики, 3D открытка, утонченная типографика.",
+            description_uz="Instagram trendidagi kinematik nafis dizayn: jonli optik nurlar, 3D to‘yona kartasi va oliy toifali uslub.",
+            demo_url=os.getenv("DEMO_CINEMATIC_URL", f"{os.getenv('DEMO_BASE_URL', os.getenv('RENDER_EXTERNAL_URL', 'https://taklivo.uz')).rstrip('/')}/demo/cinematic/"),
+            emoji="🎬",
+        ),
     }
 
     @classmethod

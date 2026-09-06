@@ -3,62 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mirafzal va Sabina - Luxury Cinematic Invitation 💍</title>
+    <title>Temurbek va Nodirabegim - Luxury Cinematic Invitation</title>
     
-    <!-- OpenGraph Preview for Telegram / WhatsApp -->
-    <meta property="og:title" content="Mirafzal va Sabina — Nikoh To'yi Taklifnomasi 💍">
-    <meta property="og:description" content="20-Oktabr 2026, 19:00 | «Dilifori» Tantanalar Saroyi, Forish tumani. Sizni to'y oqshomimizga lutfan taklif etamiz!">
-    <meta property="og:image" content="images/bosh_rasm.jpg">
-    <meta property="og:type" content="website">
-
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="../../demo/assets/engine.css">
+    <link rel="stylesheet" href="../assets/engine.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="locked">
 
-    <!-- Background Audio -->
-    <audio id="weddingAudio" src="music.mp3" loop preload="auto"></audio>
-
     <!-- SVG Filter for removing black background from custom venue image while keeping original colors -->
     <svg style="display: none;">
         <filter id="remove-black">
+            <!-- 1. Extract alpha from brightness (Black -> Transparent, Gold -> Opaque) -->
             <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="mask"/>
+            
+            <!-- 2. Boost the mask opacity to keep the original colors vibrant -->
             <feComponentTransfer in="mask" result="boostedMask">
                 <feFuncA type="linear" slope="1.5"/>
             </feComponentTransfer>
+
+            <!-- 3. Mask the original image with the extracted alpha to keep real colors -->
             <feComposite in="SourceGraphic" in2="boostedMask" operator="in"/>
         </filter>
         
+        <!-- SVG Filter for removing white background from images (e.g. rings illustration) -->
         <filter id="remove-white">
+            <!-- 1. Invert the image so white background becomes black -->
             <feColorMatrix in="SourceGraphic" type="matrix" values="
                 -1 0 0 0 1
                 0 -1 0 0 1
                 0 0 -1 0 1
                 0 0 0 1 0
             " result="inverted"/>
+            <!-- 2. Extract alpha from the inverted image (Black -> Transparent, Colors -> Opaque) -->
             <feColorMatrix in="inverted" type="luminanceToAlpha" result="mask"/>
+            
+            <!-- 3. Boost mask opacity to keep the original colors fully solid -->
             <feComponentTransfer in="mask" result="boostedMask">
                 <feFuncA type="linear" slope="2"/>
             </feComponentTransfer>
+            
+            <!-- 4. Mask the original image with the extracted alpha -->
             <feComposite in="SourceGraphic" in2="boostedMask" operator="in"/>
         </filter>
     </svg>
 
     <!-- 🌟 LUXURY CINEMATIC BACKGROUND 🌟 -->
     <div class="cinematic-background" id="cinematicBg">
+        <!-- Abstract luxury fluid texture -->
         <div class="luxury-texture"></div>
+        <!-- Real optical bokeh overlay -->
         <div class="real-bokeh"></div>
+        <!-- Volumetric light simulation via image -->
         <div class="volumetric-fog"></div>
+        <!-- Vignette for cinematic depth -->
         <div class="vignette"></div>
     </div>
 
     <!-- Intro Screen -->
     <div class="intro-screen" id="introScreen">
+        <!-- Cinematic dark romantic background -->
         <div class="intro-bg parallax-element"></div>
         <div class="intro-overlay"></div>
         <div class="intro-content">
@@ -82,11 +90,12 @@
             </div>
             <div class="hero-overlay"></div>
             <div class="hero-content cinematic-fade">
-                <h1 class="names" data-taklivo="couple_names">MIRAFZAL<br><span class="va">va</span><br>SABINA</h1>
+                <h1 class="names">JAVOHIR<br><span class="va">va</span><br>MALIKA</h1>
             </div>
             <div class="scroll-indicator cinematic-fade delay-1">
                 <div class="vertical-line"></div>
                 <p>PASTGA SURING</p>
+                <!-- Removed simple SVG/text arrow, using a glowing scroll line indicator -->
                 <div class="scroll-glow-dot"></div>
             </div>
         </section>
@@ -94,7 +103,7 @@
         <!-- Message Section -->
         <section class="message section-padding" id="message">
             <h2 class="section-title cinematic-fade">Aziz va qadrdon<br>insonimiz!</h2>
-            <p class="body-text cinematic-fade delay-1">Hayotimizdagi eng baxtli kunlardan biri —<br>nikoh to'yimizni siz bilan birga nishonlashni<br>niyat qildik.</p>
+            <p class="body-text cinematic-fade delay-1">Hayotimizdagi eng baxtli kunlardan biri -<br>nikoh to'yimizni siz bilan birga nishonlashni<br>niyat qildik.</p>
             <br>
             <p class="body-text cinematic-fade delay-2">Sizni ushbu kechamizga samimiy taklif<br>etamiz.</p>
             <br>
@@ -103,25 +112,25 @@
 
         <!-- Calendar Section -->
         <section class="calendar section-padding" id="calendar">
-            <h2 class="section-title cinematic-fade">OKTABR 2026</h2>
+            <h2 class="section-title cinematic-fade">AVGUST 2026</h2>
             <div class="calendar-grid cinematic-fade delay-1">
                 <div class="weekdays">
                     <span>DU</span><span>SE</span><span>CHOR</span><span>PAY</span><span>JU</span><span>SHA</span><span>YA</span>
                 </div>
                 <div class="days">
-                    <span></span><span></span><span></span>
-                    <span class="cal-day">1</span><span class="cal-day">2</span><span class="cal-day">3</span><span class="cal-day">4</span>
-                    <span class="cal-day">5</span><span class="cal-day">6</span><span class="cal-day">7</span><span class="cal-day">8</span><span class="cal-day">9</span><span class="cal-day">10</span><span class="cal-day">11</span>
-                    <span class="cal-day">12</span><span class="cal-day">13</span><span class="cal-day">14</span><span class="cal-day">15</span><span class="cal-day">16</span><span class="cal-day">17</span><span class="cal-day">18</span><span class="cal-day">19</span>
-                    
-                    <!-- 20-OKTABR TANLANGAN KUN -->
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span class="cal-day">1</span><span class="cal-day">2</span>
+                    <span class="cal-day">3</span><span class="cal-day">4</span><span class="cal-day">5</span><span class="cal-day">6</span><span class="cal-day">7</span><span class="cal-day">8</span><span class="cal-day">9</span>
+                    <span class="cal-day">10</span><span class="cal-day">11</span>
                     <div class="highlight-day cal-day">
                         <div class="luxury-rose-bg">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                        </div><span class="day-num">20</span>
+                        </div><span class="day-num">12</span>
                     </div>
-
-                    <span class="cal-day">21</span><span class="cal-day">22</span><span class="cal-day">23</span><span class="cal-day">24</span><span class="cal-day">25</span><span class="cal-day">26</span><span class="cal-day">27</span><span class="cal-day">28</span><span class="cal-day">29</span><span class="cal-day">30</span><span class="cal-day">31</span>
+                    <span class="cal-day">13</span><span class="cal-day">14</span><span class="cal-day">15</span><span class="cal-day">16</span>
+                    <span class="cal-day">17</span><span class="cal-day">18</span><span class="cal-day">19</span><span class="cal-day">20</span><span class="cal-day">21</span><span class="cal-day">22</span><span class="cal-day">23</span>
+                    <span class="cal-day">24</span><span class="cal-day">25</span><span class="cal-day">26</span><span class="cal-day">27</span><span class="cal-day">28</span><span class="cal-day">29</span><span class="cal-day">30</span>
+                    <span class="cal-day">31</span>
                 </div>
             </div>
             
@@ -135,52 +144,22 @@
             <div class="parallax-scroll" data-speed="0.08">
                 <div class="building-illustration cinematic-fade">
                     <div class="luxury-image-frame">
-                        <img src="images/custom-venue.jpg" alt="«Dilifori» Tantanalar Saroyi">
+                        <!-- High-quality custom venue illustration -->
+                        <img src="custom-venue.jpg" alt="Tantanalar Saroyi">
                         <div class="frame-glow"></div>
                     </div>
                 </div>
             </div>
             <h2 class="section-title cinematic-fade delay-1">To'y manzili</h2>
             <div class="venue-details cinematic-fade delay-2">
-                <p class="venue-name" data-taklivo="venue">"DILIFORI"<br>TANTANALAR SAROYI</p>
-                <p class="venue-address" data-taklivo="address">Manzil: Jizzax viloyati, Forish tumani.</p>
+                <p class="venue-name">"VERSAL"<br>TANTANALAR SAROYI</p>
+                <p class="venue-address">Manzil: Yunusobod tumani, Amir Temur<br>ko'chasi 15-uy.</p>
             </div>
             
             <div class="map-buttons-container cinematic-fade delay-3">
-                <a href="https://yandex.uz/maps/?text=Dilifori+to%27yxonasi+Forish+tumani" target="_blank" class="btn-map"><span class="btn-text">YANDEX XARITASI</span></a>
+                <a href="#" class="btn-map"><span class="btn-text">YANDEX XARITASI</span></a>
                 <div class="btn-spacer"></div>
-                <a href="https://maps.google.com/maps/search/?api=1&query=Dilifori+Forish+tumani+Jizzax" target="_blank" class="btn-map"><span class="btn-text">GOOGLE MAPS</span></a>
-            </div>
-        </section>
-
-        <!-- Dress Code Section -->
-        <section class="dresscode section-padding dresscode-section" id="dresscode">
-            <h2 class="section-title cinematic-fade">Dress Code</h2>
-            <p class="body-text cinematic-fade delay-1">Tantanali kiyim talabi: <b>Black Tie & Evening Elegance</b></p>
-            
-            <div class="dresscode-cards cinematic-fade delay-2">
-                <div class="dresscode-box">
-                    <span class="dresscode-icon">🤵</span>
-                    <h3 class="dresscode-role">JANOB LAR UCHUN</h3>
-                    <p class="body-text small">Klassik qora yoki to'q rangli tantanali kostyum-shim, oq ko'ylak va galstuk.</p>
-                </div>
-                <div class="dresscode-box">
-                    <span class="dresscode-icon">👗</span>
-                    <h3 class="dresscode-role">XONIMLAR UCHUN</h3>
-                    <p class="body-text small">Nafis kechki liboslar, to'q zumrad, to'q bordo, qora yoki tillarang tuslar.</p>
-                </div>
-            </div>
-
-            <div class="palette-wrapper cinematic-fade delay-3">
-                <p class="palette-label">TAVSIYA ETILADIGAN RANGLAR:</p>
-                <div class="palette-row">
-                    <span class="palette-circle" style="background:#111;" title="Qora"></span>
-                    <span class="palette-circle" style="background:#c59b27;" title="Tilla"></span>
-                    <span class="palette-circle" style="background:#18392b;" title="Zumrad"></span>
-                    <span class="palette-circle" style="background:#e4d5b7;" title="Shampan"></span>
-                    <span class="palette-circle" style="background:#f8f6f0; border: 1px solid #ddd;" title="Qaymoq"></span>
-                </div>
-                <p class="dresscode-note">* Oq rang kelin uchun xoslanishini ehtirom bilan iltimos qilamiz.</p>
+                <a href="#" class="btn-map"><span class="btn-text">GOOGLE MAPS</span></a>
             </div>
         </section>
 
@@ -191,17 +170,18 @@
             
             <div class="card-wrapper cinematic-fade delay-2">
                 <div class="card-container" id="luxuryCard">
+                    <!-- Glassmorphism reflections and light beams -->
                     <div class="card-glow"></div>
                     <div class="card-glass-reflection"></div>
                     <div class="card-texture"></div>
                     <div class="card-details">
                         <p class="card-label">QABUL QILUVCHI</p>
-                        <p class="card-name">MIRAFZAL</p>
+                        <p class="card-name">JAVOHIR</p>
                         
-                        <p class="card-label mt-4">TELEFON / BOG'LANISH</p>
-                        <p class="card-number" id="cardNumber">+998 93 823 73 83</p>
+                        <p class="card-label mt-4">KARTA RAQAMI</p>
+                        <p class="card-number" id="cardNumber">8600 0000 0000 0000</p>
                         
-                        <p class="card-hint">Quyidagi tugma orqali raqamni<br>nusxalashingiz mumkin.</p>
+                        <p class="card-hint">Quyidagi tugma orqali karta raqamini<br>tezda nusxalashingiz mumkin.</p>
                         
                         <button class="btn-copy magnetic-btn" id="copyBtn">
                             <span class="btn-text">RAQAMNI NUSXALASH</span>
@@ -213,7 +193,7 @@
         </section>
 
         <!-- RSVP Section -->
-        <section class="rsvp section-padding rsvp-section" id="rsvp">
+        <section class="rsvp section-padding" id="rsvp">
             <h2 class="section-title cinematic-fade">Tasdiqlash</h2>
             <p class="body-text cinematic-fade delay-1">Iltimos, to'yda ishtirok etishingizni<br>tasdiqlang.</p>
             
@@ -262,22 +242,22 @@
             
             <div class="countdown-timer cinematic-fade delay-1" id="timer">
                 <div class="time-block">
-                    <span class="time-num" id="days">00</span>
+                    <span class="time-num" id="days">17</span>
                     <span class="time-label">KUN</span>
                 </div>
                 <div class="time-sep">:</div>
                 <div class="time-block">
-                    <span class="time-num" id="hours">00</span>
+                    <span class="time-num" id="hours">17</span>
                     <span class="time-label">SOAT</span>
                 </div>
                 <div class="time-sep">:</div>
                 <div class="time-block">
-                    <span class="time-num" id="minutes">00</span>
+                    <span class="time-num" id="minutes">20</span>
                     <span class="time-label">DAQIQA</span>
                 </div>
                 <div class="time-sep">:</div>
                 <div class="time-block">
-                    <span class="time-num" id="seconds">00</span>
+                    <span class="time-num" id="seconds">25</span>
                     <span class="time-label">SONIYA</span>
                 </div>
             </div>
@@ -286,31 +266,14 @@
 
             <div class="parallax-scroll" data-speed="0.12">
                 <div class="rings-illustration cinematic-fade delay-3">
-                    <img src="images/rings-illustration.jpg" alt="Wedding Rings">
+                    <img src="rings-illustration.jpg" alt="Wedding Rings">
                 </div>
             </div>
         </section>
         
     </main>
 
-    <!-- Watermark Pill (Unpaid / Demo Mode) -->
-    <div id="taklivoWatermark" class="taklivo-unpaid-watermark">
-        🛡 TAKLIVO DEMO PREVIEW • 24H
-    </div>
-
-    <!-- Floating Demo Bottom Banner -->
-    <div id="taklivoBanner" class="taklivo-floating-banner">
-        <div class="taklivo-banner-left">
-            <span class="taklivo-banner-title">
-                🛡 SINOV REJIMI
-                <span class="taklivo-banner-badge">Buyurtma #8</span>
-            </span>
-            <span class="taklivo-banner-desc">Sayt namunaviy ko'rinishda. To'lov qilingach, suv belgisi olib tashlanadi.</span>
-        </div>
-        <a href="https://t.me/taklivo_bot" class="taklivo-banner-btn" target="_blank">Botda tasdiqlash</a>
-    </div>
-
-    <script src="../../demo/assets/engine.js"></script>
+    <script src="../assets/engine.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

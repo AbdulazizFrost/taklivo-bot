@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const introScreen = document.getElementById('introScreen');
     const unlockBtn = document.getElementById('unlockBtn');
     const body = document.body;
-    const audio = document.getElementById('weddingAudio');
 
     if (unlockBtn && introScreen) {
         unlockBtn.addEventListener('click', () => {
@@ -14,11 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
             unlockBtn.style.transform = 'scale(0.95)';
             unlockBtn.style.boxShadow = '0 0 50px rgba(255,255,255,0.8)';
             
-            // Try playing audio on user interaction
-            if (audio) {
-                audio.play().catch(e => console.log('Audio autoplay prevented:', e));
-            }
-
             // Wait for visual lock to open, then dissolve the intro screen
             setTimeout(() => {
                 introScreen.classList.add('hidden');
@@ -34,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     const observerOptions = {
         root: null,
-        rootMargin: '-50px 0px',
+        rootMargin: '-50px 0px', // Trigger slightly after it enters screen
         threshold: 0.1
     };
 
@@ -42,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
+                // Unobserve to keep the fade permanent once revealed
                 observer.unobserve(entry.target); 
             }
         });
@@ -57,15 +52,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const luxuryCard = document.getElementById('luxuryCard');
     if (luxuryCard) {
         luxuryCard.addEventListener('mousemove', (e) => {
+            // Get bounding rect
             const rect = luxuryCard.getBoundingClientRect();
+            // Calculate mouse position relative to the center of the card
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
+            // Calculate rotation (max 10 degrees)
             const rotateX = ((y - centerY) / centerY) * -10; 
             const rotateY = ((x - centerX) / centerX) * 10;
             
+            // Apply transform using requestAnimationFrame for 60fps smoothness
             requestAnimationFrame(() => {
                 luxuryCard.style.transform = `perspective(1500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
             });
@@ -85,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cardNumber = document.getElementById('cardNumber');
 
     if (copyBtn && cardNumber) {
+        // Also allow clicking the number directly
         [copyBtn, cardNumber].forEach(trigger => {
             trigger.addEventListener('click', async () => {
                 const textToCopy = cardNumber.innerText.replace(/\s/g, '');
@@ -130,46 +130,60 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 5. COUNTDOWN TIMER (20-OKTABR 2026, 19:00)
+    // 5. COUNTDOWN TIMER
     // ==========================================
     const timerElement = document.getElementById('timer');
     if (timerElement) {
-        const countDownDate = new Date("Oct 20, 2026 19:00:00").getTime();
+        // Set the date we're counting down to
+        let targetYear = 2026;
+        // If the date is already in the past (e.g. testing in late 2026), push to next year so the timer ticks
+        if (new Date().getTime() > new Date("Aug 12, 2026 18:00:00").getTime()) {
+            targetYear = new Date().getFullYear() + 1;
+        }
+        const countDownDate = new Date(`Aug 12, ${targetYear} 18:00:00`).getTime();
 
+        // Update the count down every 1 second
         const x = setInterval(function() {
+            // Get today's date and time
             const now = new Date().getTime();
+
+            // Find the distance between now and the count down date
             const distance = countDownDate - now;
 
+            // Time calculations for days, hours, minutes and seconds
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            const dEl = document.getElementById("days");
-            const hEl = document.getElementById("hours");
-            const mEl = document.getElementById("minutes");
-            const sEl = document.getElementById("seconds");
+            // Display the result in the elements
+            document.getElementById("days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
 
-            if (dEl) dEl.innerText = String(Math.max(0, days)).padStart(2, '0');
-            if (hEl) hEl.innerText = String(Math.max(0, hours)).padStart(2, '0');
-            if (mEl) mEl.innerText = String(Math.max(0, minutes)).padStart(2, '0');
-            if (sEl) sEl.innerText = String(Math.max(0, seconds)).padStart(2, '0');
-
+            // If the count down is finished, write some text
             if (distance < 0) {
                 clearInterval(x);
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
             }
         }, 1000);
     }
     
     // ==========================================
-    // 6. ADD TO GOOGLE CALENDAR
+    // 6. ADD TO CALENDAR
     // ==========================================
     const addToCalendarBtn = document.getElementById('addToCalendarBtn');
     if (addToCalendarBtn) {
-        const title = encodeURIComponent("Mirafzal va Sabina Nikoh To'yi 💍");
-        const details = encodeURIComponent("Mirafzal va Sabinalarning nikoh to'yiga lutfan taklif etamiz!");
-        const location = encodeURIComponent("«Dilifori» Tantanalar Saroyi, Forish tumani, Jizzax");
-        const dates = "20261020T140000Z/20261020T190000Z";
+        // Tashkent is UTC+5. 18:00 local is 13:00 UTC.
+        // Format: YYYYMMDDThhmmssZ
+        const title = encodeURIComponent("Javohir va Malika Nikoh To'yi");
+        const details = encodeURIComponent("Sizni baxtli kunimizda kutib qolamiz!");
+        const location = encodeURIComponent("Versal Tantanalar Saroyi, Yunusobod tumani, Amir Temur ko'chasi 15-uy");
+        const dates = "20260812T130000Z/20260812T180000Z";
         
         const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
         addToCalendarBtn.href = googleCalendarUrl;
@@ -184,11 +198,12 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener('scroll', () => {
             requestAnimationFrame(() => {
                 parallaxElements.forEach(el => {
-                    const speed = parseFloat(el.getAttribute('data-speed')) || 0.1;
+                    const speed = el.getAttribute('data-speed') || 0.1;
                     const rect = el.getBoundingClientRect();
                     const elementCenter = rect.top + (rect.height / 2);
                     const viewportCenter = window.innerHeight / 2;
                     
+                    // Only apply if the element is near the viewport
                     if (rect.top < window.innerHeight && rect.bottom > 0) {
                         const distance = elementCenter - viewportCenter;
                         const yPos = distance * speed;
@@ -200,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     // ==========================================
-    // 8. RSVP FORM SUBMISSION (Linked with API)
+    // 8. RSVP FORM SUBMISSION
     // ==========================================
     const rsvpForm = document.getElementById('rsvpForm');
     const rsvpSuccess = document.getElementById('rsvpSuccess');
@@ -209,35 +224,17 @@ document.addEventListener("DOMContentLoaded", () => {
         rsvpForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const name = (document.getElementById('guestName') || {}).value || '';
-            const attendance = (document.querySelector('input[name="attendance"]:checked') || {}).value || 'yes';
-            const status = attendance === 'yes' ? 'Albatta kelaman' : 'Afsuski kelolmayman';
-            
-            // Post RSVP to Taklivo backend
-            fetch('/api/order/8/rsvp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: name, phone: '', status: status, message: '' })
-            }).catch(err => console.log('RSVP logged:', err));
-
             // Fade out form
             rsvpForm.style.opacity = '0';
             rsvpForm.style.pointerEvents = 'none';
             
+            // Show simple success popup
             setTimeout(() => {
                 rsvpSuccess.classList.remove('hidden');
             }, 300);
         });
     }
-
-    // ==========================================
-    // 9. TAKLIVO UNIVERSAL ENGINE INIT
-    // ==========================================
-    if (window.TaklivoEngine) {
-        window.TaklivoEngine.init({
-            orderId: 8,
-            secondLanguage: false,
-            defaultDate: '20.10.2026 19:00'
-        });
-    }
 });
+
+
+if (window.TaklivoEngine) { window.TaklivoEngine.init({ isCatalogDemo: true }); }
