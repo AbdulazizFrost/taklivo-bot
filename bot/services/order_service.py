@@ -90,6 +90,12 @@ class OrderService:
         return await db.get_user_orders(telegram_id)
 
     @staticmethod
+    async def update_order_location(order_id: int, location_url: str) -> Optional[Order]:
+        """Обновляет ссылку на локацию в заказе."""
+        await db.set_order_location_url(order_id, location_url)
+        return await db.get_order(order_id)
+
+    @staticmethod
     async def get_orders_by_status_category(status: str, limit: int = 50) -> list[Order]:
         """Возвращает заказы по статусу."""
         if status == "ALL":

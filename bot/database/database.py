@@ -930,6 +930,14 @@ class SqliteDatabase:
             )
             await db.commit()
 
+    async def set_order_location_url(self, order_id: int, location_url: str) -> None:
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute(
+                "UPDATE orders SET location_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+                (location_url, order_id),
+            )
+            await db.commit()
+
     async def add_order_photo(self, order_id: int, file_id: str, file_unique_id: Optional[str] = None) -> None:
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(
@@ -1839,6 +1847,14 @@ class PostgresDatabase:
             await conn.execute(
                 "UPDATE orders SET revision_text = $1, status = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3",
                 revision_text, OrderStatus.REVISION.value, order_id
+            )
+
+    async def set_order_location_url(self, order_id: int, location_url: str) -> None:
+        pool = await self._get_pool()
+        async with pool.acquire() as conn:
+            await conn.execute(
+                "UPDATE orders SET location_url = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2",
+                location_url, order_id
             )
 
     async def add_order_photo(self, order_id: int, file_id: str, file_unique_id: Optional[str] = None) -> None:

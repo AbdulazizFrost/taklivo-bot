@@ -367,4 +367,20 @@ TEXTS = {
     "status_REVISION": "✏️ Tuzatish kiritilmoqda",
     "status_COMPLETED": "🎉 Yakunlandi",
     "status_CANCELLED": "❌ Bekor qilindi",
+
+    # Xabarlar va lokatsiya (vizarddan tashqari)
+    "client_location_updated": (
+        "✅ <b>Rahmat! Lokatsiyangiz qabul qilindi va #{order_id}-sonli buyurtmangizga biriktirildi!</b> ✨\n\n"
+        "🗺 <b>Lokatsiya:</b> {location_url}\n\n"
+        "<i>Dizaynerimiz taklifnoma saytingizdagi xaritani yangilaydi.</i>"
+    ),
+    "client_message_forwarded": (
+        "✅ <b>Xabaringiz qabul qilindi va ma’muriyatga yetkazildi!</b> ✨\n\n"
+        "Tez orada sizga javob beramiz."
+    ),
+    "client_no_order_fallback": (
+        "Assalomu alaykum! ✨\n\n"
+        "Sizga qanday yordam bera olamiz? Menuni ochish uchun /start ni bosing yoki ma’muriyat bilan bog‘laning: @Abdulaziz5335."
+    ),
 }
+

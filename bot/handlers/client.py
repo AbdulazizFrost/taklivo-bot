@@ -3,7 +3,7 @@
 """
 import logging
 from aiogram import Router, F
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import CommandStart, Command, StateFilter
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 
@@ -660,3 +660,144 @@ async def process_revision_text(message: Message, state: FSMContext) -> None:
             revision_text=revision_text,
             username=message.from_user.username,
         )
+
+
+# --- Обработка входящих сообщений и локации от клиентов вне визарда ---
+
+@router.message(
+    StateFilter(None),
+    ~F.text.startswith("/"),
+    F.text | F.location | F.photo | F.document | F.audio | F.voice,
+)
+async def process_client_idle_message(message: Message, state: FSMContext) -> None:
+    """
+    Прием локаций, сообщений и файлов от клиентов, у которых уже есть заказ,
+    с автоматическим сохранением локации и оповещением администратора.
+    """
+    if not message.from_user:
+        return
+
+    # Проверяем, есть ли у пользователя заказы
+    orders = await db.get_user_orders(message.from_user.id)
+    lang = await db.get_user_language(message.from_user.id) or "uz"
+
+    if not orders:
+        # Если пользователь без заказов пишет в чат бота
+        await message.answer(
+            text=get_text(lang, "client_no_order_fallback"),
+            reply_markup=get_main_menu_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
+        return
+
+    # Выбираем самый актуальный заказ клиента (активный или последний)
+    active_statuses = [
+        OrderStatus.IN_PROGRESS.value,
+        OrderStatus.WAITING_PAYMENT.value,
+        OrderStatus.PAYMENT_REVIEW.value,
+        OrderStatus.PREVIEW.value,
+        OrderStatus.REVISION.value,
+    ]
+    target_order = next((o for o in orders if o.status in active_statuses), orders[0])
+    user_mention = f"@{escape(message.from_user.username)}" if message.from_user.username else f"ID: <code>{message.from_user.id}</code>"
+
+    # Клавиатура для быстрого действия администратора
+    admin_kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=f"👁 Открыть заказ #{target_order.id}", callback_data=f"adm_order:{target_order.id}")],
+            [InlineKeyboardButton(text="💬 Написать клиенту", callback_data=f"adm_msg_client:{target_order.id}")],
+        ]
+    )
+
+    # 1. Если отправлена геолокация или ссылка на карту
+    location_url = None
+    if message.location:
+        lat = message.location.latitude
+        lon = message.location.longitude
+        location_url = f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
+    elif message.text:
+        text_lower = message.text.lower()
+        if (
+            "maps.google" in text_lower
+            or "goo.gl/maps" in text_lower
+            or "maps.app.goo.gl" in text_lower
+            or ("yandex" in text_lower and "maps" in text_lower)
+            or "2gis" in text_lower
+            or text_lower.startswith("http://")
+            or text_lower.startswith("https://")
+        ):
+            location_url = message.text.strip()
+            if len(location_url) > 500:
+                location_url = location_url[:500]
+
+    if location_url:
+        # Сохраняем локацию в БД
+        await order_service.update_order_location(target_order.id, location_url)
+
+        # Оповещаем администратора
+        admin_alert = (
+            f"📍 <b>КЛИЕНТ ПРИСЛАЛ ЛОКАЦИЮ ПО ЗАКАЗУ #{target_order.id}!</b>\n\n"
+            f"👤 <b>Клиент:</b> {user_mention}\n"
+            f"📞 <b>Телефон:</b> {escape(target_order.phone or '—')}\n"
+            f"🗺 <b>Ссылка на карту:</b> {escape(location_url)}\n\n"
+            f"<i>✅ Локация автоматически сохранена в заказ #{target_order.id} в базе данных!</i>"
+        )
+        for admin_id in config.ADMIN_IDS:
+            try:
+                await message.bot.send_message(
+                    chat_id=admin_id,
+                    text=admin_alert,
+                    reply_markup=admin_kb,
+                    parse_mode="HTML",
+                )
+            except Exception as e:
+                logger.error(f"Failed to notify admin #{admin_id} of client location: {e}")
+
+        # Отвечаем клиенту
+        await message.answer(
+            text=get_text(lang, "client_location_updated", order_id=target_order.id, location_url=escape(location_url)),
+            parse_mode="HTML",
+        )
+        return
+
+    # 2. Если отправлен обычный текст
+    if message.text:
+        admin_alert = (
+            f"💬 <b>СООБЩЕНИЕ ОТ КЛИЕНТА (Заказ #{target_order.id})</b>\n\n"
+            f"👤 <b>Клиент:</b> {user_mention}\n"
+            f"📞 <b>Телефон:</b> {escape(target_order.phone or '—')}\n\n"
+            f"<b>Текст:</b>\n{escape(message.text)}"
+        )
+        for admin_id in config.ADMIN_IDS:
+            try:
+                await message.bot.send_message(
+                    chat_id=admin_id,
+                    text=admin_alert,
+                    reply_markup=admin_kb,
+                    parse_mode="HTML",
+                )
+            except Exception as e:
+                logger.error(f"Failed to forward client message to admin #{admin_id}: {e}")
+
+        await message.answer(
+            text=get_text(lang, "client_message_forwarded"),
+            parse_mode="HTML",
+        )
+        return
+
+    # 3. Если отправлен медиа-файл (фото, музыка, документ, голос)
+    admin_caption = f"📎 <b>Файл от клиента {user_mention} (Заказ #{target_order.id})</b>"
+    for admin_id in config.ADMIN_IDS:
+        try:
+            await message.send_copy(
+                chat_id=admin_id,
+                caption=admin_caption,
+                reply_markup=admin_kb,
+            )
+        except Exception as e:
+            logger.error(f"Failed to forward client media to admin #{admin_id}: {e}")
+
+    await message.answer(
+        text=get_text(lang, "client_message_forwarded"),
+        parse_mode="HTML",
+    )
