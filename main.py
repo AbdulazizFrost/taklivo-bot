@@ -98,10 +98,12 @@ async def set_bot_commands(bot: Bot) -> None:
     - Администраторы видят /start и /admin.
     """
     user_commands = [
-        BotCommand(command="start", description="Главное меню / Asosiy menyu"),
+        BotCommand(command="start", description="🏠 Главное меню / Asosiy menyu"),
+        BotCommand(command="menu", description="📱 Меню / Menyu"),
     ]
     admin_commands = [
-        BotCommand(command="start", description="Главное меню / Asosiy menyu"),
+        BotCommand(command="start", description="🏠 Главное меню / Asosiy menyu"),
+        BotCommand(command="menu", description="📱 Меню / Menyu"),
         BotCommand(command="admin", description="👑 Панель администратора"),
     ]
 
