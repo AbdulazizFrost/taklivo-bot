@@ -195,22 +195,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const parallaxElements = document.querySelectorAll('.parallax-scroll');
     
     if (parallaxElements.length > 0) {
+        let ticking = false;
         window.addEventListener('scroll', () => {
-            requestAnimationFrame(() => {
-                parallaxElements.forEach(el => {
-                    const speed = el.getAttribute('data-speed') || 0.1;
-                    const rect = el.getBoundingClientRect();
-                    const elementCenter = rect.top + (rect.height / 2);
-                    const viewportCenter = window.innerHeight / 2;
-                    
-                    // Only apply if the element is near the viewport
-                    if (rect.top < window.innerHeight && rect.bottom > 0) {
-                        const distance = elementCenter - viewportCenter;
-                        const yPos = distance * speed;
-                        el.style.transform = `translateY(${yPos}px)`;
-                    }
+            if (!ticking) {
+                ticking = true;
+                window.requestAnimationFrame(() => {
+                    parallaxElements.forEach(el => {
+                        const speed = el.getAttribute('data-speed') || 0.1;
+                        const rect = el.getBoundingClientRect();
+                        const elementCenter = rect.top + (rect.height / 2);
+                        const viewportCenter = window.innerHeight / 2;
+                        
+                        // Only apply if the element is near the viewport
+                        if (rect.top < window.innerHeight && rect.bottom > 0) {
+                            const distance = elementCenter - viewportCenter;
+                            const yPos = distance * speed;
+                            el.style.transform = `translateY(${yPos}px)`;
+                        }
+                    });
+                    ticking = false;
                 });
-            });
+            }
         }, { passive: true });
     }
     
