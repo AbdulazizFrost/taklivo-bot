@@ -248,28 +248,35 @@ def setup_api_routes(app: web.Application) -> None:
     if os.path.exists(templates_demo_dir):
         async def serve_demo_catalog(request: web.Request) -> web.Response:
             """Отдает главную витрину со всеми дизайнами."""
+            if not request.path.endswith("/"):
+                raise web.HTTPMovedPermanently(f"{request.path}/")
             index_path = os.path.join(templates_demo_dir, "index.html")
             if os.path.exists(index_path):
                 return web.FileResponse(index_path)
             return web.Response(text="TAKLIVO Demo Showcase", status=200)
 
         async def serve_demo_template(request: web.Request) -> web.Response:
-            """Отдает конкретный шаблон сайта (luxury-gold, floral, dark-luxury, minimal...)."""
+            """Отдает конкретный шаблон сайта (luxury-gold, floral, dark-luxury, minimal, modern...)."""
             template = request.match_info.get("template", "").strip().lower().replace("_", "-")
+            # Критически важно: без завершающего слэша браузер ищет style.css в /demo/style.css вместо /demo/{template}/style.css
+            if not request.path.endswith("/"):
+                raise web.HTTPMovedPermanently(f"{request.path}/")
+
             template_path = os.path.join(templates_demo_dir, template, "index.html")
             if os.path.exists(template_path):
                 return web.FileResponse(template_path)
-            # Fallback на проверенный luxury-gold во избежание 404
-            fallback_path = os.path.join(templates_demo_dir, "luxury-gold", "index.html")
-            if os.path.exists(fallback_path):
-                return web.FileResponse(fallback_path)
-            return web.FileResponse(os.path.join(templates_demo_dir, "index.html"))
+            return web.Response(text=f"Шаблон '{template}' не найден.", status=404)
 
         app.router.add_get("/demo", serve_demo_catalog)
         app.router.add_get("/demo/", serve_demo_catalog)
         app.router.add_get("/demo/{template}", serve_demo_template)
         app.router.add_get("/demo/{template}/", serve_demo_template)
         app.router.add_static("/demo", templates_demo_dir)
+        
+        # Резервный маршрут для общих assets engine.css/engine.js
+        assets_dir = os.path.join(templates_demo_dir, "assets")
+        if os.path.exists(assets_dir):
+            app.router.add_static("/assets", assets_dir)
 
         logger.info(f"Веб-шаблоны (/demo/*) успешно подключены из: {templates_demo_dir}")
 
@@ -280,6 +287,9 @@ def setup_api_routes(app: web.Application) -> None:
     async def serve_client_order(request: web.Request) -> web.Response:
         """Отдает персональный сайт заказа клиента (/orders/{order_id} или /order/{order_id})."""
         order_id = request.match_info.get("order_id", "").strip()
+        if not request.path.endswith("/"):
+            raise web.HTTPMovedPermanently(f"{request.path}/")
+
         site_path = os.path.join(templates_orders_dir, order_id, "index.html")
         if os.path.exists(site_path):
             return web.FileResponse(site_path)

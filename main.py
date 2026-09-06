@@ -75,12 +75,12 @@ async def start_web_server() -> web.AppRunner | None:
 
 async def run_keep_alive_loop() -> None:
     """Периодический опрос собственного сервера для предотвращения спящего режима на бесплатных тарифах."""
-    url = os.getenv("RENDER_EXTERNAL_URL")
-    if not url:
+    url = os.getenv("RENDER_EXTERNAL_URL") or os.getenv("DEMO_BASE_URL")
+    if not url or "taklivo.uz" in url:
         return
     health_url = f"{url.rstrip('/')}/health"
     logger.info(f"Keep-alive сервис активирован: {health_url}")
-    await asyncio.sleep(60)
+    await asyncio.sleep(15)
     while True:
         try:
             async with aiohttp.ClientSession() as session:
@@ -88,7 +88,7 @@ async def run_keep_alive_loop() -> None:
                     logger.debug(f"Keep-alive ping status: {resp.status}")
         except Exception as e:
             logger.debug(f"Keep-alive ping warning: {e}")
-        await asyncio.sleep(600)
+        await asyncio.sleep(300)
 
 
 async def set_bot_commands(bot: Bot) -> None:
