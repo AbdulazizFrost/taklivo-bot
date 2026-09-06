@@ -223,6 +223,18 @@ async def handle_order_rsvp(request: web.Request) -> web.Response:
                 text=rsvp_msg,
                 parse_mode="HTML",
             )
+            # Копия администратору для контроля и отслеживания
+            from config import config
+            for adm_id in config.ADMIN_IDS:
+                if adm_id != order.telegram_id:
+                    try:
+                        await _bot_instance.send_message(
+                            chat_id=adm_id,
+                            text=f"📋 <b>[RSVP Копия для админа]</b>\n" + rsvp_msg,
+                            parse_mode="HTML",
+                        )
+                    except Exception as err:
+                        logger.warning(f"Не удалось отправить копию RSVP админу {adm_id}: {err}")
         except Exception as e:
             logger.warning(f"Не удалось отправить уведомление о RSVP клиенту {order.telegram_id}: {e}")
 
