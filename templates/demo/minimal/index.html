@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Anvar & Rayhon — Vogue Editorial Minimal Wedding</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/engine.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="minimal-editorial-body">
+
+    <!-- Background Audio -->
+    <audio id="weddingAudio" src="../luxury-gold/Alex Warren - Ordinary (Official Video).mp3" loop preload="auto"></audio>
+
+    <!-- Floating Swiss Audio Badge -->
+    <div class="swiss-audio-badge" id="musicBtn" onclick="toggleMusic()" role="button" aria-label="Toggle Wedding Audio" tabindex="0">
+        <div class="audio-equalizer-micro" id="eqBars">
+            <span></span><span></span><span></span>
+        </div>
+        <span class="audio-badge-label" id="audioLabel">SOUNDTRACK 01</span>
+    </div>
+
+    <!-- Editorial Canvas Wrapper -->
+    <main class="editorial-page-canvas">
+
+        <!-- 1. HERO SECTION (MAGAZINE COVER ARCHITECTURE) -->
+        <header class="editorial-hero reveal-item">
+            <div class="magazine-issue-bar">
+                <span class="issue-left">VOL. 26 · NO. 11</span>
+                <span class="issue-center">TAKLIVO SPECIAL ISSUE</span>
+                <span class="issue-right" data-taklivo="event_date">12.11.2026</span>
+            </div>
+
+            <div class="hero-typography-block">
+                <div class="hero-editorial-eyebrow">
+                    <span class="eyebrow-line left"></span>
+                    <p class="hero-editorial-sub" data-i18n="subtitle">Hayotimizning eng go'zal sahifasi boshlanmoqda</p>
+                    <span class="eyebrow-line right"></span>
+                </div>
+                <h1 class="hero-monumental-name" data-taklivo="couple_names">
+                    <span class="name-row" data-taklivo="groom_name">ANVAR</span>
+                    <span class="amp-row"><span class="amp-char">&</span></span>
+                    <span class="name-row" data-taklivo="bride_name">RAYHON</span>
+                </h1>
+                <div class="hero-date-row">
+                    <div class="hero-date-item">
+                        <span class="date-label">DATE</span>
+                        <span class="architectural-date" data-taklivo="event_date">12 · 11 · 2026</span>
+                    </div>
+                    <div class="hero-date-item right">
+                        <span class="date-label">LOCATION</span>
+                        <span class="city-indicator">TOSHKENT · 41°18'N</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Asymmetric Editorial Photography Composition -->
+            <div class="hero-asymmetric-composition">
+                <div class="photo-hero-primary">
+                    <div class="photo-img-primary" style="background-image: url('../luxury-gold/images/bosh_rasm.jpg');"></div>
+                    <div class="photo-frame-caption">
+                        <span class="photo-num-tag">PLATE 01</span>
+                        <span class="photo-desc-tag">EDITORIAL PORTRAIT</span>
+                    </div>
+                </div>
+                <div class="photo-hero-secondary">
+                    <div class="photo-img-secondary" style="background-image: url('../luxury-gold/images/galereya2.jpg');"></div>
+                    <div class="photo-frame-caption secondary">
+                        <span class="photo-num-tag">PLATE 02</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-quote-card">
+                <span class="quote-mark-large">“</span>
+                <p class="hero-manifesto-quote font-serif">
+                    Alloh bir-birini sevgan ikki qalbni baxt, mehr va xotirjamlik ila birlashtirdi.
+                </p>
+            </div>
+        </header>
+
+        <!-- 2. THE COUPLE (SWISS MINIMAL EDITORIAL) -->
+        <section class="section-editorial-couple reveal-item">
+            <div class="editorial-grid-header">
+                <span class="section-index">01</span>
+                <h2 class="section-title-clean">THE UNION</h2>
+                <span class="section-line"></span>
+            </div>
+
+            <div class="couple-manifesto-layout">
+                <div class="manifesto-card">
+                    <div class="manifesto-accent-bar"></div>
+                    <div class="manifesto-content">
+                        <h3 class="lead-statement font-serif">
+                            Ikki yo'lning bir butun umumiy manzilga aylanishi.
+                        </h3>
+                        <p class="manifesto-body-text">
+                            Biz hayotimizning eng muhim sahifasini boshlamoqdamiz. Ushbu quvonchli lahzalarda eng yaqin insonlarimiz davrasida bo'lish biz uchun cheksiz sharafdir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SWISS TIMELINE -->
+        <section class="section-swiss-timeline reveal-item">
+            <div class="editorial-grid-header">
+                <span class="section-index">02</span>
+                <h2 class="section-title-clean" data-i18n="ourStoryTitle">BIZNING HIKOYA</h2>
+                <span class="section-line"></span>
+            </div>
+
+            <div class="swiss-timeline-list">
+                <!-- 2021 -->
+                <div class="timeline-row">
+                    <div class="time-year-badge">
+                        <span class="time-year font-serif">2021</span>
+                        <span class="timeline-dot"></span>
+                    </div>
+                    <div class="time-detail-card">
+                        <span class="time-phase-name">FIRST MEETING</span>
+                        <p class="time-phase-desc">Kuz oylarida Toshkent shahrida boshlangan ilk tanishuv.</p>
+                    </div>
+                </div>
+
+                <!-- 2024 -->
+                <div class="timeline-row">
+                    <div class="time-year-badge">
+                        <span class="time-year font-serif">2024</span>
+                        <span class="timeline-dot"></span>
+                    </div>
+                    <div class="time-detail-card">
+                        <span class="time-phase-name">THE PROPOSAL</span>
+                        <p class="time-phase-desc">O'zaro ishonch va abadiy birga bo'lish ahdi.</p>
+                    </div>
+                </div>
+
+                <!-- 2026 -->
+                <div class="timeline-row featured">
+                    <div class="time-year-badge">
+                        <span class="time-year font-serif">2026</span>
+                        <span class="timeline-dot featured-dot"></span>
+                    </div>
+                    <div class="time-detail-card featured-card">
+                        <div class="phase-header-row">
+                            <span class="time-phase-name">FOREVER BEGINS</span>
+                            <span class="featured-badge">WEDDING DAY</span>
+                        </div>
+                        <p class="time-phase-desc">Nikoh to'yi oqshomi. Bizning baxtli kunimizga xush kelibsiz.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. WEDDING CELEBRATION (MONUMENTAL INFORMATION) -->
+        <section class="section-celebration reveal-item">
+            <div class="editorial-grid-header">
+                <span class="section-index">03</span>
+                <h2 class="section-title-clean">LOCATION & TIME</h2>
+                <span class="section-line"></span>
+            </div>
+
+            <div class="celebration-monument-box">
+                <div class="monument-top-seal">
+                    <span class="seal-diamond">◇</span>
+                    <span class="seal-sub-title" data-i18n="gatheringTitle">MEHMONLAR YIG'ILISHI</span>
+                </div>
+
+                <div class="monument-time-col">
+                    <span class="time-giant font-serif" data-taklivo="event_time">18:00</span>
+                </div>
+
+                <div class="hairline-divider-h">
+                    <span class="divider-dot"></span>
+                </div>
+
+                <div class="monument-venue-col">
+                    <span class="venue-label">LOCATION</span>
+                    <h3 class="venue-title font-serif" data-taklivo="venue">OSIYO GRAND</h3>
+                    <p class="venue-sub-text" data-taklivo="address">Toshkent shahri, Amir Temur shox ko'chasi</p>
+
+                    <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="swiss-black-btn">
+                        <span data-i18n="mapButton">XARITANI OCHISH</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. ARCHITECTURAL COUNTDOWN -->
+        <section class="section-countdown-minimal reveal-item">
+            <div class="editorial-grid-header">
+                <span class="section-index">04</span>
+                <h2 class="section-title-clean" data-i18n="countdownTitle">TANTANAGACHA QOLDI</h2>
+                <span class="section-line"></span>
+            </div>
+
+            <div class="swiss-countdown-grid">
+                <div class="sc-unit">
+                    <span class="sc-val font-serif" id="days">00</span>
+                    <span class="sc-lbl" data-i18n="days">KUN</span>
+                </div>
+                <div class="sc-unit">
+                    <span class="sc-val font-serif" id="hours">00</span>
+                    <span class="sc-lbl" data-i18n="hours">SOAT</span>
+                </div>
+                <div class="sc-unit">
+                    <span class="sc-val font-serif" id="minutes">00</span>
+                    <span class="sc-lbl" data-i18n="minutes">DAQIQA</span>
+                </div>
+                <div class="sc-unit">
+                    <span class="sc-val font-serif" id="seconds">00</span>
+                    <span class="sc-lbl" data-i18n="seconds">SONIYA</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. EDITORIAL GALLERY -->
+        <section class="section-minimal-gallery reveal-item">
+            <div class="editorial-grid-header">
+                <span class="section-index">05</span>
+                <h2 class="section-title-clean" data-i18n="galleryTitle">GALEREYA</h2>
+                <span class="section-line"></span>
+            </div>
+
+            <div class="minimal-gallery-split">
+                <div class="gallery-column left">
+                    <div class="gallery-frame-wrap">
+                        <div class="g-photo-frame" style="background-image: url('../luxury-gold/images/galereya1.jpg');"></div>
+                        <div class="g-caption-bar">
+                            <span class="g-photo-caption">SERIES 01</span>
+                            <span class="g-photo-sub">PORTRAIT</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-column right">
+                    <div class="gallery-frame-wrap">
+                        <div class="g-photo-frame short" style="background-image: url('../luxury-gold/images/galereya3.jpg');"></div>
+                        <div class="g-caption-bar">
+                            <span class="g-photo-caption">SERIES 02</span>
+                            <span class="g-photo-sub">DETAILS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. TO'YONA (TITANIUM EMBOSSED CARD) -->
+        <section class="section-toyona-minimal reveal-item">
+            <div class="editorial-grid-header">
+                <span class="section-index">06</span>
+                <h2 class="section-title-clean" data-i18n="toyonaTitle">TO'YONA</h2>
+                <span class="section-line"></span>
+            </div>
+
+            <div class="swiss-gift-box">
+                <p class="gift-intro-note" data-i18n="toyonaDesc">
+                    Agar bizni tabriklab, to'yona yubormoqchi bo'lsangiz, quyidagi karta raqamidan foydalanishingiz mumkin:
+                </p>
+                <div class="gift-card-layout">
+                    <div class="card-metallic-glow"></div>
+                    <div class="card-chip-row">
+                        <span class="card-brand-label">TAKLIVO WEDDING</span>
+                        <span class="card-contactless">)))</span>
+                    </div>
+                    <div class="card-body-row">
+                        <span class="gift-holder-tag" data-i18n="cardHolder">KARTA EGASI</span>
+                        <p class="gift-holder-name font-serif" data-taklivo="groom_name">Anvar</p>
+                        <p class="gift-card-digits" id="cardNumber">9860 9999 8888 7777</p>
+                    </div>
+                    <div class="card-action-row">
+                        <button class="swiss-copy-action" onclick="copyCardNumber()" aria-label="Copy Card Number">
+                            <span class="copy-icon">❐</span>
+                            <span id="copyBtnText" data-i18n="cardCopy">Nusxalash</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. RSVP (ARCHITECTURAL FORM) -->
+        <section class="section-rsvp-minimal reveal-item">
+            <div class="editorial-grid-header">
+                <span class="section-index">07</span>
+                <h2 class="section-title-clean" data-i18n="rsvpTitle">TASHRIFNI TASDIQLASH</h2>
+                <span class="section-line"></span>
+            </div>
+
+            <div class="minimal-rsvp-box">
+                <p class="rsvp-intro-text" data-i18n="rsvpSubtitle">Sizning ishtirokingiz biz uchun juda muhim</p>
+
+                <form class="swiss-form" id="rsvpForm">
+                    <div class="field-luxury-wrap">
+                        <label for="name" data-i18n="rsvpNameLabel">Ismingiz</label>
+                        <input type="text" id="name" required placeholder="Masalan: Sardor" data-i18n-placeholder="rsvpNamePlaceholder" autocomplete="name">
+                    </div>
+
+                    <div class="field-luxury-wrap">
+                        <label for="phone" data-i18n="rsvpPhoneLabel">Telefon raqam</label>
+                        <input type="tel" id="phone" required placeholder="+998 90 123 45 67" data-i18n-placeholder="rsvpPhonePlaceholder" autocomplete="tel">
+                    </div>
+
+                    <div class="field-luxury-wrap">
+                        <label for="message" data-i18n="rsvpMsgLabel">Ezgu tilaklaringiz</label>
+                        <textarea id="message" rows="3" placeholder="O'z tilaklaringizni yozishingiz mumkin..." data-i18n-placeholder="rsvpMsgPlaceholder"></textarea>
+                    </div>
+
+                    <input type="hidden" id="attendanceStatus" value="Albatta Boraman">
+
+                    <div class="swiss-form-actions">
+                        <button type="submit" class="swiss-primary-btn" onclick="document.getElementById('attendanceStatus').value = 'Albatta Boraman'">
+                            <span data-i18n="rsvpAccept">Albatta boraman ✨</span>
+                        </button>
+                        <button type="submit" class="swiss-outline-btn" onclick="document.getElementById('attendanceStatus').value = 'Afsuski Kela olmayman'">
+                            <span data-i18n="rsvpDecline">Afsuski kela olmayman</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 9. FOOTER -->
+        <footer class="editorial-footer reveal-item">
+            <div class="footer-hairline"></div>
+            <div class="footer-brand-row">
+                <h2 class="footer-couple font-serif" data-taklivo="couple_names">Anvar & Rayhon</h2>
+                <p class="footer-credit">TAKLIVO · VOGUE EDITORIAL INVITATIONS · 2026</p>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal" role="dialog" aria-modal="true">
+        <div class="modal-swiss-box">
+            <div class="swiss-check">✓</div>
+            <h3 class="font-serif" data-i18n="rsvpThanks">Rahmat!</h3>
+            <p data-i18n="rsvpSuccessMsg">Sizning javobingiz muvaffaqiyatli qabul qilindi.</p>
+            <button class="modal-swiss-close" onclick="document.getElementById('successModal').classList.remove('open')" data-i18n="closeBtn">Yopish</button>
+        </div>
+    </div>
+
+    <!-- Engine & Local Scripts -->
+    <script src="../assets/engine.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

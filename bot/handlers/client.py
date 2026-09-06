@@ -3,7 +3,7 @@
 """
 import logging
 from aiogram import Router, F
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 
@@ -298,6 +298,19 @@ async def callback_about(callback: CallbackQuery) -> None:
 
 # --- Портфолио шаблонов ---
 
+# --- Портфолио и демо-шаблоны ---
+
+@router.message(Command("demo", "portfolio", "katalog", "shablon"))
+async def cmd_portfolio(message: Message) -> None:
+    """Прямая команда перехода к каталогу и витрине демо-сайтов."""
+    lang = await db.get_user_language(message.from_user.id)
+    await message.answer(
+        text=get_text(lang, "portfolio_title"),
+        reply_markup=get_portfolio_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+
+
 @router.callback_query(F.data == "client:portfolio")
 async def callback_portfolio(callback: CallbackQuery) -> None:
     """Каталог шаблонов."""
@@ -327,12 +340,14 @@ async def callback_template_view(callback: CallbackQuery) -> None:
     full_text = (
         f"{tmpl.emoji} <b>{name}</b>\n\n"
         f"<i>{desc}</i>\n\n"
-        f"📱 Нажмите кнопку <b>«{get_text(lang, 'btn_demo_link')}»</b>, чтобы открыть пример сайта в браузере.\n\n"
+        f"🔗 <b>Прямая ссылка:</b> <a href='{tmpl.demo_url}'>{tmpl.demo_url}</a>\n\n"
+        f"📱 Нажмите кнопку ниже, чтобы открыть сайт прямо в Telegram или в браузере.\n\n"
         f"Если стиль вам подходит — нажмите <b>«{get_text(lang, 'btn_choose_template')}»</b> для перехода к конструктору."
     ) if lang == "ru" else (
         f"{tmpl.emoji} <b>{name}</b>\n\n"
         f"<i>{desc}</i>\n\n"
-        f"📱 Brauzerda jonli namunani ko‘rish uchun <b>«{get_text(lang, 'btn_demo_link')}»</b> tugmasini bosing.\n\n"
+        f"🔗 <b>Jonli havola:</b> <a href='{tmpl.demo_url}'>{tmpl.demo_url}</a>\n\n"
+        f"📱 Saytni ko‘rish uchun quyidagi havola yoki tugmalardan foydalaning.\n\n"
         f"Agar dizayn sizga ma’qul bo‘lsa — <b>«{get_text(lang, 'btn_choose_template')}»</b> tugmasi orqali konstruktorga o‘ting."
     )
 
@@ -359,8 +374,8 @@ async def callback_pricing(callback: CallbackQuery) -> None:
         timer_price=format_currency(extra_prices["timer"], lang=lang),
         rsvp_price=format_currency(extra_prices["rsvp"], lang=lang),
         map_price=format_currency(extra_prices["map"], lang=lang),
-        gallery_price=format_currency(extra_prices["gallery"], lang=lang),
-        music_price=format_currency(extra_prices["music"], lang=lang),
+        gallery_price="БЕСПЛАТНО 🎁" if lang == "ru" else "BEPUL 🎁",
+        music_price="БЕСПЛАТНО 🎁" if lang == "ru" else "BEPUL 🎁",
         dresscode_price=format_currency(extra_prices["dresscode"], lang=lang),
         schedule_price=format_currency(extra_prices["schedule"], lang=lang),
         second_language_price=format_currency(extra_prices["second_language"], lang=lang),

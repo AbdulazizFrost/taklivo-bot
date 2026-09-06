@@ -1,0 +1,958 @@
+/* ==========================================================
+   TAKLIVO LUXURY WEDDING — Modern Royal Elegance
+   Typography: Playfair Display (Names & Titles) + Cormorant Garamond (Flourishes) + Plus Jakarta Sans (Clean Body) + Amiri (Calligraphy)
+   Palette: Fresh Porcelain Glass, Champagne Gold Foil & Warm Rose Petal Aura
+========================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg-main: #f8f8fa;
+    --text-main: #181c24;
+    --text-muted: #565d6c;
+    --text-soft: #8c93a3;
+    
+    --gold: #c59b27;
+    --gold-dark: #976e10;
+    --gold-light: #f5df9a;
+    --gold-soft: #faf5e8;
+    --gold-gradient: linear-gradient(135deg, #f5df9a 0%, #c59b27 50%, #8f680e 100%);
+    --gold-foil: linear-gradient(135deg, #edd287 0%, #c59b27 45%, #e8ca78 70%, #9a7114 100%);
+    
+    --card-bg: rgba(255, 255, 255, 0.88);
+    --card-border: rgba(255, 255, 255, 0.95);
+    --card-shadow: 0 16px 40px -8px rgba(20, 26, 38, 0.07), 0 4px 14px -2px rgba(20, 26, 38, 0.03);
+    
+    --radius-card: 28px;
+    --radius-pill: 50px;
+    
+    --font-serif: 'Playfair Display', serif;
+    --font-classic: 'Cormorant Garamond', serif;
+    --font-roman: 'Cinzel', serif;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+    --font-arabic: 'Amiri', serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    background-image: 
+        radial-gradient(circle at 12% 0%, rgba(223, 183, 67, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 88% 20%, rgba(244, 208, 196, 0.16) 0%, transparent 45%),
+        radial-gradient(circle at 10% 60%, rgba(223, 183, 67, 0.11) 0%, transparent 50%),
+        radial-gradient(circle at 90% 85%, rgba(214, 226, 255, 0.15) 0%, transparent 45%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Ambient Floating Blur Blobs */
+.modern-blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+}
+.blob-1 {
+    width: 320px;
+    height: 320px;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(223, 183, 67, 0.15);
+}
+.blob-2 {
+    width: 280px;
+    height: 280px;
+    top: 40%;
+    right: -70px;
+    background: rgba(244, 208, 196, 0.18);
+}
+.blob-3 {
+    width: 260px;
+    height: 260px;
+    bottom: 10%;
+    left: -60px;
+    background: rgba(223, 183, 67, 0.12);
+}
+
+/* ==========================================================
+   1. INTRO SCREEN / GLAVNOYE OKNO S KNOPKOY OTKRYTIYA
+========================================================== */
+.intro-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(248, 248, 250, 0.95);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+    transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.intro-overlay.intro-parted {
+    opacity: 0;
+    transform: scale(1.04) translateY(-15px);
+    pointer-events: none;
+}
+
+.intro-glass-card {
+    width: 100%;
+    max-width: 410px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 24px 60px rgba(20, 26, 38, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    border-radius: 34px;
+    padding: 44px 28px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    animation: modernCardEnter 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modernCardEnter {
+    from { opacity: 0; transform: translateY(30px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modern-badge-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    background: var(--gold-soft);
+    border: 1px solid rgba(197, 155, 39, 0.28);
+    padding: 6px 18px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 20px;
+}
+
+/* ==========================================================
+   ROYAL GOLD EMBOSSED WEDDING CREST (IMAGE)
+========================================================== */
+.luxury-crest-box {
+    width: 155px;
+    height: 155px;
+    margin: 0 auto 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.luxury-crest-box.hero-crest {
+    width: 140px;
+    height: 140px;
+    margin: 10px auto 20px;
+}
+
+.luxury-crest-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 20px rgba(197, 155, 39, 0.34));
+    animation: crestPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes crestPulse {
+    0% { transform: scale(0.98); filter: drop-shadow(0 6px 16px rgba(197, 155, 39, 0.28)); }
+    100% { transform: scale(1.02); filter: drop-shadow(0 10px 26px rgba(197, 155, 39, 0.48)); }
+}
+
+/* Romantic Wedding Title Typography */
+.intro-names-modern {
+    font-family: var(--font-serif);
+    font-size: 35px;
+    font-weight: 600;
+    line-height: 1.22;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+}
+
+.intro-subtitle-tag {
+    font-family: var(--font-sans);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+}
+
+.intro-meta-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    padding: 9px 20px;
+    border-radius: var(--radius-pill);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+}
+
+.intro-meta-dot {
+    color: var(--gold);
+}
+
+/* Open Invitation Button */
+.modern-open-btn {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--radius-pill);
+    padding: 18px 36px;
+    background: var(--gold-gradient);
+    color: #ffffff;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    box-shadow: 0 12px 28px rgba(197, 155, 39, 0.38);
+    transition: all 0.28s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.modern-open-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 36px rgba(197, 155, 39, 0.52);
+}
+
+.modern-open-btn:active {
+    transform: scale(0.98);
+}
+
+.btn-shimmer-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+    transform: rotate(30deg);
+    animation: shimmerAnim 2.8s infinite;
+}
+
+@keyframes shimmerAnim {
+    0% { transform: translate(-100%, -100%) rotate(30deg); }
+    100% { transform: translate(100%, 100%) rotate(30deg); }
+}
+
+/* ==========================================================
+   2. MAIN CONTAINER & MODERN CARDS
+========================================================== */
+.modern-app-container {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 56px 18px 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.85s ease, transform 0.85s ease;
+}
+
+.modern-app-container.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Base Surface Card */
+.modern-surface-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-card);
+    padding: 34px 24px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.modern-surface-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 45px -8px rgba(15, 23, 42, 0.11);
+}
+
+/* Soft Divider */
+.modern-soft-divider {
+    width: 48px;
+    height: 2px;
+    background: var(--gold-gradient);
+    margin: 18px auto;
+    border-radius: 2px;
+}
+
+.modern-soft-divider.small {
+    width: 32px;
+    margin: 14px auto;
+}
+
+/* ==========================================================
+   KARTA 1: HERO & YOSHLAR
+========================================================== */
+.modern-arabic-bismillah {
+    font-family: var(--font-arabic);
+    font-size: 27px;
+    color: var(--text-main);
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.modern-bismillah-sub {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.hero-names-title {
+    font-family: var(--font-serif);
+    font-size: 35px;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.22;
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+}
+
+.hero-tagline-text {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+    line-height: 1.55;
+}
+
+.modern-date-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    padding: 10px 22px;
+    border-radius: var(--radius-pill);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-main);
+}
+
+/* ==========================================================
+   KARTA 2: MUQADDAS OYAT
+========================================================== */
+.verse-quote-icon {
+    font-family: var(--font-serif);
+    font-size: 42px;
+    line-height: 1;
+    color: var(--gold);
+    opacity: 0.5;
+    margin-bottom: -10px;
+}
+
+.modern-ayat-quote {
+    font-family: var(--font-serif);
+    font-size: 16.5px;
+    font-weight: 500;
+    color: var(--text-main);
+    line-height: 1.7;
+    margin-bottom: 10px;
+    font-style: italic;
+    padding: 0 10px;
+}
+
+.modern-ayat-source {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+}
+
+.verse-ornament-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    width: 140px;
+    margin: 0 auto;
+}
+
+.verse-ornament-line::before,
+.verse-ornament-line::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(197, 155, 39, 0.35);
+}
+
+.verse-diamond {
+    font-size: 9px;
+    color: var(--gold);
+}
+
+/* ==========================================================
+   KARTA 3: OTA-ONALAR TAKLIFI VA DUOSI
+========================================================== */
+.parents-card-title {
+    font-family: var(--font-serif);
+    font-size: 23px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 14px;
+}
+
+.modern-invite-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.75;
+    margin-bottom: 12px;
+}
+
+.modern-invite-desc.secondary {
+    margin-bottom: 22px;
+}
+
+.family-signatures-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 20px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+}
+
+.family-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.family-badge-icon {
+    font-size: 16px;
+}
+
+.family-badge-text {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.family-badge-divider {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
+}
+
+.family-warm-note {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--gold-dark);
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================
+   KARTA 4: TAQVIM (SAVE THE DATE - SENTYABR 2026)
+========================================================== */
+.calendar-month-title {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.calendar-month-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.modern-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.07);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+    border-radius: 22px;
+    padding: 16px 12px;
+    margin-bottom: 18px;
+}
+
+.cal-day-name {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-soft);
+    padding: 4px 0 8px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.cal-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+    border-radius: 12px;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.cal-empty {
+    pointer-events: none;
+}
+
+/* 18-Sentyabr Wedding Highlight */
+.cal-wedding-day {
+    background: var(--gold-gradient);
+    color: #ffffff !important;
+    font-weight: 800;
+    box-shadow: 0 6px 16px rgba(197, 155, 39, 0.45);
+    transform: scale(1.06);
+    z-index: 2;
+}
+
+.cal-day-num {
+    position: relative;
+    z-index: 2;
+}
+
+.cal-badge-symbol {
+    position: absolute;
+    top: -5px;
+    right: -4px;
+    font-size: 10px;
+    z-index: 3;
+    animation: ringBounce 2s ease-in-out infinite;
+}
+
+@keyframes ringBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+.cal-ring-glow {
+    position: absolute;
+    inset: -3px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(197, 155, 39, 0.5);
+    animation: pulseRing 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes pulseRing {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    100% { transform: scale(1.25); opacity: 0; }
+}
+
+.calendar-highlight-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold-soft);
+    border: 1px solid rgba(197, 155, 39, 0.28);
+    padding: 10px 20px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 14px;
+}
+
+.cal-banner-icon {
+    font-size: 14px;
+}
+
+.cal-banner-text {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--gold-dark);
+}
+
+.calendar-add-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 20px;
+    background: #ffffff;
+    color: var(--text-main);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    border-radius: var(--radius-pill);
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.calendar-add-btn:hover {
+    background: #fcfcfd;
+    border-color: rgba(197, 155, 39, 0.4);
+    color: var(--gold-dark);
+    transform: translateY(-1px);
+}
+
+/* ==========================================================
+   KARTA 5: YOSHLARNING BIR UMRLIK VA'DASI
+========================================================== */
+.love-quote-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+}
+
+.love-quote-text {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    color: var(--text-main);
+    line-height: 1.8;
+    font-style: italic;
+    padding: 0 8px;
+}
+
+.love-quote-authors {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gold-dark);
+}
+
+/* ==========================================================
+   KARTA 6: JOYLASHUV VA XARITA (GREEN OPTION: MAP)
+========================================================== */
+.venue-icon-circle {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: var(--gold-soft);
+    border: 1px solid rgba(197, 155, 39, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+}
+
+.modern-time-big {
+    font-family: var(--font-serif);
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.modern-time-sub {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--gold);
+    margin-bottom: 18px;
+}
+
+.modern-venue-name {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.modern-venue-address {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+/* Embedded Map Preview */
+.venue-map-embed {
+    width: 100%;
+    margin-bottom: 18px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+/* Route Visual Card */
+.venue-route-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 18px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+    text-align: left;
+}
+
+.route-line-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.route-point.start {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+}
+
+.route-dash {
+    width: 1.5px;
+    height: 18px;
+    background: repeating-linear-gradient(to bottom, var(--gold) 0, var(--gold) 3px, transparent 3px, transparent 6px);
+}
+
+.route-point.end {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.route-text-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.route-dest-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.route-dest-note {
+    font-size: 11.5px;
+    color: var(--text-muted);
+}
+
+/* Action Buttons */
+.modern-actions-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modern-cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: var(--radius-pill);
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.modern-cta-gold {
+    background: var(--gold-gradient);
+    color: #ffffff;
+    box-shadow: 0 8px 22px rgba(197, 155, 39, 0.32);
+}
+
+.modern-cta-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(197, 155, 39, 0.45);
+}
+
+.modern-cta-white {
+    background: #ffffff;
+    color: var(--text-main);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.modern-cta-white:hover {
+    background: #fdfdfd;
+    border-color: rgba(15, 23, 42, 0.22);
+    transform: translateY(-1px);
+}
+
+.modern-cta-outline {
+    background: transparent;
+    color: var(--gold-dark);
+    border: 1.5px solid rgba(197, 155, 39, 0.4);
+}
+
+.modern-cta-outline:hover {
+    background: var(--gold-soft);
+    border-color: var(--gold);
+}
+
+/* ==========================================================
+   KARTA 7: EHTIROM VA EZGU NIYATLAR
+========================================================== */
+.etiquette-title {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 20px;
+}
+
+.etiquette-items-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: left;
+}
+
+.etiquette-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    border-radius: 18px;
+    padding: 16px 16px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02);
+}
+
+.etiquette-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: var(--gold-soft);
+    border: 1px solid rgba(197, 155, 39, 0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.etiquette-item-body {
+    flex: 1;
+}
+
+.etiquette-item-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.etiquette-item-desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.55;
+}
+
+/* ==========================================================
+   FOOTER (REDESIGNED LUXURY WEDDING FOOTER)
+========================================================== */
+.modern-page-footer {
+    text-align: center;
+    padding: 20px 0 10px;
+}
+
+.footer-divider-flower {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--gold);
+    font-size: 14px;
+    margin-bottom: 12px;
+    opacity: 0.8;
+}
+
+.footer-divider-flower .divider-diamond {
+    font-size: 8px;
+}
+
+.footer-mini-crest-box {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-mini-crest-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(197, 155, 39, 0.35));
+}
+
+.modern-footer-couple {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+}
+
+.modern-footer-tagline {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.modern-footer-credit {
+    font-size: 11.5px;
+    color: var(--text-soft);
+}

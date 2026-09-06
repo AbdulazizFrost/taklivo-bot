@@ -70,7 +70,7 @@ TEXTS = {
     # Ko‘p beriladigan savollar (FAQ)
     "faq_title": "❓ <b>Ko‘p beriladigan savollar (FAQ)</b>\n\nQuyidagi savollardan birini tanlang:",
     "faq_q1": "⏱ Sayt qancha vaqtda tayyor bo‘ladi?",
-    "faq_a1": "⏱ <b>Tayyorlanish muddati:</b>\nOdatda sayt to‘lov tasdiqlanganidan so‘ng 12–24 soat ichida to‘liq tayyor bo‘ladi. Agar shoshilinch bo‘lsa — @Abdulaziz5335 administratoriga yozing, eng qisqa vaqtda tayyorlab beramiz!",
+    "faq_a1": "⏱ <b>Tayyorlanish muddati:</b>\nOdatda sayt buyurtma yuborilganidan so‘ng 12–24 soat ichida (oldindan to‘lovsiz!) tayyor bo‘ladi. Siz saytni shaxsiy havola orqali ko‘rib chiqasiz va faqat barchasi ma’qul kelsa to‘lov qilasiz! Agar shoshilinch bo‘lsa — @Abdulaziz5335 administratoriga yozing, eng qisqa vaqtda tayyorlab beramiz!",
 
     "faq_q2": "📱 Mehmonlarga qanday yuboriladi?",
     "faq_a2": "📱 <b>Mehmonlarga yuborish:</b>\nSizga tayyor nafis havola beriladi (masalan: <code>taklivo.uz/wedding/aziz-malika</code>). Uni Telegram, Instagram Direct, WhatsApp orqali yoki Stories/Bio-ga joylab osongina ulashishingiz mumkin!",
@@ -82,7 +82,7 @@ TEXTS = {
     "faq_a4": "✏️ <b>Tuzatishlar kiritish:</b>\nAlbatta! Sayt tayyor bo‘lganda sizga tekshirish uchun yuboriladi. «O‘zgartirish kiritish» tugmasini bosib matn, sana, rasm yoki musiqani bepul tuzatishingiz mumkin.",
 
     "faq_q5": "💳 To‘lov qanday amalga oshiriladi?",
-    "faq_a5": "💳 <b>To‘lov tartibi:</b>\nTo‘lov Uzcard yoki Humo kartasiga o‘tkazma orqali qabul qilinadi. To‘lovdan so‘ng chek (skrinshot) rasmini botga yuborasiz va buyurtmangiz darhol ishga olinadi.",
+    "faq_a5": "💳 <b>To‘lov tartibi:</b>\nTo‘lov faqat tayyor demonstratsiya saytini ko‘rib tekshirganingizdan SO‘NG amalga oshiriladi! To‘lov Uzcard yoki Humo (Payme / Click / Uzum) kartasiga o‘tkazma orqali qabul qilinadi. Chek tasdiqlanishi bilan suv belgisi olib tashlanadi va saytingiz doimiy premium rejimida faollashtiriladi.",
 
     # Do‘stlarni taklif qilish (Referral)
     "referral_title": (
@@ -190,22 +190,24 @@ TEXTS = {
         "Holatni «Buyurtmalarim» bo‘limida ko‘rishingiz yoki biz bilan bog‘lanishingiz mumkin: @Abdulaziz5335."
     ),
 
-    # Media: Galereya va Musiqa
+    # Media: Galereya va Musiqa (Bepul)
     "step_gallery_upload": (
-        "📸 <b>7-qadam: Galereya uchun rasmlar</b>\n\n"
-        "1 tadan 10 tagacha sifatli suratlarni yuboring.\n\n"
+        "📸 <b>7-qadam: Sayt uchun fotosuratlar (Bepul 🎁)</b>\n\n"
+        "Sayt galereyasi uchun 1 tadan 10 tagacha sifatli suratlarni yuborishingiz mumkin.\n"
+        "<i>(Agar fotosuratlar kerak bo‘lmasa, «❌ Kerak emas» tugmasini bosing)</i>\n\n"
         "Yuklandi: <b>{count}/10</b>"
     ),
     "btn_add_more_photos": "➕ Yana rasm yuklash",
     "btn_photos_done": "✅ Rasmlar yuklashni yakunlash",
-    "btn_skip_media": "⏩ O‘tkazib yuborish",
+    "btn_skip_media": "❌ Kerak emas",
     "photo_received": "📸 Rasm qabul qilindi! Jami: <b>{count}/10</b>",
     "photo_limit_reached": "⚠️ 10 ta rasm limiti to‘ldi. «Rasmlar yuklashni yakunlash» tugmasini bosing.",
     "err_not_photo": "⚠️ Iltimos, aynan fotosurat (rasm) yuboring.",
 
     "step_music_upload": (
-        "🎵 <b>8-qadam: Fon musiqasi</b>\n\n"
-        "Saytda yangraydigan audio faylni (MP3) yuboring yoki «O‘tkazib yuborish» tugmasini bosing."
+        "🎵 <b>8-qadam: Fon musiqasi (Bepul 🎁)</b>\n\n"
+        "Saytda yangraydigan yoqimli musiqa (MP3 yoki audio) yuborishingiz mumkin.\n"
+        "<i>(Agar musiqa kerak bo‘lmasa, «❌ Kerak emas» tugmasini bosing)</i>"
     ),
     "music_received": "🎵 Musiqa muvaffaqiyatli yuklandi: <b>{filename}</b>",
     "err_not_music": "⚠️ Iltimos, MP3 formatidagi audio fayl yuboring.",
@@ -252,7 +254,7 @@ TEXTS = {
         "✅ <b>To‘lov cheki qabul qilindi!</b>\n\n"
         "Buyurtmangiz <b>#{order_id}</b> administrator tekshiruviga yuborildi.\n"
         "Tekshirish odatda 10–30 daqiqa vaqt oladi.\n\n"
-        "To‘lov tasdiqlanishi bilan sizga xabar keladi va biz saytingizni tayyorlashni boshlaymiz! ✨"
+        "To‘lov tasdiqlanishi bilan himoya belgisi (suv belgisi) olib tashlanadi va saytingiz doimiy premium rejimida faollashtiriladi! ✨"
     ),
     "err_not_receipt": "⚠️ Iltimos, to‘lov chekining fotosurati yoki skrinshotini yuboring.",
 

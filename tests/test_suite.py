@@ -858,6 +858,110 @@ async def run_async_tests():
                 resp_invalid.status == 400 and resp_404.status == 404,
                 f"Invalid status: {resp_invalid.status}, Missing status: {resp_404.status}",
             )
+            # ----------------------------------------------------
+            # TEST 21: Веб-шаблоны сайтов-приглашений и RSVP API
+            # ----------------------------------------------------
+            print("\n--- TEST 21: Веб-шаблоны сайтов-приглашений и RSVP API ---")
+            from bot.api import handle_order_rsvp
+            from aiohttp import web
+
+            demo_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "templates", "demo")
+            required_files = [
+                os.path.join(demo_dir, "index.html"),
+                os.path.join(demo_dir, "assets", "engine.css"),
+                os.path.join(demo_dir, "assets", "engine.js"),
+                os.path.join(demo_dir, "luxury-gold", "index.html"),
+                os.path.join(demo_dir, "luxury-gold", "style.css"),
+                os.path.join(demo_dir, "floral", "index.html"),
+                os.path.join(demo_dir, "floral", "style.css"),
+                os.path.join(demo_dir, "dark-luxury", "index.html"),
+                os.path.join(demo_dir, "dark-luxury", "style.css"),
+                os.path.join(demo_dir, "minimal", "index.html"),
+                os.path.join(demo_dir, "minimal", "style.css"),
+            ]
+            all_files_exist = all(os.path.exists(f) for f in required_files)
+            log_test_result(
+                "TEST 21a: All wedding template files and assets exist on disk",
+                all_files_exist,
+                f"Checked {len(required_files)} essential files, all present: {all_files_exist}",
+            )
+
+            # TEST 21b: Проверка отдачи шаблонов и витрины без 404
+            app_test = web.Application()
+            from bot.api import setup_api_routes
+            setup_api_routes(app_test)
+
+            routes = [r.resource.canonical for r in app_test.router.routes()]
+            has_demo_routes = any("/demo" in r for r in routes)
+            has_rsvp_route = any("/rsvp" in r for r in routes)
+            log_test_result(
+                "TEST 21b: Web server routes correctly configured for /demo and /rsvp",
+                has_demo_routes and has_rsvp_route,
+                f"Demo routes registered: {has_demo_routes}, RSVP route registered: {has_rsvp_route}",
+            )
+
+            # TEST 21c: RSVP POST /api/order/{id}/rsvp
+            payload = json.dumps({
+                "name": "Фарход",
+                "phone": "+998901234567",
+                "status": "Albatta boraman",
+                "message": "Tabriklaymiz, baxtli bo'linglar!"
+            }).encode("utf-8")
+            req_rsvp = make_mocked_request(
+                "POST",
+                f"/api/order/{paid_order_id}/rsvp",
+                match_info={"order_id": str(paid_order_id)},
+                payload=payload,
+                headers={"Content-Type": "application/json"}
+            )
+            # Вспомогательный mock json payload
+            req_rsvp._read_bytes = payload
+            resp_rsvp = await handle_order_rsvp(req_rsvp)
+            data_rsvp = json.loads(resp_rsvp.text)
+            log_test_result(
+                "TEST 21c: POST /api/order/{id}/rsvp successfully accepts guest attendance response",
+                resp_rsvp.status == 200 and data_rsvp.get("success") is True,
+                f"RSVP status: {resp_rsvp.status}, response: {data_rsvp}",
+            )
+
+            # ----------------------------------------------------
+            # TEST 22: Проверка бесплатной фотогалереи и музыки с кнопкой пропуска
+            # ----------------------------------------------------
+            print("\n--- TEST 22: Бесплатные медиа-опции и кнопка «Не нужно» ---")
+            from bot.keyboards.client import get_options_toggle_keyboard, get_gallery_upload_keyboard, get_music_upload_keyboard
+            from config import config as app_cfg
+
+            # 22a: Цены в config равны 0
+            log_test_result(
+                "TEST 22a: Gallery and Music config prices are 0",
+                app_cfg.GALLERY_PRICE == 0 and app_cfg.MUSIC_PRICE == 0,
+                f"GALLERY_PRICE: {app_cfg.GALLERY_PRICE}, MUSIC_PRICE: {app_cfg.MUSIC_PRICE}",
+            )
+
+            # 22b: В конструкторе опций нет кнопок фото и музыки
+            opts_kb = get_options_toggle_keyboard({}, lang="ru")
+            opts_callbacks = [btn.callback_data for row in opts_kb.inline_keyboard for btn in row]
+            has_no_paid_media_toggles = ("opt_toggle:gallery" not in opts_callbacks) and ("opt_toggle:music" not in opts_callbacks)
+            log_test_result(
+                "TEST 22b: Options toggle keyboard excludes gallery and music",
+                has_no_paid_media_toggles,
+                f"Кнопки опций: {[c for c in opts_callbacks if c.startswith('opt_toggle:')]}",
+            )
+
+            # 22c: Кнопка «Не нужно» в клавиатурах загрузки медиа на RU и UZ
+            g_ru = get_gallery_upload_keyboard(0, lang="ru")
+            m_ru = get_music_upload_keyboard(lang="ru")
+            g_uz = get_gallery_upload_keyboard(0, lang="uz")
+            m_uz = get_music_upload_keyboard(lang="uz")
+
+            has_skip_ru = any("Не нужно" in b.text for r in g_ru.inline_keyboard for b in r) and any("Не нужно" in b.text for r in m_ru.inline_keyboard for b in r)
+            has_skip_uz = any("Kerak emas" in b.text for r in g_uz.inline_keyboard for b in r) and any("Kerak emas" in b.text for r in m_uz.inline_keyboard for b in r)
+
+            log_test_result(
+                "TEST 22c: Skip button 'Не нужно' present in media upload keyboards",
+                has_skip_ru and has_skip_uz,
+                f"RU: {has_skip_ru}, UZ: {has_skip_uz}",
+            )
 
         finally:
             bot.database.db.db_path = orig_db_path

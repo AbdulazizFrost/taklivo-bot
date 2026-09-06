@@ -60,15 +60,22 @@ class Config:
     TIMER_PRICE: int = int(os.getenv("TIMER_PRICE", "10000"))
     RSVP_PRICE: int = int(os.getenv("RSVP_PRICE", "20000"))
     MAP_PRICE: int = int(os.getenv("MAP_PRICE", "10000"))
-    GALLERY_PRICE: int = int(os.getenv("GALLERY_PRICE", "20000"))
-    MUSIC_PRICE: int = int(os.getenv("MUSIC_PRICE", "10000"))
+    GALLERY_PRICE: int = int(os.getenv("GALLERY_PRICE", "0"))
+    MUSIC_PRICE: int = int(os.getenv("MUSIC_PRICE", "0"))
     DRESSCODE_PRICE: int = int(os.getenv("DRESSCODE_PRICE", "10000"))
     SCHEDULE_PRICE: int = int(os.getenv("SCHEDULE_PRICE", "10000"))
     SECOND_LANGUAGE_PRICE: int = int(os.getenv("SECOND_LANGUAGE_PRICE", "10000"))
 
     # Реферальная бонусная программа (в сумах / бонусах)
+    # Реферальная бонусная программа (в сумах / бонусах)
     REFERRAL_REWARD_BONUS: int = int(os.getenv("REFERRAL_REWARD_BONUS", "15000"))  # Награда пригласившему за заказ друга
     REFERRAL_WELCOME_BONUS: int = int(os.getenv("REFERRAL_WELCOME_BONUS", "10000"))  # Приветственный бонус другу на 1-й заказ
+
+    # Базовый адрес для открытия демо-сайтов и REST API (Render / localhost / такливо)
+    DEMO_BASE_URL: str = os.getenv(
+        "DEMO_BASE_URL",
+        os.getenv("RENDER_EXTERNAL_URL", os.getenv("WEB_BASE_URL", "https://taklivo.uz"))
+    ).rstrip("/")
 
     # Каталог свадебных шаблонов
     TEMPLATES: dict[str, TemplateInfo] = {
@@ -78,7 +85,7 @@ class Config:
             name_uz="🌸 Floral",
             description_ru="Нежный романтичный дизайн с цветочными акварельными иллюстрациями и плавной анимацией.",
             description_uz="Gulli akvarel rasmlar va mayin animatsiyalarga ega romantik nafis dizayn.",
-            demo_url=os.getenv("DEMO_FLORAL_URL", "https://taklivo.uz/demo/floral"),
+            demo_url=os.getenv("DEMO_FLORAL_URL", f"{os.getenv('DEMO_BASE_URL', os.getenv('RENDER_EXTERNAL_URL', 'https://taklivo.uz')).rstrip('/')}/demo/floral"),
             emoji="🌸",
         ),
         "luxury_gold": TemplateInfo(
@@ -87,7 +94,7 @@ class Config:
             name_uz="🥂 Luxury Gold",
             description_ru="Элегантная золотая классика для пышного торжества с золотым тиснением и шрифтами с засечками.",
             description_uz="Hashamatli to‘y uchun tillarang va nafis klassik uslubdagi premium dizayn.",
-            demo_url=os.getenv("DEMO_LUXURY_GOLD_URL", "https://taklivo.uz/demo/luxury-gold"),
+            demo_url=os.getenv("DEMO_LUXURY_GOLD_URL", f"{os.getenv('DEMO_BASE_URL', os.getenv('RENDER_EXTERNAL_URL', 'https://taklivo.uz')).rstrip('/')}/demo/luxury-gold"),
             emoji="🥂",
         ),
         "dark_luxury": TemplateInfo(
@@ -96,7 +103,7 @@ class Config:
             name_uz="🖤 Dark Luxury",
             description_ru="Глубокий темный фон, золотые неоновые элементы и кинематографичный стиль.",
             description_uz="To‘q fon, oltin neon effektlar va kinematik jozibadorlik.",
-            demo_url=os.getenv("DEMO_DARK_LUXURY_URL", "https://taklivo.uz/demo/dark-luxury"),
+            demo_url=os.getenv("DEMO_DARK_LUXURY_URL", f"{os.getenv('DEMO_BASE_URL', os.getenv('RENDER_EXTERNAL_URL', 'https://taklivo.uz')).rstrip('/')}/demo/dark-luxury"),
             emoji="🖤",
         ),
         "minimal": TemplateInfo(
@@ -105,7 +112,7 @@ class Config:
             name_uz="🤍 Minimal",
             description_ru="Идеальная чистота, много пространства, утонченная типографика и легкость восприятия.",
             description_uz="Mukammal tozalik, ko‘p bo‘sh joy, nafis tipografika va yengil uslub.",
-            demo_url=os.getenv("DEMO_MINIMAL_URL", "https://taklivo.uz/demo/minimal"),
+            demo_url=os.getenv("DEMO_MINIMAL_URL", f"{os.getenv('DEMO_BASE_URL', os.getenv('RENDER_EXTERNAL_URL', 'https://taklivo.uz')).rstrip('/')}/demo/minimal"),
             emoji="🤍",
         ),
         "boho": TemplateInfo(
@@ -114,7 +121,7 @@ class Config:
             name_uz="🌿 Boho",
             description_ru="Природные пастельные тона, сухоцветы, пампасная трава и уютная теплая эстетика.",
             description_uz="Tabiiy pastel ranglar, quritilgan gullar va iliq shinam estetika.",
-            demo_url=os.getenv("DEMO_BOHO_URL", "https://taklivo.uz/demo/boho"),
+            demo_url=os.getenv("DEMO_BOHO_URL", f"{os.getenv('DEMO_BASE_URL', os.getenv('RENDER_EXTERNAL_URL', 'https://taklivo.uz')).rstrip('/')}/demo/boho"),
             emoji="🌿",
         ),
         "oriental": TemplateInfo(
@@ -123,7 +130,7 @@ class Config:
             name_uz="🕌 Oriental",
             description_ru="Восточные национальные орнаменты, вензеля и торжественное величие традиций.",
             description_uz="Sharqona milliy naqshlar, bezaklar va milliy an’analarning go‘zalligi.",
-            demo_url=os.getenv("DEMO_ORIENTAL_URL", "https://taklivo.uz/demo/oriental"),
+            demo_url=os.getenv("DEMO_ORIENTAL_URL", f"{os.getenv('DEMO_BASE_URL', os.getenv('RENDER_EXTERNAL_URL', 'https://taklivo.uz')).rstrip('/')}/demo/oriental"),
             emoji="🕌",
         ),
         "modern": TemplateInfo(
@@ -132,10 +139,16 @@ class Config:
             name_uz="✨ Modern",
             description_ru="Современный динамичный стиль со стильными карточками, интерактивными свайпами и таймером.",
             description_uz="Zamonaviy interaktiv kartochkalar, animatsiyalar va dinamik ko‘rinish.",
-            demo_url=os.getenv("DEMO_MODERN_URL", "https://taklivo.uz/demo/modern"),
+            demo_url=os.getenv("DEMO_MODERN_URL", f"{os.getenv('DEMO_BASE_URL', os.getenv('RENDER_EXTERNAL_URL', 'https://taklivo.uz')).rstrip('/')}/demo/modern"),
             emoji="✨",
         ),
     }
+
+    @classmethod
+    def get_demo_catalog_url(cls) -> str:
+        """Возвращает URL общей витрины со всеми демо-сайтами."""
+        return f"{cls.DEMO_BASE_URL}/demo"
+
 
     @classmethod
     def get_extra_options_prices(cls) -> dict[str, int]:

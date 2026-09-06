@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Javohir & Madina — Luxury Botanical Wedding Invitation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/engine.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="floral-stationery-body">
+
+    <!-- Subtle Handmade Paper Texture -->
+    <div class="paper-texture" aria-hidden="true"></div>
+
+    <!-- Very Subtle Floating Petals Canvas -->
+    <div class="petals-drift-container" id="petalsContainer" aria-hidden="true"></div>
+
+    <!-- Background Audio -->
+    <audio id="weddingAudio" src="../luxury-gold/Alex Warren - Ordinary (Official Video).mp3" loop preload="auto"></audio>
+
+    <!-- Floating Botanical Audio Badge -->
+    <div class="botanical-music-badge" id="musicBtn" onclick="toggleMusic()" role="button" aria-label="Toggle Wedding Music" tabindex="0">
+        <div class="botanical-wreath-spin" id="musicWreath">
+            <svg viewBox="0 0 40 40" class="wreath-mini-svg">
+                <circle cx="20" cy="20" r="17" fill="none" stroke="#c99386" stroke-width="0.8" stroke-dasharray="3,3"/>
+                <path d="M 20 5 C 23 8, 25 12, 23 16 C 21 20, 19 24, 21 28" fill="none" stroke="#879287" stroke-width="0.7"/>
+            </svg>
+        </div>
+        <div class="music-badge-info">
+            <span class="music-note-icon">♪</span>
+            <span class="music-badge-text" id="musicStatusText">MELODY</span>
+        </div>
+    </div>
+
+    <!-- Opening Stationery Envelope Screen -->
+    <div class="stationery-opening-screen" id="openingScreen">
+        <div class="deckle-edge-envelope">
+            <div class="envelope-botanical-seal">
+                <svg viewBox="0 0 80 80" class="seal-svg">
+                    <circle cx="40" cy="40" r="36" fill="#fcf6f3" stroke="#c99386" stroke-width="1"/>
+                    <path d="M 28 40 C 28 32, 34 26, 40 26 C 46 26, 52 32, 52 40 C 52 48, 46 54, 40 54" fill="none" stroke="#879287" stroke-width="0.8"/>
+                </svg>
+                <span class="seal-letters" data-taklivo="monogram">JM</span>
+            </div>
+            <p class="opening-calligraphy">Keling, baxtimizga sherik bo'ling</p>
+            <h1 class="opening-names font-serif" data-taklivo="couple_names">Javohir & Madina</h1>
+            <p class="opening-date" data-taklivo="event_date">18 • 09 • 2026</p>
+            <button class="stationery-unfold-btn" onclick="openFloralInvitation()">
+                <span data-i18n="openInvite">Taklifnomani Ochish 🌸</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Botanical Editorial Layout -->
+    <main class="floral-main-wrapper" id="mainContent">
+
+        <!-- 1. HERO SECTION -->
+        <header class="floral-hero reveal-up">
+            <!-- Luxury Botanical Corner Blooms -->
+            <div class="botanical-corner top-left-corner" aria-hidden="true">
+                <img src="images/floral-corner-left.png" alt="" class="floral-corner-img" loading="eager" />
+            </div>
+            <div class="botanical-corner top-right-corner" aria-hidden="true">
+                <img src="images/floral-corner-right.png" alt="" class="floral-corner-img" loading="eager" />
+            </div>
+
+            <span class="bismillah-line font-serif">Bismillohir Rahmonir Rahim</span>
+            <p class="hero-calligraphy-accent">Keling, baxtimizga sherik bo'ling</p>
+
+            <h1 class="hero-names-display font-serif" data-taklivo="couple_names">
+                Javohir <span class="script-amp">&</span> Madina
+            </h1>
+
+            <div class="hero-botanical-date">
+                <span class="date-leaf-decor">❦</span>
+                <span class="date-text" data-taklivo="event_date">18 • 09 • 2026</span>
+                <span class="date-leaf-decor">❦</span>
+            </div>
+
+            <!-- Arched Photo Frame with Botanical Overlap -->
+            <div class="hero-botanical-portrait-wrap">
+                <div class="arched-photo-frame">
+                    <div class="arch-image" style="background-image: url('../luxury-gold/images/bosh_rasm.jpg');"></div>
+                    <div class="arch-soft-overlay"></div>
+                </div>
+                <!-- Overlapping Luxury Botanical Garland (White Blooms with Gold Vines & Pearls) -->
+                <div class="overlapping-branch" aria-hidden="true">
+                    <img src="images/floral-garland.png" alt="" class="floral-overlap-img" loading="lazy" />
+                </div>
+            </div>
+
+            <p class="hero-invitation-words font-serif">
+                Aziz qadrdonimiz! Hayotimizning eng go'zal va unutilmas oqshomida sizni baxtimizga sherik bo'lishga taklif etamiz.
+            </p>
+        </header>
+
+        <!-- 2. HOLY AYAT (DECKLE-EDGED COTTON CARD) -->
+        <section class="section-botanical-ayat reveal-up">
+            <div class="cotton-paper-card">
+                <div class="botanical-crest-mini">❦</div>
+                <p class="ayat-verse-quote font-serif">
+                    «Uning oyatlaridan biri — sizlar xotirjam bo‘lishingiz uchun o‘zingizdan juftlar yaratishi va o‘rtangizda mehr-muhabbat hamda rahm-shafqat paydo qilishidir.»
+                </p>
+                <div class="botanical-hairline"></div>
+                <span class="ayat-source-tag">RUM SURASI, 21-OYAT</span>
+            </div>
+        </section>
+
+        <!-- 3. THE COUPLE EDITORIAL -->
+        <section class="section-botanical-couple reveal-up">
+            <div class="botanical-section-header">
+                <span class="header-ornament">❧ ❧ ❧</span>
+                <h2 class="header-serif-title font-serif">BIZNING SEVGI DOSTONI</h2>
+                <p class="header-calligraphy-sub">Ikki qalbning bir butunlikka aylanishi</p>
+            </div>
+
+            <div class="botanical-couple-composition">
+                <div class="portrait-card-artistic">
+                    <div class="artistic-photo" style="background-image: url('../luxury-gold/images/galereya2.jpg');"></div>
+                    <div class="botanical-floating-tag">WEDDING CAMPAIGN</div>
+                </div>
+                <div class="couple-editorial-text">
+                    <p class="text-lead font-serif">
+                        Tasodifiy nigohlardan boshlangan, o'zaro ishonch va samimiy tuyg'ular bilan mustahkamlangan muhabbatimizning eng tantanali kuni.
+                    </p>
+                    <p class="text-body">
+                        Biz birgalikda yangi oilaviy hayot ostonasiga qadam qo'ymoqdamiz va bu muqaddas damlarda sizning tabassumingiz va duolaringiz biz uchun beqiyosdir.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. LOVE STORY TIMELINE -->
+        <section class="section-botanical-timeline reveal-up">
+            <div class="botanical-section-header">
+                <h2 class="header-serif-title font-serif" data-i18n="ourStoryTitle">BIZNING HIKOYA</h2>
+                <div class="botanical-hairline center"></div>
+            </div>
+
+            <div class="vine-timeline-wrapper">
+                <div class="timeline-vine-stem" aria-hidden="true"></div>
+
+                <!-- 2021 -->
+                <div class="timeline-node left">
+                    <div class="node-bud"></div>
+                    <div class="node-leaf-card">
+                        <span class="node-year font-serif">2021</span>
+                        <h3 class="node-title font-serif">Ilk Uchrashuv</h3>
+                        <p class="node-desc">Kuzning mayin kunlarida boshlangan iliq suhbat va unutilmas birinchi taassurot.</p>
+                    </div>
+                </div>
+
+                <!-- 2024 -->
+                <div class="timeline-node right">
+                    <div class="node-bud"></div>
+                    <div class="node-leaf-card">
+                        <span class="node-year font-serif">2024</span>
+                        <h3 class="node-title font-serif">Katta Qadam</h3>
+                        <p class="node-desc">Kelajak sari birgalikda intilish va umr yo'llarimizni abadiy bog'lash qarori.</p>
+                    </div>
+                </div>
+
+                <!-- 2026 -->
+                <div class="timeline-node left highlight">
+                    <div class="node-bud bloomed"></div>
+                    <div class="node-leaf-card featured">
+                        <span class="node-year font-serif">2026</span>
+                        <h3 class="node-title font-serif">Nikoh To'yi</h3>
+                        <p class="node-desc">Orzu qilingan visol oqshomi. Bizning eng baxtli kunimizga xush kelibsiz!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. WEDDING DETAILS (STATIONERY CARD LAYOUT) -->
+        <section class="section-botanical-details reveal-up">
+            <div class="botanical-invitation-envelope-card">
+                <div class="card-inner-border">
+                    <div class="details-anchor-time">
+                        <span class="clock-icon-leaf">❦</span>
+                        <h3 class="time-callout font-serif" data-taklivo="event_time">18:30</h3>
+                        <p class="schedule-sub" data-i18n="gatheringTitle">MEHMONLAR TASHRIFI</p>
+                    </div>
+
+                    <div class="botanical-hairline center"></div>
+
+                    <div class="details-venue-info">
+                        <span class="venue-sup">TANTANALAR SAROYI</span>
+                        <h4 class="venue-name-serif font-serif" data-taklivo="venue">"VERSAL"</h4>
+                        <p class="venue-location-line" data-taklivo="address">Toshkent shahri, Yunusobod tumani</p>
+
+                        <a href="https://maps.yandex.ru" target="_blank" rel="noopener noreferrer" class="botanical-map-btn">
+                            <span data-i18n="mapButton">Xaritada ochish 📍</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. COUNTDOWN (CHAMPAGNE REFINED BLOCKS) -->
+        <section class="section-botanical-countdown reveal-up">
+            <div class="botanical-section-header">
+                <h2 class="header-serif-title font-serif" data-i18n="countdownTitle">TANTANAGACHA QOLDI</h2>
+                <div class="botanical-hairline center"></div>
+            </div>
+
+            <div class="botanical-timer-row">
+                <div class="timer-leaf-box">
+                    <span class="t-number font-serif" id="days">00</span>
+                    <span class="t-text" data-i18n="days">KUN</span>
+                </div>
+                <div class="timer-dot-sep">·</div>
+                <div class="timer-leaf-box">
+                    <span class="t-number font-serif" id="hours">00</span>
+                    <span class="t-text" data-i18n="hours">SOAT</span>
+                </div>
+                <div class="timer-dot-sep">·</div>
+                <div class="timer-leaf-box">
+                    <span class="t-number font-serif" id="minutes">00</span>
+                    <span class="t-text" data-i18n="minutes">DAQIQA</span>
+                </div>
+                <div class="timer-dot-sep">·</div>
+                <div class="timer-leaf-box">
+                    <span class="t-number font-serif" id="seconds">00</span>
+                    <span class="t-text" data-i18n="seconds">SONIYA</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. EDITORIAL PHOTO GALLERY -->
+        <section class="section-botanical-gallery reveal-up">
+            <div class="botanical-section-header">
+                <h2 class="header-serif-title font-serif" data-i18n="galleryTitle">GALEREYA</h2>
+                <div class="botanical-hairline center"></div>
+            </div>
+
+            <div class="botanical-gallery-layout">
+                <div class="gallery-arch-large">
+                    <div class="arch-photo-item" style="background-image: url('../luxury-gold/images/galereya1.jpg');"></div>
+                </div>
+                <div class="gallery-duo-row">
+                    <div class="gallery-arch-small">
+                        <div class="arch-photo-item" style="background-image: url('../luxury-gold/images/galereya2.jpg');"></div>
+                    </div>
+                    <div class="gallery-arch-small">
+                        <div class="arch-photo-item" style="background-image: url('../luxury-gold/images/galereya3.jpg');"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. TO'YONA (LINEN CARD) -->
+        <section class="section-botanical-toyona reveal-up">
+            <div class="botanical-section-header">
+                <h2 class="header-serif-title font-serif" data-i18n="toyonaTitle">TO'YONA</h2>
+                <p class="toyona-warm-text" data-i18n="toyonaDesc">
+                    Agar bizni tabriklab, to'yona yubormoqchi bo'lsangiz, quyidagi karta raqamidan foydalanishingiz mumkin:
+                </p>
+            </div>
+
+            <div class="botanical-gift-card">
+                <div class="gift-card-wreath">🌸</div>
+                <span class="gift-owner-label" data-i18n="cardHolder">KARTA EGASI</span>
+                <p class="gift-owner-name font-serif" data-taklivo="groom_name">Javohir</p>
+                <p class="gift-digits-code" id="cardNumber">9860 1234 5678 9012</p>
+                <button class="botanical-copy-pill" onclick="copyCardNumber()" aria-label="Copy Card Number">
+                    <span id="copyBtnText" data-i18n="cardCopy">Nusxalash</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 9. RSVP FORM (COUTURE STATIONERY) -->
+        <section class="section-botanical-rsvp reveal-up">
+            <div class="botanical-section-header">
+                <h2 class="header-serif-title font-serif" data-i18n="rsvpTitle">TASHRIFNI TASDIQLASH</h2>
+                <p class="rsvp-warm-sub" data-i18n="rsvpSubtitle">Sizning tashrifingiz biz uchun juda muhim</p>
+            </div>
+
+            <form class="botanical-rsvp-form" id="rsvpForm">
+                <div class="botanical-input-wrap">
+                    <label for="name" data-i18n="rsvpNameLabel">Ismingiz</label>
+                    <input type="text" id="name" required placeholder="Masalan: Dilnoza" data-i18n-placeholder="rsvpNamePlaceholder" autocomplete="name">
+                </div>
+
+                <div class="botanical-input-wrap">
+                    <label for="phone" data-i18n="rsvpPhoneLabel">Telefon raqam</label>
+                    <input type="tel" id="phone" required placeholder="+998 90 123 45 67" data-i18n-placeholder="rsvpPhonePlaceholder" autocomplete="tel">
+                </div>
+
+                <div class="botanical-input-wrap">
+                    <label for="message" data-i18n="rsvpMsgLabel">Ezgu tilaklaringiz</label>
+                    <textarea id="message" rows="3" placeholder="O'z tilaklaringizni yozishingiz mumkin..." data-i18n-placeholder="rsvpMsgPlaceholder"></textarea>
+                </div>
+
+                <input type="hidden" id="attendanceStatus" value="Albatta Boraman">
+
+                <div class="botanical-btn-pair">
+                    <button type="submit" class="botanical-submit-btn accept" onclick="document.getElementById('attendanceStatus').value = 'Albatta Boraman'">
+                        <span data-i18n="rsvpAccept">Albatta boraman ✨</span>
+                    </button>
+                    <button type="submit" class="botanical-submit-btn decline" onclick="document.getElementById('attendanceStatus').value = 'Afsuski Kela olmayman'">
+                        <span data-i18n="rsvpDecline">Afsuski kela olmayman</span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- 10. FOOTER -->
+        <footer class="botanical-footer reveal-up">
+            <div class="footer-monogram-leaf" data-taklivo="monogram">JM</div>
+            <h2 class="footer-couple-script font-serif" data-taklivo="couple_names">Javohir & Madina</h2>
+            <p class="footer-with-love">WITH LOVE & GRATITUDE</p>
+            <div class="botanical-hairline center small"></div>
+            <p class="footer-brand-tag">TAKLIVO · BOTANICAL COUTURE INVITATIONS</p>
+        </footer>
+
+    </main>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal" role="dialog" aria-modal="true">
+        <div class="modal-botanical-box">
+            <div class="modal-flower">🌸</div>
+            <h3 class="font-serif" data-i18n="rsvpThanks">Rahmat!</h3>
+            <p data-i18n="rsvpSuccessMsg">Sizning javobingiz muvaffaqiyatli qabul qilindi.</p>
+            <button class="modal-close-botanical" onclick="document.getElementById('successModal').classList.remove('open')" data-i18n="closeBtn">Yopish</button>
+        </div>
+    </div>
+
+    <!-- Engine & Local Scripts -->
+    <script src="../assets/engine.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

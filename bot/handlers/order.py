@@ -957,23 +957,13 @@ async def process_phone(message: Message, state: FSMContext) -> None:
         reply_markup=ReplyKeyboardRemove(),
     )
 
-    # Проверяем, нужна ли загрузка фото
-    if options.get("gallery"):
-        await state.set_state(OrderStates.gallery_upload)
-        await message.answer(
-            text=get_text(lang, "step_gallery_upload", count=0),
-            reply_markup=get_gallery_upload_keyboard(0, lang=lang),
-            parse_mode="HTML",
-        )
-    elif options.get("music"):
-        await state.set_state(OrderStates.music_upload)
-        await message.answer(
-            text=get_text(lang, "step_music_upload"),
-            reply_markup=get_music_upload_keyboard(lang=lang),
-            parse_mode="HTML",
-        )
-    else:
-        await _show_order_preview(message, state)
+    # Фото и музыка теперь БЕСПЛАТНЫ для всех и предлагаются с возможностью пропуска («Не нужно»)
+    await state.set_state(OrderStates.gallery_upload)
+    await message.answer(
+        text=get_text(lang, "step_gallery_upload", count=0),
+        reply_markup=get_gallery_upload_keyboard(0, lang=lang),
+        parse_mode="HTML",
+    )
 
 
 # --- Шаг 7: Загрузка фотографий для галереи ---
@@ -1022,20 +1012,21 @@ async def process_gallery_invalid_media(message: Message, state: FSMContext) -> 
 
 @router.callback_query(OrderStates.gallery_upload, F.data.in_(["wizard_gallery:done", "wizard_gallery:skip"]))
 async def process_gallery_finish(callback: CallbackQuery, state: FSMContext) -> None:
-    """Завершение загрузки фото."""
+    """Завершение загрузки фото и переход к бесплатной музыке."""
     data = await state.get_data()
     lang = data.get("lang", "ru")
     options = data.get("options", {})
+    photos = data.get("photos", [])
 
-    if options.get("music"):
-        await state.set_state(OrderStates.music_upload)
-        await callback.message.edit_text(
-            text=get_text(lang, "step_music_upload"),
-            reply_markup=get_music_upload_keyboard(lang=lang),
-            parse_mode="HTML",
-        )
-    else:
-        await _show_order_preview(callback.message, state, is_edit=True)
+    options["gallery"] = len(photos) > 0
+    await state.update_data(options=options)
+
+    await state.set_state(OrderStates.music_upload)
+    await callback.message.edit_text(
+        text=get_text(lang, "step_music_upload"),
+        reply_markup=get_music_upload_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
     await callback.answer()
 
 
@@ -1067,14 +1058,20 @@ async def process_music_file(message: Message, state: FSMContext) -> None:
         )
         return
 
-    await state.update_data(music_file_id=file_id, music_filename=filename)
+    options = data.get("options", {})
+    options["music"] = True
+    await state.update_data(options=options, music_file_id=file_id, music_filename=filename)
     await message.answer(get_text(lang, "music_received", filename=filename), parse_mode="HTML")
     await _show_order_preview(message, state)
 
 
 @router.callback_query(OrderStates.music_upload, F.data == "wizard_music:skip")
 async def process_music_skip(callback: CallbackQuery, state: FSMContext) -> None:
-    """Пропуск музыки."""
+    """Пропуск музыки (нажата кнопка «Не нужно»)."""
+    data = await state.get_data()
+    options = data.get("options", {})
+    options["music"] = False
+    await state.update_data(options=options, music_file_id=None, music_filename=None)
     await _show_order_preview(callback.message, state, is_edit=True)
     await callback.answer()
 
@@ -1314,6 +1311,21 @@ async def process_jump_to_field(callback: CallbackQuery, state: FSMContext) -> N
         await callback.message.edit_text(
             text=options_text,
             reply_markup=get_options_toggle_keyboard(options, lang=lang),
+            parse_mode="HTML",
+        )
+    elif field == "photos":
+        photos = data.get("photos", [])
+        await state.set_state(OrderStates.gallery_upload)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_gallery_upload", count=len(photos)),
+            reply_markup=get_gallery_upload_keyboard(len(photos), lang=lang),
+            parse_mode="HTML",
+        )
+    elif field == "music":
+        await state.set_state(OrderStates.music_upload)
+        await callback.message.edit_text(
+            text=get_text(lang, "step_music_upload"),
+            reply_markup=get_music_upload_keyboard(lang=lang),
             parse_mode="HTML",
         )
     await callback.answer()

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asrorbek & Gulruxsor — To'y Taklifnomasi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../demo/assets/engine.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="particles-container" id="particles"></div>
+
+    <!-- Intro Curtain Screen -->
+    <div class="intro-overlay" id="introOverlay">
+        <div class="cloud-layer cloud-bg-1"></div>
+        <div class="cloud-layer cloud-bg-2"></div>
+        <div class="cloud-layer cloud-bg-3"></div>
+
+        <div class="intro-content">
+            <div class="luxury-crest-wrapper">
+                <div class="luxury-monogram-intro" data-taklivo="monogram">AG</div>
+            </div>
+            <h1 class="intro-names" data-taklivo="couple_names">Asrorbek & Gulruxsor</h1>
+            <p class="intro-subtitle">Hayotimizning eng go'zal sahifasi boshlanmoqda</p>
+            <button class="open-invite-btn" onclick="revealInvitation()">
+                <span>Taklifnomani Ochish</span>
+                <div class="btn-glow"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Invitation Content -->
+    <main class="app-container" id="mainContent">
+
+        <!-- Hero Section -->
+        <section class="card-hero reveal-item">
+            <div class="card-header">
+                <div class="luxury-crest-wrapper small">
+                    <div class="gold-monogram" data-taklivo="monogram">AG</div>
+                </div>
+                <h2 class="serif-title font-accent-names" data-taklivo="couple_names">Asrorbek & Gulruxsor</h2>
+            </div>
+
+            <div class="premium-image-frame">
+                <div class="image-inner-shadow"></div>
+                <div class="photo-placeholder" style="background-image: url('images/bosh_rasm.jpg');"></div>
+            </div>
+
+            <div class="scroll-down-notice">
+                <span>Pastga suring</span>
+                <div class="chevron-down"></div>
+            </div>
+        </section>
+
+        <!-- Sacred Ayat & Blessing -->
+        <section class="card-body-text reveal-item">
+            <p class="date-badge">18.09 — BIZNING KUNIMIZ 💍</p>
+            <p class="ayat">
+                «Alloh ularning qalblarini sevgi ila birlashtirdi»<br>
+                <span>Anfol surasi, 63-oyat</span>
+            </p>
+            <p class="main-invite-message">
+                Ota-onalarimizning duosi bilan sizni nikoh oqshomimizning unutilmas lahzalariga guvoh bo‘lishga taklif qilamiz.
+            </p>
+
+            <div class="divider-gold-line"></div>
+
+            <h3 class="big-date-display" data-taklivo="event_date">18/09/2026</h3>
+            <p class="location-sub-text" data-taklivo="address">To'rtko'l shahri</p>
+            <p class="city-title-serif">Baxt Oqshomi</p>
+
+            <div class="divider-gold-line small"></div>
+            <p class="names-footer-span" data-taklivo="couple_names">ASRORBEK & GULRUXSOR</p>
+        </section>
+
+        <!-- Love Story Editorial -->
+        <section class="love-story-section reveal-item">
+            <span class="section-tag">Vogue Wedding Editorial</span>
+            <h3 class="serif-section-title">Bizning Hikoya</h3>
+            <p class="story-paragraph">
+                Ikki qalbning bir butunlikka aylanishi, tasodifiy nigohlardan boshlangan cheksiz muhabbat dostoni. Biz
+                baxtli kelajagimiz sari ilk qadamni tashlamoqdamiz va ushbu sehrli lahzalarda sizni yonimizda ko'rishdan
+                mamnun bo'lamiz.
+            </p>
+        </section>
+
+        <!-- Event Location & Time (Map: true) -->
+        <section class="event-info-section reveal-item">
+            <div class="info-architecture-card">
+                <div class="building-icon-luxury"></div>
+                <h2 class="time-display" data-taklivo="event_time">19:00</h2>
+                <p class="schedule-title">Mehmonlar yig'ilishi</p>
+                <p class="venue-name" data-taklivo="venue">"Afruz Diamond" Tantanalar Saroyi</p>
+                <a href="https://yandex.uz/maps/org/afruz_to_yxona/216776621938/?ll=60.989027%2C41.540977&z=17" target="_blank" class="luxury-action-btn">
+                    <span>Yandex Xaritada ochish</span>
+                </a>
+                <a href="https://www.google.com/maps/place/Afruz+Diamond+%F0%9F%92%8D/@41.5409021,60.9889886,17z/data=!3m1!4b1!4m6!3m5!1s0x41dfdf006a6274e1:0x1cf0e4aa01c133d9!8m2!3d41.5409021!4d60.9889886!16s%2Fg%2F11nps_3ym1?entry=ttu" target="_blank" class="luxury-action-btn" style="margin-top: 10px; background: transparent; border: 1px solid var(--gold); color: var(--gold);">
+                    <span>Google Xaritada ochish</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Countdown Timer -->
+        <section class="countdown-section reveal-item">
+            <h3 class="serif-section-title">Tantanagacha Qoldi</h3>
+            <div class="timer-grid">
+                <div class="timer-block"><span class="timer-num" id="days">00</span><span class="timer-label">Kun</span></div>
+                <div class="timer-block"><span class="timer-num" id="hours">00</span><span class="timer-label">Soat</span></div>
+                <div class="timer-block"><span class="timer-num" id="minutes">00</span><span class="timer-label">Daqiqa</span></div>
+                <div class="timer-block"><span class="timer-num" id="seconds">00</span><span class="timer-label">Soniya</span></div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="luxury-footer reveal-item">
+            <div class="gold-divider-line"></div>
+            <h2 class="footer-names" data-taklivo="couple_names">Asrorbek & Gulruxsor</h2>
+            <p class="with-love-tag">With Love • TAKLIVO</p>
+        </footer>
+
+    </main>
+
+    <!-- Watermark Pill (Unpaid / Demo Mode) -->
+    <div id="taklivoWatermark" class="taklivo-unpaid-watermark">
+        🛡 TAKLIVO DEMO PREVIEW • 24H
+    </div>
+
+    <!-- Floating Demo Bottom Banner -->
+    <div id="taklivoBanner" class="taklivo-floating-banner">
+        <div class="taklivo-banner-left">
+            <span class="taklivo-banner-title">
+                🛡 SINOV REJIMI
+                <span class="taklivo-banner-badge">Buyurtma #4</span>
+            </span>
+            <span class="taklivo-banner-desc">Sayt namunaviy ko'rinishda. To'lov qilingach, suv belgisi olib tashlanadi.</span>
+        </div>
+        <a href="https://t.me/taklivo_bot" class="taklivo-banner-btn" target="_blank">Botda tasdiqlash</a>
+    </div>
+
+    <script src="../../demo/assets/engine.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

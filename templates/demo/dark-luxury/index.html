@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Davron & Kamila — Dark Luxury Wedding Invitation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/engine.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark-luxury-body">
+
+    <!-- Subtle Film Grain Overlay -->
+    <div class="film-grain" aria-hidden="true"></div>
+
+    <!-- Background Stardust Particles -->
+    <div class="stardust-container" id="stardustContainer" aria-hidden="true"></div>
+
+    <!-- Background Audio -->
+    <audio id="weddingAudio" src="../luxury-gold/Alex Warren - Ordinary (Official Video).mp3" loop preload="auto"></audio>
+
+    <!-- Floating Luxury Vinyl Music Controller -->
+    <div class="vinyl-player-widget" id="musicBtn" onclick="toggleMusic()" role="button" aria-label="Toggle Wedding Music" tabindex="0">
+        <div class="vinyl-disc" id="vinylDisc">
+            <div class="vinyl-groove"></div>
+            <div class="vinyl-center">
+                <div class="vinyl-core"></div>
+            </div>
+        </div>
+        <div class="vinyl-info">
+            <div class="equalizer-bars" id="eqBars">
+                <span></span><span></span><span></span>
+            </div>
+            <span class="vinyl-label" id="vinylLabel">SOUNDTRACK</span>
+        </div>
+    </div>
+
+    <!-- Opening Experience Curtain -->
+    <div class="curtain-overlay" id="curtainOverlay">
+        <div class="curtain-panel panel-left"></div>
+        <div class="curtain-panel panel-right"></div>
+        <div class="curtain-centerpiece">
+            <div class="embossed-seal">
+                <div class="seal-inner-ring">
+                    <span class="seal-initials" data-taklivo="monogram">DK</span>
+                </div>
+            </div>
+            <p class="curtain-meta">YOU ARE CORDIALLY INVITED</p>
+            <h1 class="curtain-names" data-taklivo="couple_names">Davron & Kamila</h1>
+            <p class="curtain-date" data-taklivo="event_date">25 • 10 • 2026</p>
+            <button class="curtain-enter-btn" onclick="openInvitation()">
+                <span data-i18n="openInvite">Taklifnomani Ochish ⚜️</span>
+                <div class="btn-shimmer-line"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="dark-editorial-wrapper" id="mainContent">
+
+        <!-- 1. HERO SECTION (MASTER EDITORIAL REDESIGN) -->
+        <header class="hero-cinematic reveal-block">
+            <!-- Haute Horlogerie & Jewelry Crest (Monogram Seal) -->
+            <div class="hero-crest-emblem">
+                <div class="crest-frame-outer">
+                    <div class="crest-frame-inner">
+                        <span class="crest-initials" data-taklivo="monogram">DK</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Luxury Metadata & Editorial Subtitle -->
+            <div class="hero-eyebrow-container">
+                <div class="hero-eyebrow-pill">
+                    <span class="eyebrow-rule left"></span>
+                    <span class="eyebrow-tag">THE WEDDING</span>
+                    <span class="eyebrow-dot">·</span>
+                    <span class="eyebrow-year">2026</span>
+                    <span class="eyebrow-rule right"></span>
+                </div>
+                <p class="hero-editorial-caption" data-i18n="subtitle">Hayotimizning eng go'zal sahifasi boshlanmoqda</p>
+            </div>
+
+            <!-- Main Visual Anchor: Couple Names & Engraved Date -->
+            <div class="hero-title-group">
+                <h1 class="hero-couple-title" data-taklivo="couple_names">
+                    <span class="name-first" data-taklivo="groom_name">DAVRON</span>
+                    <span class="hero-ampersand-ornament">
+                        <span class="ampersand-hairline left"></span>
+                        <span class="ampersand">&</span>
+                        <span class="ampersand-hairline right"></span>
+                    </span>
+                    <span class="name-second" data-taklivo="bride_name">KAMILA</span>
+                </h1>
+                <div class="hero-date-wrapper">
+                    <p class="hero-date-engraved" data-taklivo="event_date">25 · 10 · 2026</p>
+                </div>
+            </div>
+
+            <!-- Couture Editorial Portrait Mount -->
+            <div class="hero-editorial-mount">
+                <div class="mount-matting-frame">
+                    <!-- Architectural Corner Jewel Hairlines (Cartier / Fine Jewelry Style) -->
+                    <div class="jewel-corner top-left">
+                        <span class="jewel-axis-h"></span>
+                        <span class="jewel-axis-v"></span>
+                    </div>
+                    <div class="jewel-corner top-right">
+                        <span class="jewel-axis-h"></span>
+                        <span class="jewel-axis-v"></span>
+                    </div>
+                    <div class="jewel-corner bottom-left">
+                        <span class="jewel-axis-h"></span>
+                        <span class="jewel-axis-v"></span>
+                    </div>
+                    <div class="jewel-corner bottom-right">
+                        <span class="jewel-axis-h"></span>
+                        <span class="jewel-axis-v"></span>
+                    </div>
+
+                    <!-- Portrait Photograph Layer with Multi-Layer Vignette -->
+                    <div class="mount-photo-stage">
+                        <div class="hero-photo-layer" style="background-image: url('../luxury-gold/images/bosh_rasm.jpg');">
+                            <div class="cinematic-vignette"></div>
+                            <div class="cinematic-edge-fade"></div>
+                        </div>
+                        <div class="photo-inner-hairline"></div>
+                    </div>
+
+                    <!-- Fine Engraving Caption Tag & Archival Studio Debossing -->
+                    <div class="mount-caption-tag">
+                        <span>EDITORIAL INVITATION · 2026</span>
+                    </div>
+                    <div class="mount-watermark-seal" data-taklivo="monogram" aria-hidden="true">DK</div>
+                </div>
+            </div>
+
+            <!-- Couture Scroll Indicator -->
+            <div class="hero-scroll-cue">
+                <span class="cue-label">SCROLL TO DISCOVER</span>
+                <div class="cue-line-track">
+                    <div class="cue-line-runner"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. HOLY AYAT / BLESSING SECTION -->
+        <section class="section-ayat reveal-block">
+            <div class="ayat-seal-icon">⚜️</div>
+            <p class="ayat-text-arabic">
+                «Uning oyatlaridan biri — sizlar xotirjam bo‘lishingiz uchun o‘zingizdan juftlar yaratishi va o‘rtangizda mehr-muhabbat hamda rahm-shafqat paydo qilishidir.»
+            </p>
+            <div class="gold-hairline-separator"></div>
+            <span class="ayat-source">RUM SURASI, 21-OYAT</span>
+        </section>
+
+        <!-- 3. THE COUPLE (EDITORIAL PRESENTATION) -->
+        <section class="section-couple reveal-block">
+            <div class="editorial-header">
+                <span class="editorial-num">01</span>
+                <h2 class="editorial-heading">THE COUPLE</h2>
+            </div>
+
+            <div class="couple-asymmetric-grid">
+                <div class="couple-image-card">
+                    <div class="couple-photo" style="background-image: url('../luxury-gold/images/galereya2.jpg');"></div>
+                    <div class="photo-caption-tag">PRE-WEDDING PORTRAIT</div>
+                </div>
+                <div class="couple-text-block">
+                    <p class="couple-lead">
+                        Ikki qalbning abadiy ittifoqi, o'zaro hurmat va cheksiz muhabbat dostoni.
+                    </p>
+                    <p class="couple-body">
+                        Hayotimizning eng muhim va unutilmas oqshomida siz kabi aziz va qadrli insonlarni yonimizda ko'rishdan behad baxtiyormiz.
+                    </p>
+                    <div class="monogram-seal-inline" data-taklivo="monogram">DK</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. LOVE STORY TIMELINE -->
+        <section class="section-timeline reveal-block">
+            <div class="editorial-header">
+                <span class="editorial-num">02</span>
+                <h2 class="editorial-heading" data-i18n="ourStoryTitle">LOVE STORY</h2>
+            </div>
+
+            <div class="cinematic-timeline">
+                <div class="timeline-track"></div>
+
+                <!-- 2021 -->
+                <div class="timeline-step left">
+                    <div class="timeline-dot"></div>
+                    <div class="step-content">
+                        <span class="step-year">2021</span>
+                        <h3 class="step-title">Birinchi Nigoh</h3>
+                        <p class="step-desc">Toshkent ko'chalarida boshlangan tasodifiy uchrashuv va bir umrlik muhabbat qissasi.</p>
+                    </div>
+                </div>
+
+                <!-- 2024 -->
+                <div class="timeline-step right">
+                    <div class="timeline-dot"></div>
+                    <div class="step-content">
+                        <span class="step-year">2024</span>
+                        <h3 class="step-title">Muhabbat Iqrori</h3>
+                        <p class="step-desc">Bir-birimizga berilgan va'dalar va bir butun oila bo'lish sari qo'yilgan qat'iy qadam.</p>
+                    </div>
+                </div>
+
+                <!-- 2026 -->
+                <div class="timeline-step left highlight">
+                    <div class="timeline-dot active"></div>
+                    <div class="step-content">
+                        <span class="step-year">2026</span>
+                        <h3 class="step-title">Abadiy Baxt Ostonasi</h3>
+                        <p class="step-desc">Nikoh to'yimiz. Bizning yangi oilaviy tariximiz sizning duolaringiz bilan boshlanadi.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. WEDDING DETAILS (LOCATION & TIME) -->
+        <section class="section-details reveal-block">
+            <div class="editorial-header">
+                <span class="editorial-num">03</span>
+                <h2 class="editorial-heading">THE CELEBRATION</h2>
+            </div>
+
+            <div class="details-monumental-layout">
+                <div class="details-time-anchor">
+                    <span class="time-large" data-taklivo="event_time">19:00</span>
+                    <span class="time-sub" data-i18n="gatheringTitle">MEHMONLAR TASHRIFI</span>
+                </div>
+
+                <div class="gold-vertical-divider"></div>
+
+                <div class="details-location-anchor">
+                    <span class="venue-prefix">VENUE & RECEPTION</span>
+                    <h3 class="venue-grand-title" data-taklivo="venue">HYATT REGENCY</h3>
+                    <p class="venue-hall">Grand Ballroom</p>
+                    <p class="venue-full-address" data-taklivo="address">Toshkent shahri, Navoiy shox ko'chasi, 1A</p>
+
+                    <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="cartier-map-button">
+                        <span data-i18n="mapButton">LOKATSIYANI XARITADA OCHISH 📍</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. DRESS CODE (BLACK-TIE LUXURY) -->
+        <section class="section-dresscode reveal-block">
+            <div class="editorial-header center">
+                <span class="editorial-num">04</span>
+                <h2 class="editorial-heading" data-i18n="dresscodeTitle">DRESS CODE</h2>
+                <div class="gold-hairline-separator small"></div>
+                <p class="dresscode-sub" data-i18n="dresscodeSub">BLACK TIE & EVENING ATTIRE</p>
+            </div>
+
+            <div class="dresscode-editorial-card">
+                <div class="dresscode-columns">
+                    <div class="dresscode-col">
+                        <span class="dresscode-symbol">🤵</span>
+                        <h3 class="dresscode-role font-serif" data-i18n="dresscodeGentlemen">JANOB LAR UCHUN</h3>
+                        <p class="dresscode-desc" data-i18n="dresscodeGentlemenDesc">Klassik qora smoking yoki to'q rangli tantanali kostyum-shim, oq ko'ylak va kapalak-galstuk.</p>
+                    </div>
+                    <div class="dresscode-divider-v"></div>
+                    <div class="dresscode-col">
+                        <span class="dresscode-symbol">👗</span>
+                        <h3 class="dresscode-role font-serif" data-i18n="dresscodeLadies">XONIMLAR UCHUN</h3>
+                        <p class="dresscode-desc" data-i18n="dresscodeLadiesDesc">Kechki uzun liboslar, to'q zumrad, to'q bordo, qora yoki nozik tillarang tuslar.</p>
+                    </div>
+                </div>
+
+                <div class="dresscode-swatches">
+                    <span class="swatch-label" data-i18n="dresscodePalette">TAVSIYA ETILADIGAN RANGLAR:</span>
+                    <div class="swatches-row">
+                        <span class="swatch-circle" style="background: #07080a; border: 1px solid rgba(216,178,110,0.4);" title="Obsidian Black"></span>
+                        <span class="swatch-circle" style="background: #40101b;" title="Dark Burgundy"></span>
+                        <span class="swatch-circle" style="background: #0d2818;" title="Emerald Jewel"></span>
+                        <span class="swatch-circle" style="background: #d8b26e;" title="Champagne Gold"></span>
+                        <span class="swatch-circle" style="background: #191c28;" title="Midnight Charcoal"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. COUNTDOWN (ARCHITECTURAL DIVIDERS) -->
+        <section class="section-countdown reveal-block">
+            <div class="editorial-header center">
+                <h2 class="editorial-heading" data-i18n="countdownTitle">TANTANAGACHA QOLDI</h2>
+                <div class="gold-hairline-separator small"></div>
+            </div>
+
+            <div class="architectural-countdown">
+                <div class="countdown-unit">
+                    <span class="count-value" id="days">00</span>
+                    <span class="count-label" data-i18n="days">KUN</span>
+                </div>
+                <div class="countdown-sep">·</div>
+                <div class="countdown-unit">
+                    <span class="count-value" id="hours">00</span>
+                    <span class="count-label" data-i18n="hours">SOAT</span>
+                </div>
+                <div class="countdown-sep">·</div>
+                <div class="countdown-unit">
+                    <span class="count-value" id="minutes">00</span>
+                    <span class="count-label" data-i18n="minutes">DAQIQA</span>
+                </div>
+                <div class="countdown-sep">·</div>
+                <div class="countdown-unit">
+                    <span class="count-value" id="seconds">00</span>
+                    <span class="count-label" data-i18n="seconds">SONIYA</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. EDITORIAL PHOTO GALLERY -->
+        <section class="section-gallery reveal-block">
+            <div class="editorial-header">
+                <span class="editorial-num">04</span>
+                <h2 class="editorial-heading" data-i18n="galleryTitle">GALLERY</h2>
+            </div>
+
+            <div class="editorial-gallery-composition">
+                <div class="gallery-lead-frame">
+                    <div class="gallery-photo" style="background-image: url('../luxury-gold/images/galereya1.jpg');"></div>
+                </div>
+                <div class="gallery-sub-row">
+                    <div class="gallery-photo half" style="background-image: url('../luxury-gold/images/galereya2.jpg');"></div>
+                    <div class="gallery-photo half" style="background-image: url('../luxury-gold/images/galereya3.jpg');"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. TO'YONA (VELVET EMBOSSED CARD) -->
+        <section class="section-toyona reveal-block">
+            <div class="editorial-header center">
+                <h2 class="editorial-heading" data-i18n="toyonaTitle">TO'YONA</h2>
+                <p class="toyona-editorial-note" data-i18n="toyonaDesc">
+                    Agar bizni tabriklab, to'yona yubormoqchi bo'lsangiz, quyidagi karta raqamidan foydalanishingiz mumkin:
+                </p>
+            </div>
+
+            <div class="luxury-black-card">
+                <div class="card-chip-gold"></div>
+                <div class="card-monogram-watermark" data-taklivo="monogram">DK</div>
+                <div class="card-digits-row">
+                    <span class="card-number-display" id="cardNumber">8600 5555 4444 3333</span>
+                </div>
+                <div class="card-bottom-row">
+                    <div class="card-holder-group">
+                        <span class="card-micro-label" data-i18n="cardHolder">KARTA EGASI</span>
+                        <span class="card-holder-val" data-taklivo="groom_name">Davron</span>
+                    </div>
+                    <button class="cartier-copy-btn" onclick="copyCardNumber()" aria-label="Copy Card Number">
+                        <span id="copyBtnText" data-i18n="cardCopy">Nusxalash</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. RSVP SECTION (HAUTE-COUTURE FORM) -->
+        <section class="section-rsvp reveal-block">
+            <div class="editorial-header center">
+                <span class="editorial-num">05</span>
+                <h2 class="editorial-heading" data-i18n="rsvpTitle">TASHRIFNI TASDIQLASH</h2>
+                <p class="rsvp-editorial-sub" data-i18n="rsvpSubtitle">Sizning ishtirokingiz biz uchun juda muhim</p>
+            </div>
+
+            <form class="couture-form" id="rsvpForm">
+                <div class="form-row-group">
+                    <div class="form-floating-field">
+                        <label for="name" data-i18n="rsvpNameLabel">Ismingiz</label>
+                        <input type="text" id="name" required placeholder="Masalan: Sardor" data-i18n-placeholder="rsvpNamePlaceholder" autocomplete="name">
+                    </div>
+                    <div class="form-floating-field">
+                        <label for="phone" data-i18n="rsvpPhoneLabel">Telefon raqam</label>
+                        <input type="tel" id="phone" required placeholder="+998 90 123 45 67" data-i18n-placeholder="rsvpPhonePlaceholder" autocomplete="tel">
+                    </div>
+                </div>
+
+                <div class="form-floating-field">
+                    <label for="message" data-i18n="rsvpMsgLabel">Ezgu tilaklaringiz</label>
+                    <textarea id="message" rows="3" placeholder="O'z tilaklaringizni yozishingiz mumkin..." data-i18n-placeholder="rsvpMsgPlaceholder"></textarea>
+                </div>
+
+                <input type="hidden" id="attendanceStatus" value="Albatta Boraman">
+
+                <div class="form-dual-actions">
+                    <button type="submit" class="rsvp-primary-gold-btn" onclick="document.getElementById('attendanceStatus').value = 'Albatta Boraman'">
+                        <span data-i18n="rsvpAccept">Albatta boraman ✨</span>
+                    </button>
+                    <button type="submit" class="rsvp-ghost-btn" onclick="document.getElementById('attendanceStatus').value = 'Afsuski Kela olmayman'">
+                        <span data-i18n="rsvpDecline">Afsuski kela olmayman</span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- 10. LUXURY FOOTER -->
+        <footer class="editorial-footer reveal-block">
+            <div class="footer-seal" data-taklivo="monogram">DK</div>
+            <h2 class="footer-couple-name" data-taklivo="couple_names">Davron & Kamila</h2>
+            <p class="footer-tagline">BLACK-TIE WEDDING CELEBRATION</p>
+            <div class="gold-hairline-separator small"></div>
+            <p class="footer-brand">TAKLIVO · HAUTE DIGITAL WEDDING INVITATIONS</p>
+        </footer>
+
+    </main>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal" role="dialog" aria-modal="true">
+        <div class="modal-box-luxury">
+            <div class="modal-crest">⚜️</div>
+            <h3 data-i18n="rsvpThanks">Rahmat!</h3>
+            <p data-i18n="rsvpSuccessMsg">Sizning javobingiz muvaffaqiyatli qabul qilindi.</p>
+            <button class="modal-close-gold" onclick="document.getElementById('successModal').classList.remove('open')" data-i18n="closeBtn">Yopish</button>
+        </div>
+    </div>
+
+    <!-- Engine & Local Scripts -->
+    <script src="../assets/engine.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

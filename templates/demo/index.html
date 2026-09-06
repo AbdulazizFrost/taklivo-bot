@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAKLIVO — Sayt-Taklifnomalar Katalogi | Каталог приглашений</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0e12;
+            --card-bg: #141720;
+            --gold: #d4af37;
+            --gold-bright: #ffd700;
+            --text-light: #f3f4f6;
+            --text-dim: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            padding: 40px 16px 80px;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .logo-badge {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid var(--gold);
+            color: var(--gold-bright);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 36px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            font-size: 14px;
+            color: var(--text-dim);
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .catalog-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .template-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(212, 175, 55, 0.2);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .template-emoji {
+            font-size: 32px;
+        }
+
+        .template-badge {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--gold-bright);
+            font-weight: 600;
+        }
+
+        .template-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px;
+            color: #ffffff;
+        }
+
+        .template-desc {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .btn-preview {
+            flex: 1;
+            text-align: center;
+            background: linear-gradient(135deg, #d4af37, #aa8010);
+            color: #0c0e12;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn-preview:hover {
+            opacity: 0.92;
+        }
+
+        .btn-bot {
+            flex: 1;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-bot:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        footer a {
+            color: var(--gold-bright);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo-badge">TAKLIVO • Digital Invitations</div>
+            <h1>Dizaynlar Katalogi</h1>
+            <p class="subtitle">Har bir to'y va tantana uchun betakror interaktiv elektron taklifnomalar</p>
+        </header>
+
+        <div class="catalog-grid">
+
+            <!-- Luxury Gold -->
+            <div class="template-card">
+                <div class="card-top">
+                    <span class="template-emoji">🥂</span>
+                    <span class="template-badge">Eng Ommabop • Top</span>
+                </div>
+                <h2 class="template-title">Luxury Gold (Zangori Oltin)</h2>
+                <p class="template-desc">
+                    Hashamatli to‘y uchun tillarang va nafis klassik uslubdagi premium dizayn. Monogramma, audio musiqa, galereya va Uzcard to'yona kartasi.
+                </p>
+                <div class="card-actions">
+                    <a href="/demo/luxury-gold" class="btn-preview">Jonli Ko'rish ✨</a>
+                    <a href="https://t.me/taklivo_bot" class="btn-bot" target="_blank">Botda Buyurtma 💍</a>
+                </div>
+            </div>
+
+            <!-- Floral Romance -->
+            <div class="template-card">
+                <div class="card-top">
+                    <span class="template-emoji">🌸</span>
+                    <span class="template-badge">Romantic</span>
+                </div>
+                <h2 class="template-title">Floral Romance (Gulli Nafislik)</h2>
+                <p class="template-desc">
+                    Gulli akvarel rasmlar, havoda ohista uchib tushuvchi atirgul barglari animatsiyasi va mayin pushti-krem pastel ranglar uyg'unligi.
+                </p>
+                <div class="card-actions">
+                    <a href="/demo/floral" class="btn-preview">Jonli Ko'rish 🌸</a>
+                    <a href="https://t.me/taklivo_bot" class="btn-bot" target="_blank">Botda Buyurtma 💍</a>
+                </div>
+            </div>
+
+            <!-- Dark Luxury -->
+            <div class="template-card">
+                <div class="card-top">
+                    <span class="template-emoji">🖤</span>
+                    <span class="template-badge">VIP Night</span>
+                </div>
+                <h2 class="template-title">Dark Luxury (Qorong'i Hashamat)</h2>
+                <p class="template-desc">
+                    To‘q baxmal fon, oltin neon effektlar, sehrli zarralar yog'dusi va kinematik jozibadorlik. Kechki tantanalar uchun eng zo'r tanlov.
+                </p>
+                <div class="card-actions">
+                    <a href="/demo/dark-luxury" class="btn-preview">Jonli Ko'rish ⚜️</a>
+                    <a href="https://t.me/taklivo_bot" class="btn-bot" target="_blank">Botda Buyurtma 💍</a>
+                </div>
+            </div>
+
+            <!-- Minimal Modern -->
+            <div class="template-card">
+                <div class="card-top">
+                    <span class="template-emoji">🤍</span>
+                    <span class="template-badge">Clean & Pure</span>
+                </div>
+                <h2 class="template-title">Minimal Modern (Yengil Minimalizm)</h2>
+                <p class="template-desc">
+                    Mukammal tozalik, ko‘p erkin bo‘sh joy, nafis zamonaviy tipografika, interaktiv taymer va qulay RSVP tashrif formasi.
+                </p>
+                <div class="card-actions">
+                    <a href="/demo/minimal" class="btn-preview">Jonli Ko'rish 🤍</a>
+                    <a href="https://t.me/taklivo_bot" class="btn-bot" target="_blank">Botda Buyurtma 💍</a>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>© 2026 TAKLIVO. Barcha huquqlar himoyalangan.</p>
+            <p style="margin-top: 6px;"><a href="https://t.me/taklivo_bot" target="_blank">@taklivo_bot orqali o'z taklifnomangizni yarating</a></p>
+        </footer>
+    </div>
+
+</body>
+
+</html>

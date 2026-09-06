@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asrorbek & Gulruxsor — To'y Taklifnomasi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../demo/assets/engine.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Ambient Floating Blur Blobs -->
+    <div class="modern-blob blob-1"></div>
+    <div class="modern-blob blob-2"></div>
+    <div class="modern-blob blob-3"></div>
+
+    <!-- ======================================================= -->
+    <!-- 1. GLAVNOYE OKNO S KNOPKOY OTKRYTIYA (INTRO OVERLAY)   -->
+    <!-- ======================================================= -->
+    <div class="intro-overlay" id="introOverlay">
+        <div class="intro-glass-card">
+            <span class="modern-badge-chip">✨ Tantanali Taklifnoma</span>
+
+            <div class="luxury-crest-box">
+                <img src="images/wedding_crest.png" alt="Wedding Crest" class="luxury-crest-img" data-taklivo="monogram_img">
+            </div>
+
+            <h1 class="intro-names-modern" data-taklivo="couple_names">Asrorbek & Gulruxsor</h1>
+            <p class="intro-subtitle-tag">Nikoh To'yi • Visol Oqshomi</p>
+            
+            <div class="intro-meta-info">
+                <span class="intro-meta-item">🗓 18 Sentyabr 2026</span>
+                <span class="intro-meta-dot">•</span>
+                <span class="intro-meta-item">📍 Afruz Diamond</span>
+            </div>
+
+            <button class="modern-open-btn" onclick="revealInvitation()">
+                <span>Taklifnomani Ochish</span>
+                <span class="btn-sparkle-icon">✨</span>
+                <div class="btn-shimmer-glow"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- 2. ASOSIY QISM (RICH MODERN KARTALAR)                   -->
+    <!-- ======================================================= -->
+    <main class="modern-app-container" id="mainContent">
+
+        <!-- Karta 1: Bismilloh & Yoshlar -->
+        <section class="modern-surface-card hero-main-card">
+            <p class="modern-arabic-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+            <p class="modern-bismillah-sub">Bismillohir Rohmanir Rohiym</p>
+
+            <div class="modern-soft-divider"></div>
+
+            <div class="luxury-crest-box hero-crest">
+                <img src="images/wedding_crest.png" alt="Wedding Crest" class="luxury-crest-img" data-taklivo="monogram_img">
+            </div>
+
+            <h2 class="hero-names-title" data-taklivo="couple_names">Asrorbek & Gulruxsor</h2>
+            <p class="hero-tagline-text">Ikki qalbning muqaddas rishtasi va yangi oila ibtidosi</p>
+
+            <div class="modern-date-pill">
+                <span class="pill-icon">💍</span>
+                <span data-taklivo="event_date">18 SENTYABR 2026 • 19:00</span>
+            </div>
+        </section>
+
+        <!-- Karta 2: Muqaddas Oyat -->
+        <section class="modern-surface-card verse-card">
+            <div class="verse-quote-icon">“</div>
+            <p class="modern-ayat-quote">
+                «Uning alomatlaridan biri — sizlar taskin topishingiz uchun o‘zingizdan juftlar yaratgani va orangizda mehr-muhabbat hamda samimiyat paydo qilganidir.»
+            </p>
+            <p class="modern-ayat-source">Rum surasi, 21-oyat</p>
+            <div class="verse-ornament-line">
+                <span class="verse-diamond">◆</span>
+            </div>
+        </section>
+
+        <!-- Karta 3: Ota-onalar Taklifi va Duosi -->
+        <section class="modern-surface-card parents-blessing-card">
+            <span class="modern-badge-chip">🕊 Hurmatli Mehmonimiz</span>
+
+            <h3 class="parents-card-title">To'yona Dasturxonimizga Marhamat!</h3>
+
+            <p class="modern-invite-desc">
+                Hayotimizdagi eng quvonchli va tarixiy kunlardan biri — suyukli farzandlarimiz <strong>Asrorbek va Gulruxsor</strong>larning nikoh to'yi munosabati bilan yoziladigan to'yona dasturxonimizga Siz azizlarni lutfan taklif etamiz.
+            </p>
+
+            <p class="modern-invite-desc secondary">
+                Sizning tashrifingiz, samimiy tabassumingiz va yangi oila baxtiga qaratilgan ezgu oq fotihangiz biz uchun eng yuksak quvonchdir!
+            </p>
+
+            <div class="family-signatures-wrap">
+                <div class="family-badge">
+                    <span class="family-badge-icon">🤵</span>
+                    <span class="family-badge-text">Kuyov ota-onasi</span>
+                </div>
+                <div class="family-badge-divider">va</div>
+                <div class="family-badge">
+                    <span class="family-badge-icon">👰</span>
+                    <span class="family-badge-text">Kelin ota-onasi</span>
+                </div>
+            </div>
+
+            <p class="family-warm-note">Ehtirom ila kutib qolamiz!</p>
+        </section>
+
+        <!-- Karta 4: Taqvim (Save The Date - Sentyabr 2026) -->
+        <section class="modern-surface-card calendar-card">
+            <span class="modern-badge-chip">📅 Taqvim</span>
+            <h3 class="calendar-month-title">Sentyabr 2026</h3>
+            <p class="calendar-month-sub">Bu kunni taqvimingizga belgilab qo'ying</p>
+
+            <div class="modern-calendar-grid">
+                <!-- Hafta kunlari -->
+                <div class="cal-day-name">Du</div>
+                <div class="cal-day-name">Se</div>
+                <div class="cal-day-name">Cho</div>
+                <div class="cal-day-name">Pa</div>
+                <div class="cal-day-name">Ju</div>
+                <div class="cal-day-name">Sha</div>
+                <div class="cal-day-name">Ya</div>
+
+                <!-- Kunlar -->
+                <div class="cal-cell cal-empty"></div>
+                <div class="cal-cell">1</div>
+                <div class="cal-cell">2</div>
+                <div class="cal-cell">3</div>
+                <div class="cal-cell">4</div>
+                <div class="cal-cell">5</div>
+                <div class="cal-cell">6</div>
+                <div class="cal-cell">7</div>
+                <div class="cal-cell">8</div>
+                <div class="cal-cell">9</div>
+                <div class="cal-cell">10</div>
+                <div class="cal-cell">11</div>
+                <div class="cal-cell">12</div>
+                <div class="cal-cell">13</div>
+                <div class="cal-cell">14</div>
+                <div class="cal-cell">15</div>
+                <div class="cal-cell">16</div>
+                <div class="cal-cell">17</div>
+                <!-- 18-SENTYABR TANLANADI VA YORITILADI -->
+                <div class="cal-cell cal-wedding-day">
+                    <span class="cal-ring-glow"></span>
+                    <span class="cal-day-num">18</span>
+                    <span class="cal-badge-symbol">💍</span>
+                </div>
+                <div class="cal-cell">19</div>
+                <div class="cal-cell">20</div>
+                <div class="cal-cell">21</div>
+                <div class="cal-cell">22</div>
+                <div class="cal-cell">23</div>
+                <div class="cal-cell">24</div>
+                <div class="cal-cell">25</div>
+                <div class="cal-cell">26</div>
+                <div class="cal-cell">27</div>
+                <div class="cal-cell">28</div>
+                <div class="cal-cell">29</div>
+                <div class="cal-cell">30</div>
+            </div>
+
+            <div class="calendar-highlight-banner">
+                <span class="cal-banner-icon">✨</span>
+                <span class="cal-banner-text">18-Sentyabr, Juma • Soat 19:00</span>
+            </div>
+
+            <!-- Taqvimga eslatma qo'shish tugmasi -->
+            <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=Asrorbek+&+Gulruxsor+Nikoh+To%27yi&dates=20260918T140000Z/20260918T190000Z&details=Asrorbek+va+Gulruxsorlarning+nikoh+to%27yiga+lutfan+taklif+etamiz!&location=Afruz+Diamond+%F0%9F%92%8D,+To%27rtko%27l" target="_blank" class="calendar-add-btn">
+                <span>🗓 Taqvimga eslatma qo'shish</span>
+            </a>
+        </section>
+
+        <!-- Karta 5: Yoshlarning Samimiy So'zlari -->
+        <section class="modern-surface-card love-quote-card">
+            <span class="love-quote-badge">🤍 Bir Umrlik Va'da</span>
+            <p class="love-quote-text">
+                «Bir-birimizga bergan va'damiz, qalbimizdagi sof muhabbat va intilishlar bugun yangi oila bo'lib gullamoqda. Ushbu baxtli va unutilmas oqshomimizda siz azizlarni yonimizda ko'rish bizga cheksiz shodlik baxsh etadi.»
+            </p>
+            <div class="modern-soft-divider small"></div>
+            <p class="love-quote-authors">— Asrorbek & Gulruxsor</p>
+        </section>
+
+        <!-- Karta 6: Joylashuv va Xarita (GREEN OPTION: MAP) -->
+        <section class="modern-surface-card venue-grand-card">
+            <span class="modern-badge-chip">📍 Tantanalar Saroyi</span>
+
+            <div class="venue-icon-circle">🏛</div>
+
+            <div class="modern-time-big" data-taklivo="event_time">19:00</div>
+            <p class="modern-time-sub">Mehmonlar kutib olinishi</p>
+
+            <h3 class="modern-venue-name" data-taklivo="venue">«Afruz Diamond» Tantanalar Saroyi</h3>
+            <p class="modern-venue-address" data-taklivo="address">Qoraqalpog'iston Resp., To'rtko'l shahri</p>
+
+            <!-- Interaktiv Xarita (Google Maps Embed) -->
+            <div class="venue-map-embed">
+                <iframe 
+                    src="https://maps.google.com/maps?q=41.5409021,60.9889886&hl=uz&z=16&output=embed" 
+                    width="100%" 
+                    height="200" 
+                    style="border:0; border-radius: 18px; display: block;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+
+            <!-- Vizual Marshrut Kartasi -->
+            <div class="venue-route-card">
+                <div class="route-line-icon">
+                    <span class="route-point start"></span>
+                    <span class="route-dash"></span>
+                    <span class="route-point end">📍</span>
+                </div>
+                <div class="route-text-wrap">
+                    <span class="route-dest-label">To'rtko'l markazi ➔ Afruz Diamond 💍</span>
+                    <span class="route-dest-note">Qulay avtoturargoh va keng yo'l</span>
+                </div>
+            </div>
+
+            <!-- Interaktiv Xarita Tugmalari -->
+            <div class="modern-actions-column">
+                <a href="https://yandex.uz/maps/org/afruz_to_yxona/216776621938/?ll=60.989027%2C41.540977&z=17" target="_blank" class="modern-cta-btn modern-cta-gold">
+                    <span>🧭</span>
+                    <span>Yandex Xaritada ochish</span>
+                </a>
+                <a href="https://www.google.com/maps/place/Afruz+Diamond+%F0%9F%92%8D/@41.5409021,60.9889886,17z/data=!3m1!4b1!4m6!3m5!1s0x41dfdf006a6274e1:0x1cf0e4aa01c133d9!8m2!3d41.5409021!4d60.9889886!16s%2Fg%2F11nps_3ym1?entry=ttu" target="_blank" class="modern-cta-btn modern-cta-white">
+                    <span>🗺</span>
+                    <span>Google Xaritada ochish</span>
+                </a>
+                <a href="tel:+998991813222" class="modern-cta-btn modern-cta-outline">
+                    <span>📞</span>
+                    <span>Saroy bilan bog'lanish: +998 99 181 32 22</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Karta 7: Ehtirom va Ezgu Niyatlar -->
+        <section class="modern-surface-card etiquette-card">
+            <span class="modern-badge-chip">✨ Ezgu Ehtirom</span>
+            <h3 class="etiquette-title">Sizning Tashrifingiz — Bizning Baxtimiz</h3>
+
+            <div class="etiquette-items-wrap">
+                <div class="etiquette-item">
+                    <div class="etiquette-icon-box">🕊</div>
+                    <div class="etiquette-item-body">
+                        <h4 class="etiquette-item-title">Oq Fotiha & Duolar</h4>
+                        <p class="etiquette-item-desc">Biz uchun eng qimmatli sovg'a — sizning samimiy tabassumingiz va yangi oilamiz haqqiga qilgan ezgu duolaringizdir.</p>
+                    </div>
+                </div>
+
+                <div class="etiquette-item">
+                    <div class="etiquette-icon-box">💐</div>
+                    <div class="etiquette-item-body">
+                        <h4 class="etiquette-item-title">Tantanali Shodiyona</h4>
+                        <p class="etiquette-item-desc">Eng yaqin insonlar davrasida, go'zal kuy-qo'shiqlar va iliq suhbatlar og'ushida kechadigan unutilmas kecha.</p>
+                    </div>
+                </div>
+
+                <div class="etiquette-item">
+                    <div class="etiquette-icon-box">🤍</div>
+                    <div class="etiquette-item-body">
+                        <h4 class="etiquette-item-title">Yuksak Ehtirom</h4>
+                        <p class="etiquette-item-desc">Har bir mehmonimiz biz uchun nihoyatda qadrli va e'zozli. Sizni bayramimizda quvonch bilan kutib olamiz.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="modern-page-footer">
+            <div class="footer-divider-flower">
+                <span class="divider-leaf left">❧</span>
+                <span class="divider-diamond">◆</span>
+                <span class="divider-leaf right">☙</span>
+            </div>
+            <div class="footer-mini-crest-box">
+                <img src="images/wedding_crest.png" alt="A & G" class="footer-mini-crest-img">
+            </div>
+            <p class="modern-footer-couple" data-taklivo="couple_names">Asrorbek & Gulruxsor</p>
+            <p class="modern-footer-tagline">18 SENTYABR 2026 • TO'RTKO'L</p>
+            <p class="modern-footer-credit">Taklivo.uz bilan mehr ila tayyorlandi</p>
+        </footer>
+
+    </main>
+
+    <!-- Watermark Pill (Unpaid / Demo Mode) -->
+    <div id="taklivoWatermark" class="taklivo-unpaid-watermark">
+        🛡 TAKLIVO DEMO PREVIEW • 24H
+    </div>
+
+    <!-- Floating Demo Bottom Banner -->
+    <div id="taklivoBanner" class="taklivo-floating-banner">
+        <div class="taklivo-banner-left">
+            <span class="taklivo-banner-title">
+                🛡 SINOV REJIMI
+                <span class="taklivo-banner-badge">Buyurtma #5</span>
+            </span>
+            <span class="taklivo-banner-desc">Sayt namunaviy ko'rinishda. To'lov qilingach, suv belgisi olib tashlanadi.</span>
+        </div>
+        <a href="https://t.me/taklivo_bot" class="taklivo-banner-btn" target="_blank">Botda tasdiqlash</a>
+    </div>
+
+    <script src="../../demo/assets/engine.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

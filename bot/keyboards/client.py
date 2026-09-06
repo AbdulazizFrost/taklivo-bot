@@ -2,7 +2,14 @@
 Клавиатуры для взаимодействия с клиентом TAKLIVO.
 """
 from typing import Any, Optional
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import (
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+    ReplyKeyboardMarkup,
+    KeyboardButton,
+    ReplyKeyboardRemove,
+    WebAppInfo,
+)
 from bot.database.models import Order
 from bot.locales import get_text
 from bot.utils.helpers import format_currency
@@ -115,6 +122,19 @@ def get_about_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
 def get_portfolio_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     """Клавиатура каталога шаблонов."""
     buttons = []
+
+    # Кнопка открытия интерактивной витрины всех шаблонов
+    showcase_text = "🌐 Barcha namunalarni ochish (Vitrina)" if lang == "uz" else "🌐 Открыть витрину (Все демо)"
+    catalog_url = config.get_demo_catalog_url()
+    if catalog_url.startswith("https://"):
+        buttons.append([
+            InlineKeyboardButton(text=showcase_text, web_app=WebAppInfo(url=catalog_url))
+        ])
+    else:
+        buttons.append([
+            InlineKeyboardButton(text=showcase_text, url=catalog_url)
+        ])
+
     for tmpl_id, tmpl in config.TEMPLATES.items():
         name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
         buttons.append([
@@ -134,18 +154,24 @@ def get_template_detail_keyboard(
     demo_url: str,
     lang: str = "ru",
 ) -> InlineKeyboardMarkup:
-    """Клавиатура детального просмотра шаблона."""
+    """Клавиатура детального просмотра шаблона (с поддержкой Telegram WebApp)."""
     choose_text = "✨ Tanlash va buyurtma berish" if lang == "uz" else "✨ Выбрать и настроить"
-    demo_text = "🌐 Namunani ko‘rish" if lang == "uz" else "🌐 Открыть демо-сайт"
     back_text = "⬅️ Orqaga" if lang == "uz" else "⬅️ Назад"
 
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=demo_text, url=demo_url)],
-            [InlineKeyboardButton(text=choose_text, callback_data=f"order_select_tmpl:{template_id}")],
-            [InlineKeyboardButton(text=back_text, callback_data="client:portfolio")],
-        ]
-    )
+    keyboard = []
+    if demo_url.startswith("https://"):
+        webapp_text = "🌐 Telegramda ochish (Web App)" if lang == "uz" else "🌐 Открыть в Telegram (Web App)"
+        browser_text = "↗️ Brauzerda ochish" if lang == "uz" else "↗️ Открыть в браузере"
+        keyboard.append([InlineKeyboardButton(text=webapp_text, web_app=WebAppInfo(url=demo_url))])
+        keyboard.append([InlineKeyboardButton(text=browser_text, url=demo_url)])
+    else:
+        demo_text = "🌐 Namunani ko‘rish" if lang == "uz" else "🌐 Открыть демо-сайт"
+        keyboard.append([InlineKeyboardButton(text=demo_text, url=demo_url)])
+
+    keyboard.append([InlineKeyboardButton(text=choose_text, callback_data=f"order_select_tmpl:{template_id}")])
+    keyboard.append([InlineKeyboardButton(text=back_text, callback_data="client:portfolio")])
+
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 
 def get_pricing_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
@@ -175,6 +201,19 @@ def get_event_type_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
 def get_template_selection_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
     """Шаг 2: Выбор стиля в визарде заказа."""
     buttons = []
+
+    # Кнопка быстрой витрины перед выбором
+    showcase_text = "👁 Namunalarni ko‘rish (Vitrina)" if lang == "uz" else "👁 Посмотреть демо-сайты (Витрина)"
+    catalog_url = config.get_demo_catalog_url()
+    if catalog_url.startswith("https://"):
+        buttons.append([
+            InlineKeyboardButton(text=showcase_text, web_app=WebAppInfo(url=catalog_url))
+        ])
+    else:
+        buttons.append([
+            InlineKeyboardButton(text=showcase_text, url=catalog_url)
+        ])
+
     for tmpl_id, tmpl in config.TEMPLATES.items():
         name = tmpl.name_uz if lang == "uz" else tmpl.name_ru
         buttons.append([
@@ -204,8 +243,6 @@ def get_options_toggle_keyboard(
         ("timer", get_text(lang, "option_timer")),
         ("rsvp", get_text(lang, "option_rsvp")),
         ("map", get_text(lang, "option_map")),
-        ("gallery", get_text(lang, "option_gallery")),
-        ("music", get_text(lang, "option_music")),
         ("dresscode", get_text(lang, "option_dresscode")),
         ("schedule", get_text(lang, "option_schedule")),
         ("second_language", get_text(lang, "option_second_language")),
@@ -313,6 +350,10 @@ def get_edit_fields_keyboard(event_type: str = "wedding", lang: str = "ru") -> I
         [
             InlineKeyboardButton(text="📞 Телефон" if lang == "ru" else "📞 Telefon", callback_data="edit_field:phone"),
             InlineKeyboardButton(text="🎨 Дизайн" if lang == "ru" else "🎨 Dizayn", callback_data="edit_field:template"),
+        ],
+        [
+            InlineKeyboardButton(text="📸 Фотографии" if lang == "ru" else "📸 Fotosuratlar", callback_data="edit_field:photos"),
+            InlineKeyboardButton(text="🎵 Музыка" if lang == "ru" else "🎵 Musiqa", callback_data="edit_field:music"),
         ],
         [
             InlineKeyboardButton(text="⚙️ Функции сайта" if lang == "ru" else "⚙️ Sayt funksiyalari", callback_data="edit_field:options"),

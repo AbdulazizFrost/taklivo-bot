@@ -1,0 +1,1112 @@
+/* ==========================================================================
+   TAKLIVO FLORAL ROMANCE — LUXURY BOTANICAL STATIONERY STYLING
+   ========================================================================== */
+
+:root {
+    --c-ivory: #fffbf8;
+    --c-paper-cream: #faf5f0;
+    --c-dusty-rose: #f6ece8;
+    --c-rose-gold: #c99386;
+    --c-rose-gold-dark: #af776b;
+    --c-sage: #879287;
+    --c-sage-light: #d8ded8;
+    --c-espresso: #3d332e;
+    --c-espresso-muted: #6e615a;
+    --c-border-subtle: rgba(201, 147, 134, 0.28);
+    --c-border-sage: rgba(135, 146, 135, 0.35);
+
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-calligraphy: 'Alex Brush', cursive;
+    --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    --ease-botanical: cubic-bezier(0.16, 1, 0.3, 1);
+    --shadow-stationery: 0 10px 30px rgba(175, 119, 107, 0.1);
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: #f5ebe6;
+    color: var(--c-espresso);
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body.floral-stationery-body {
+    background-color: #f5ebe6;
+    color: var(--c-espresso);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+}
+
+.font-serif {
+    font-family: var(--font-serif);
+}
+
+/* 1. Subtle Paper Texture */
+.paper-texture {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 99990;
+    opacity: 0.02;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoise)'/%3E%3C/svg%3E");
+}
+
+/* 2. Very Subtle Floating Petals */
+.petals-drift-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 3;
+    overflow: hidden;
+}
+
+.botanical-petal {
+    position: absolute;
+    background: radial-gradient(circle at 30% 30%, #ffd9d2 0%, #e2a698 100%);
+    border-radius: 140% 0 140% 0;
+    opacity: 0.45;
+    filter: drop-shadow(0 2px 4px rgba(201, 147, 134, 0.2));
+    animation: driftPetal linear infinite;
+}
+
+@keyframes driftPetal {
+    0% {
+        top: -8%;
+        transform: rotate(0deg) translateX(0);
+        opacity: 0.55;
+    }
+    100% {
+        top: 108%;
+        transform: rotate(340deg) translateX(55px);
+        opacity: 0.15;
+    }
+}
+
+/* 3. Floating Botanical Audio Badge */
+.botanical-music-badge {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 99980;
+    background: rgba(255, 251, 248, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--c-border-subtle);
+    border-radius: 30px;
+    padding: 5px 12px 5px 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(175, 119, 107, 0.15);
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.botanical-music-badge:hover {
+    border-color: var(--c-rose-gold);
+    transform: translateY(-2px);
+}
+
+.botanical-wreath-spin {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.botanical-wreath-spin.spinning {
+    animation: rotateWreath 12s linear infinite;
+}
+
+@keyframes rotateWreath {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.wreath-mini-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.music-badge-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.music-note-icon {
+    font-size: 13px;
+    color: var(--c-rose-gold-dark);
+}
+
+.music-badge-text {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    color: var(--c-espresso-muted);
+}
+
+/* 4. Opening Stationery Envelope Screen */
+.stationery-opening-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #fbf4f0;
+    background-image: radial-gradient(circle at 50% 40%, #ffffff 0%, #f6ece6 100%);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    transition: opacity 0.9s ease, visibility 0.9s ease;
+}
+
+.stationery-opening-screen.unfolded {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.deckle-edge-envelope {
+    background: var(--c-ivory);
+    border: 1px solid var(--c-border-subtle);
+    border-radius: 12px;
+    padding: 44px 28px;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 20px 50px rgba(175, 119, 107, 0.15);
+    position: relative;
+}
+
+.envelope-botanical-seal {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seal-svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    animation: rotateWreath 35s linear infinite;
+}
+
+.seal-letters {
+    font-family: var(--font-calligraphy);
+    font-size: 32px;
+    color: var(--c-rose-gold-dark);
+    position: relative;
+    z-index: 2;
+}
+
+.opening-calligraphy {
+    font-family: var(--font-calligraphy);
+    font-size: 24px;
+    color: var(--c-rose-gold-dark);
+    margin-bottom: 8px;
+}
+
+.opening-names {
+    font-size: clamp(2rem, 6vw, 2.6rem);
+    font-weight: 500;
+    color: var(--c-espresso);
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.opening-date {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--c-espresso-muted);
+    margin-bottom: 28px;
+}
+
+.stationery-unfold-btn {
+    background: linear-gradient(135deg, #d8a498 0%, var(--c-rose-gold-dark) 100%);
+    color: #ffffff;
+    border: none;
+    padding: 13px 32px;
+    border-radius: 25px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(175, 119, 107, 0.35);
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.stationery-unfold-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(175, 119, 107, 0.45);
+}
+
+/* 5. Main Botanical Wrapper */
+.floral-main-wrapper {
+    max-width: 500px;
+    margin: 0 auto;
+    background: var(--c-ivory);
+    min-height: 100vh;
+    box-shadow: 0 0 50px rgba(175, 119, 107, 0.12);
+    position: relative;
+    padding-bottom: 120px;
+}
+
+/* Scroll Reveal */
+.reveal-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.85s var(--ease-botanical), transform 0.85s var(--ease-botanical);
+}
+
+.reveal-up.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 1. HERO SECTION */
+.floral-hero {
+    padding: 65px 26px 35px;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(180deg, #fff3ee 0%, var(--c-ivory) 100%);
+    overflow: hidden;
+}
+
+.botanical-corner {
+    position: absolute;
+    width: clamp(130px, 34vw, 210px);
+    height: auto;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.95;
+    transition: transform 0.6s ease;
+}
+
+.top-left-corner {
+    top: -8px;
+    left: -8px;
+}
+
+.top-right-corner {
+    top: -8px;
+    right: -8px;
+}
+
+.floral-corner-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 4px 14px rgba(180, 140, 120, 0.2));
+}
+
+.bismillah-line {
+    font-style: italic;
+    font-size: 14px;
+    color: var(--c-espresso-muted);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.hero-calligraphy-accent {
+    font-family: var(--font-calligraphy);
+    font-size: 26px;
+    color: var(--c-rose-gold-dark);
+    margin-bottom: 12px;
+}
+
+.hero-names-display {
+    font-size: clamp(2.3rem, 8vw, 3.2rem);
+    font-weight: 500;
+    color: var(--c-espresso);
+    line-height: 1.15;
+    margin-bottom: 16px;
+}
+
+.script-amp {
+    font-family: var(--font-calligraphy);
+    font-size: 0.75em;
+    color: var(--c-rose-gold);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.hero-botanical-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--c-dusty-rose);
+    border: 1px solid var(--c-border-subtle);
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+
+.date-leaf-decor {
+    color: var(--c-sage);
+    font-size: 11px;
+}
+
+.date-text {
+    font-size: 12.5px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: var(--c-rose-gold-dark);
+}
+
+/* Arched Photo Frame with Botanical Overlap */
+.hero-botanical-portrait-wrap {
+    position: relative;
+    width: calc(100% - 30px);
+    max-width: 320px;
+    height: 420px;
+    margin: 0 auto 28px;
+}
+
+.arched-photo-frame {
+    width: 100%;
+    height: 100%;
+    border-radius: 160px 160px 12px 12px;
+    border: 1px solid var(--c-border-subtle);
+    box-shadow: var(--shadow-stationery);
+    overflow: hidden;
+    position: relative;
+}
+
+.arch-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center 25%;
+    transition: transform 1.2s var(--ease-botanical);
+}
+
+.hero-botanical-portrait-wrap:hover .arch-image {
+    transform: scale(1.03);
+}
+
+.arch-soft-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255, 251, 248, 0.05) 60%, rgba(246, 236, 232, 0.35) 100%);
+}
+
+.overlapping-branch {
+    position: absolute;
+    bottom: -32px;
+    right: -36px;
+    width: clamp(160px, 46vw, 230px);
+    height: auto;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.floral-overlap-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 8px 22px rgba(120, 70, 50, 0.22));
+}
+
+.hero-invitation-words {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--c-espresso-muted);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* 2. HOLY AYAT (DECKLE-EDGED COTTON CARD) */
+.section-botanical-ayat {
+    padding: 25px 24px;
+}
+
+.cotton-paper-card {
+    background: var(--c-paper-cream);
+    border: 1px solid var(--c-border-subtle);
+    border-radius: 12px;
+    padding: 28px 22px;
+    text-align: center;
+    box-shadow: var(--shadow-stationery);
+}
+
+.botanical-crest-mini {
+    font-size: 20px;
+    color: var(--c-rose-gold);
+    margin-bottom: 8px;
+}
+
+.ayat-verse-quote {
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--c-espresso);
+    margin-bottom: 12px;
+}
+
+.botanical-hairline {
+    width: 60px;
+    height: 1px;
+    background: var(--c-rose-gold);
+    opacity: 0.4;
+    margin: 0 auto 10px;
+}
+
+.botanical-hairline.center { margin: 10px auto 20px; }
+.botanical-hairline.small { width: 40px; }
+
+.ayat-source-tag {
+    font-size: 10.5px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: var(--c-rose-gold-dark);
+}
+
+/* SECTION HEADERS */
+.botanical-section-header {
+    text-align: center;
+    padding: 0 24px;
+    margin-bottom: 24px;
+}
+
+.header-ornament {
+    font-size: 14px;
+    color: var(--c-rose-gold);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.header-serif-title {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    color: var(--c-espresso);
+    text-transform: uppercase;
+}
+
+.header-calligraphy-sub {
+    font-family: var(--font-calligraphy);
+    font-size: 20px;
+    color: var(--c-rose-gold-dark);
+    margin-top: 4px;
+}
+
+/* 3. THE COUPLE */
+.section-botanical-couple {
+    padding: 30px 24px;
+}
+
+.botanical-couple-composition {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.portrait-card-artistic {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    border-radius: 12px;
+    border: 1px solid var(--c-border-subtle);
+    overflow: hidden;
+    box-shadow: var(--shadow-stationery);
+}
+
+.artistic-photo {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center 30%;
+    transition: transform 1.2s var(--ease-botanical);
+}
+
+.portrait-card-artistic:hover .artistic-photo {
+    transform: scale(1.03);
+}
+
+.botanical-floating-tag {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--c-espresso);
+    background: rgba(255, 251, 248, 0.88);
+    backdrop-filter: blur(8px);
+    padding: 4px 10px;
+    border: 1px solid var(--c-border-subtle);
+    border-radius: 14px;
+}
+
+.couple-editorial-text {
+    padding: 6px;
+}
+
+.text-lead {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--c-espresso);
+    margin-bottom: 10px;
+}
+
+.text-body {
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--c-espresso-muted);
+}
+
+/* 4. LOVE STORY (VINE TIMELINE) */
+.section-botanical-timeline {
+    padding: 30px 24px;
+    background: var(--c-paper-cream);
+}
+
+.vine-timeline-wrapper {
+    position: relative;
+    padding-left: 36px;
+}
+
+.timeline-vine-stem {
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 12px;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--c-sage-light), var(--c-sage), transparent);
+}
+
+.timeline-node {
+    position: relative;
+    margin-bottom: 28px;
+}
+
+.timeline-node:last-child {
+    margin-bottom: 0;
+}
+
+.node-bud {
+    position: absolute;
+    left: -30px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--c-ivory);
+    border: 2px solid var(--c-rose-gold);
+}
+
+.node-bud.bloomed {
+    background: var(--c-rose-gold);
+    box-shadow: 0 0 10px rgba(201, 147, 134, 0.5);
+}
+
+.node-leaf-card {
+    background: var(--c-ivory);
+    border: 1px solid var(--c-border-subtle);
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: var(--shadow-stationery);
+}
+
+.node-leaf-card.featured {
+    border-color: var(--c-rose-gold);
+}
+
+.node-year {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--c-rose-gold-dark);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.node-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--c-espresso);
+    margin-bottom: 4px;
+}
+
+.node-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--c-espresso-muted);
+}
+
+/* 5. WEDDING DETAILS (STATIONERY ENVELOPE CARD) */
+.section-botanical-details {
+    padding: 35px 24px;
+}
+
+.botanical-invitation-envelope-card {
+    background: var(--c-dusty-rose);
+    border: 1px solid var(--c-border-subtle);
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: var(--shadow-stationery);
+}
+
+.card-inner-border {
+    border: 1px dashed var(--c-rose-gold);
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    background: var(--c-ivory);
+}
+
+.clock-icon-leaf {
+    font-size: 22px;
+    color: var(--c-rose-gold);
+}
+
+.time-callout {
+    font-size: clamp(2.8rem, 8vw, 3.4rem);
+    font-weight: 500;
+    color: var(--c-rose-gold-dark);
+    line-height: 1;
+    margin: 6px 0;
+}
+
+.schedule-sub {
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: var(--c-espresso-muted);
+}
+
+.venue-sup {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--c-sage);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.venue-name-serif {
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: var(--c-espresso);
+    margin-bottom: 4px;
+}
+
+.venue-location-line {
+    font-size: 13px;
+    color: var(--c-espresso-muted);
+    margin-bottom: 24px;
+}
+
+.botanical-map-btn {
+    display: inline-block;
+    padding: 11px 26px;
+    background: var(--c-ivory);
+    border: 1px solid var(--c-rose-gold);
+    color: var(--c-rose-gold-dark);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-radius: 20px;
+    transition: all 0.25s ease;
+}
+
+.botanical-map-btn:hover {
+    background: var(--c-rose-gold);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(201, 147, 134, 0.35);
+}
+
+/* 6. COUNTDOWN (CHAMPAGNE REFINED BLOCKS) */
+.section-botanical-countdown {
+    padding: 30px 24px;
+}
+
+.botanical-timer-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.timer-leaf-box {
+    flex: 1;
+    background: var(--c-paper-cream);
+    border: 1px solid var(--c-border-subtle);
+    border-radius: 10px;
+    padding: 14px 4px;
+    text-align: center;
+    box-shadow: var(--shadow-stationery);
+}
+
+.t-number {
+    display: block;
+    font-size: clamp(1.8rem, 5.5vw, 2.3rem);
+    font-weight: 500;
+    color: var(--c-rose-gold-dark);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.t-text {
+    font-size: 9.5px;
+    letter-spacing: 1.5px;
+    color: var(--c-espresso-muted);
+    text-transform: uppercase;
+}
+
+.timer-dot-sep {
+    font-size: 18px;
+    color: var(--c-rose-gold);
+    opacity: 0.5;
+}
+
+/* 7. GALLERY */
+.section-botanical-gallery {
+    padding: 30px 24px;
+}
+
+.botanical-gallery-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.gallery-arch-large {
+    width: 100%;
+    height: 300px;
+    border-radius: 16px;
+    border: 1px solid var(--c-border-subtle);
+    overflow: hidden;
+    box-shadow: var(--shadow-stationery);
+}
+
+.gallery-duo-row {
+    display: flex;
+    gap: 14px;
+}
+
+.gallery-arch-small {
+    width: calc(50% - 7px);
+    height: 200px;
+    border-radius: 14px;
+    border: 1px solid var(--c-border-subtle);
+    overflow: hidden;
+    box-shadow: var(--shadow-stationery);
+}
+
+.arch-photo-item {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 1.2s var(--ease-botanical);
+}
+
+.gallery-arch-large:hover .arch-photo-item,
+.gallery-arch-small:hover .arch-photo-item {
+    transform: scale(1.03);
+}
+
+/* 8. TO'YONA (LINEN GIFT CARD) */
+.section-botanical-toyona {
+    padding: 30px 24px;
+}
+
+.toyona-warm-text {
+    font-size: 13px;
+    color: var(--c-espresso-muted);
+    max-width: 380px;
+    margin: 6px auto 0;
+    line-height: 1.6;
+}
+
+.botanical-gift-card {
+    background: var(--c-paper-cream);
+    border: 1px solid var(--c-border-subtle);
+    border-radius: 14px;
+    padding: 28px 20px;
+    text-align: center;
+    margin-top: 20px;
+    box-shadow: var(--shadow-stationery);
+    position: relative;
+}
+
+.gift-card-wreath {
+    font-size: 26px;
+    margin-bottom: 6px;
+}
+
+.gift-owner-label {
+    font-size: 9.5px;
+    letter-spacing: 2px;
+    color: var(--c-sage);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.gift-owner-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--c-espresso);
+    margin-bottom: 12px;
+}
+
+.gift-digits-code {
+    font-family: monospace;
+    font-size: clamp(1.1rem, 4.5vw, 1.3rem);
+    letter-spacing: 2px;
+    font-weight: 700;
+    color: var(--c-rose-gold-dark);
+    margin-bottom: 18px;
+}
+
+.botanical-copy-pill {
+    background: var(--c-dusty-rose);
+    border: 1px solid var(--c-rose-gold);
+    color: var(--c-rose-gold-dark);
+    padding: 8px 22px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.botanical-copy-pill:hover {
+    background: var(--c-rose-gold);
+    color: #ffffff;
+}
+
+/* 9. RSVP FORM (COUTURE STATIONERY) */
+.section-botanical-rsvp {
+    padding: 35px 24px;
+}
+
+.rsvp-warm-sub {
+    font-size: 13px;
+    color: var(--c-espresso-muted);
+    margin-top: 4px;
+}
+
+.botanical-rsvp-form {
+    background: var(--c-paper-cream);
+    border: 1px solid var(--c-border-subtle);
+    border-radius: 14px;
+    padding: 28px 20px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: var(--shadow-stationery);
+}
+
+.botanical-input-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.botanical-input-wrap label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--c-rose-gold-dark);
+    text-transform: uppercase;
+}
+
+.botanical-input-wrap input,
+.botanical-input-wrap textarea {
+    background: var(--c-ivory);
+    border: 1px solid var(--c-border-subtle);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--c-espresso);
+    outline: none;
+    transition: border-color 0.25s;
+}
+
+.botanical-input-wrap input:focus,
+.botanical-input-wrap textarea:focus {
+    border-color: var(--c-rose-gold);
+}
+
+.botanical-btn-pair {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.botanical-submit-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s ease;
+}
+
+.botanical-submit-btn.accept {
+    background: linear-gradient(135deg, #d8a498 0%, var(--c-rose-gold-dark) 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(175, 119, 107, 0.3);
+}
+
+.botanical-submit-btn.accept:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(175, 119, 107, 0.4);
+}
+
+.botanical-submit-btn.decline {
+    background: var(--c-ivory);
+    border: 1px solid var(--c-border-subtle);
+    color: var(--c-espresso-muted);
+}
+
+/* 10. FOOTER */
+.botanical-footer {
+    padding: 45px 24px 25px;
+    text-align: center;
+    border-top: 1px solid var(--c-border-subtle);
+}
+
+.footer-monogram-leaf {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--c-rose-gold);
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-calligraphy);
+    font-size: 20px;
+    color: var(--c-rose-gold-dark);
+}
+
+.footer-couple-script {
+    font-size: 20px;
+    color: var(--c-espresso);
+    margin-bottom: 4px;
+}
+
+.footer-with-love {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--c-rose-gold-dark);
+    margin-bottom: 12px;
+}
+
+.footer-brand-tag {
+    font-size: 9.5px;
+    letter-spacing: 1.5px;
+    color: var(--c-espresso-muted);
+}
+
+/* Modal */
+.success-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(61, 51, 46, 0.5);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100002;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.success-modal.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-botanical-box {
+    background: var(--c-ivory);
+    border: 1px solid var(--c-rose-gold);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    max-width: 320px;
+    width: 100%;
+    box-shadow: 0 15px 40px rgba(61, 51, 46, 0.2);
+}
+
+.modal-flower {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.modal-botanical-box h3 {
+    font-size: 22px;
+    color: var(--c-espresso);
+    margin-bottom: 6px;
+}
+
+.modal-botanical-box p {
+    font-size: 13.5px;
+    color: var(--c-espresso-muted);
+    margin-bottom: 20px;
+}
+
+.modal-close-botanical {
+    background: var(--c-rose-gold);
+    color: #ffffff;
+    border: none;
+    padding: 9px 24px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

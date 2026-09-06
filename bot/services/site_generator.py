@@ -96,18 +96,71 @@ class SiteGeneratorService:
     ) -> str:
         """
         Асинхронный генератор сайта.
+        Создает персонализированную директорию заказа в templates/orders/{order.id}/
+        и возвращает URL готового сайта.
         """
+        import os
+        import shutil
+        from config import config
+
         logger.info(f"Generating site for order #{order.id} ({order.event_type} - {order.template_id})")
-        if order.event_type == "birthday":
-            name = (order.celebrant_name or "birthday").lower().replace(" ", "-")
-            slug = f"birthday-{name}"
-        elif order.event_type == "sunnat":
-            name = (order.celebrant_name or "sunnat").lower().replace(" ", "-")
-            slug = f"sunnat-{name}"
-        else:
-            slug = f"{order.groom_name.lower()}-{order.bride_name.lower()}".replace(" ", "-")
-            slug = f"wedding-{slug}"
-        return f"https://taklivo.uz/{slug}-{order.id}"
+
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        orders_dir = os.path.join(base_dir, "templates", "orders", str(order.id))
+        template_name = (order.template_id or "luxury_gold").replace("_", "-")
+        demo_tmpl_dir = os.path.join(base_dir, "templates", "demo", template_name)
+
+        os.makedirs(orders_dir, exist_ok=True)
+
+        # Копируем ассеты (картинки, стили, скрипты) если они есть
+        if os.path.exists(demo_tmpl_dir):
+            for item in os.listdir(demo_tmpl_dir):
+                s = os.path.join(demo_tmpl_dir, item)
+                d = os.path.join(orders_dir, item)
+                if item == "index.html":
+                    continue
+                if os.path.isdir(s):
+                    if not os.path.exists(d):
+                        shutil.copytree(s, d)
+                else:
+                    shutil.copy2(s, d)
+
+            dst_index = os.path.join(orders_dir, "index.html")
+            tmpl_index = os.path.join(demo_tmpl_dir, "index.html")
+
+            if not os.path.exists(dst_index) and os.path.exists(tmpl_index):
+                with open(tmpl_index, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                groom = order.groom_name or "Kuyov"
+                bride = order.bride_name or "Kelin"
+                couple = f"{groom} & {bride}"
+                monogram = f"{groom[0].upper()}{bride[0].upper()}" if (groom and bride) else "AG"
+
+                content = content.replace("Temur & Malika", couple)
+                content = content.replace("TEMUR & MALIKA", couple.upper())
+                content = content.replace(">TM<", f">{monogram}<")
+
+                if order.wedding_date:
+                    content = content.replace("24.10", order.wedding_date.rsplit(".", 1)[0])
+                    content = content.replace("24/10/2026", order.wedding_date)
+                if order.wedding_time:
+                    content = content.replace("18:30", order.wedding_time)
+                if order.venue:
+                    content = content.replace('"YAKKASAROY" Tantanalar Saroyi', f'"{order.venue}" Tantanalar Saroyi')
+                if order.address:
+                    content = content.replace("Toshkent shahri, Yakkasaroy tumani, Shota Rustaveli ko'chasi", order.address)
+                    content = content.replace("Toshkent shahri, Yakkasaroy tumani", order.address)
+
+                # Относительные пути к engine.css / engine.js
+                content = content.replace('href="../assets/', 'href="../../demo/assets/')
+                content = content.replace('src="../assets/', 'src="../../demo/assets/')
+
+                with open(dst_index, "w", encoding="utf-8") as f:
+                    f.write(content)
+
+        site_url = f"{config.DEMO_BASE_URL}/orders/{order.id}"
+        return site_url
 
 
 site_generator = SiteGeneratorService()

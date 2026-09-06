@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temur & Malika — To'y Taklifnomasi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/engine.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <audio id="weddingAudio" src="Alex Warren - Ordinary (Official Video).mp3" loop></audio>
+    <button class="music-toggle-btn" id="musicBtn" onclick="toggleMusic()" aria-label="Music Toggle">
+        <svg class="icon-play" viewBox="0 0 24 24" id="musicIconPlay" style="display: none;"><path d='M8 5v14l11-7z'/></svg>
+        <svg class="icon-pause" viewBox="0 0 24 24" id="musicIconPause"><path d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'/></svg>
+        <div class="music-pulse"></div>
+    </button>
+
+    <div class="particles-container" id="particles"></div>
+
+    <div class="intro-overlay" id="introOverlay">
+        <div class="cloud-layer cloud-bg-1"></div>
+        <div class="cloud-layer cloud-bg-2"></div>
+        <div class="cloud-layer cloud-bg-3"></div>
+
+        <div class="intro-content">
+            <div class="luxury-crest-wrapper">
+                <div class="luxury-monogram-intro" data-taklivo="monogram">TM</div>
+            </div>
+            <h1 class="intro-names" data-taklivo="couple_names">Temur & Malika</h1>
+            <p class="intro-subtitle" data-i18n="subtitle">Hayotimizning eng go'zal sahifasi boshlanmoqda</p>
+            <button class="open-invite-btn" onclick="revealInvitation()">
+                <span data-i18n="openInvite">Taklifnomani Ochish</span>
+                <div class="btn-glow"></div>
+            </button>
+        </div>
+    </div>
+
+    <main class="app-container" id="mainContent">
+
+        <section class="card-hero reveal-item">
+            <div class="card-header">
+                <div class="luxury-crest-wrapper small">
+                    <div class="gold-monogram" data-taklivo="monogram">TM</div>
+                </div>
+                <h2 class="serif-title font-accent-names" data-taklivo="couple_names">Temur & Malika</h2>
+            </div>
+
+            <div class="premium-image-frame">
+                <div class="image-inner-shadow"></div>
+                <div class="photo-placeholder" style="background-image: url('images/bosh_rasm.jpg');"></div>
+            </div>
+
+            <div class="scroll-down-notice">
+                <span>Pastga suring</span>
+                <div class="chevron-down"></div>
+            </div>
+        </section>
+
+        <section class="card-body-text reveal-item">
+            <p class="date-badge" data-i18n="ourDay">24.10 — BIZNING KUNIMIZ 💍</p>
+            <p class="ayat">
+                «Alloh ularning qalblarini sevgi ila birlashtirdi»<br>
+                <span>Anfol surasi, 63-oyat</span>
+            </p>
+            <p class="main-invite-message">
+                Ota-onalarimizning duosi bilan sizni nikoh oqshomimizning unutilmas lahzalariga guvoh bo‘lishga taklif qilamiz.
+            </p>
+
+            <div class="divider-gold-line"></div>
+
+            <h3 class="big-date-display" data-taklivo="event_date">24/10/2026</h3>
+            <p class="location-sub-text" data-taklivo="address">Toshkent shahri, Yakkasaroy tumani</p>
+            <p class="city-title-serif">Baxt Oqshomi</p>
+
+            <div class="divider-gold-line small"></div>
+            <p class="names-footer-span" data-taklivo="couple_names">TEMUR & MALIKA</p>
+        </section>
+
+        <section class="love-story-section reveal-item">
+            <span class="section-tag">Vogue Wedding Editorial</span>
+            <h3 class="serif-section-title" data-i18n="ourStoryTitle">Bizning Hikoya</h3>
+            <p class="story-paragraph">
+                Ikki qalbning bir butunlikka aylanishi, tasodifiy nigohlardan boshlangan cheksiz muhabbat dostoni. Biz
+                baxtli kelajagimiz sari ilk qadamni tashlamoqdamiz va ushbu sehrli lahzalarda sizni yonimizda ko'rishdan
+                mamnun bo'lamiz.
+            </p>
+        </section>
+
+        <section class="gallery-section reveal-item">
+            <span class="section-tag">Pre-Wedding Campaign</span>
+            <h3 class="serif-section-title" data-i18n="galleryTitle">Galereya</h3>
+            <div class="editorial-gallery-grid">
+                <div class="gallery-item large-frame">
+                    <div class="glass-photo-cover" style="background-image: url('images/galereya1.jpg');"></div>
+                </div>
+                <div class="gallery-item portrait-frame">
+                    <div class="glass-photo-cover" style="background-image: url('images/galereya2.jpg');"></div>
+                </div>
+                <div class="gallery-item square-frame">
+                    <div class="glass-photo-cover" style="background-image: url('images/galereya3.jpg');"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="event-info-section reveal-item">
+            <div class="info-architecture-card">
+                <div class="building-icon-luxury"></div>
+                <h2 class="time-display" data-taklivo="event_time">18:30</h2>
+                <p class="schedule-title" data-i18n="gatheringTitle">Mehmonlar yig'ilishi</p>
+                <p class="venue-name" data-taklivo="venue">"YAKKASAROY" Tantanalar Saroyi</p>
+                <p class="venue-city" data-taklivo="address">Toshkent shahri, Yakkasaroy tumani, Shota Rustaveli ko'chasi</p>
+                <a href="https://maps.google.com" target="_blank" class="luxury-action-btn">
+                    <span data-i18n="mapButton">Lokatsiyaga kirish</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="countdown-section reveal-item">
+            <h3 class="serif-section-title" data-i18n="countdownTitle">Tantanagacha Qoldi</h3>
+            <div class="timer-grid">
+                <div class="timer-block"><span class="timer-num" id="days">00</span><span class="timer-label" data-i18n="days">Kun</span></div>
+                <div class="timer-block"><span class="timer-num" id="hours">00</span><span class="timer-label" data-i18n="hours">Soat</span></div>
+                <div class="timer-block"><span class="timer-num" id="minutes">00</span><span class="timer-label" data-i18n="minutes">Daqiqa</span></div>
+                <div class="timer-block"><span class="timer-num" id="seconds">00</span><span class="timer-label" data-i18n="seconds">Soniya</span></div>
+            </div>
+        </section>
+
+        <section class="toyona-section reveal-item">
+            <div class="toyona-card">
+                <h3 class="toyona-title" data-i18n="toyonaTitle">To'yona</h3>
+                <p class="toyona-description" data-i18n="toyonaDesc">
+                    Agar bizni tabriklab, to'yona yubormoqchi bo'lsangiz, quyidagi karta raqamidan foydalanishingiz mumkin.
+                </p>
+                <div class="card-details-box">
+                    <p class="card-holder-label" data-i18n="cardHolder">KARTA EGASI</p>
+                    <p class="card-holder-name" data-taklivo="groom_name">Temur</p>
+                    <p class="card-bank-label">BANK</p>
+                    <p class="card-bank-name">Uzcard</p>
+                    <p class="card-number-label">KARTA RAQAMI</p>
+                    <p class="card-number-digits" id="cardNumber">8600 1234 5678 9012</p>
+                    <button class="copy-card-btn" onclick="copyCardNumber()">
+                        <span id="copyBtnText" data-i18n="cardCopy">Nusxalash</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="rsvp-section reveal-item">
+            <div class="rsvp-wrapper">
+                <h3 class="serif-section-title" data-i18n="rsvpTitle">Tashrifni tasdiqlash</h3>
+                <p class="rsvp-subtitle" data-i18n="rsvpSubtitle">Sizning ishtirokingiz biz uchun juda muhim</p>
+
+                <form id="rsvpForm">
+                    <div class="form-group">
+                        <label for="name" data-i18n="rsvpNameLabel">Ismingiz</label>
+                        <input type="text" id="name" name="Name" required placeholder="Masalan: Abdulaziz" data-i18n-placeholder="rsvpNamePlaceholder">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" data-i18n="rsvpPhoneLabel">Telefon raqam</label>
+                        <input type="tel" id="phone" name="Phone" required placeholder="+998 90 123 45 67" data-i18n-placeholder="rsvpPhonePlaceholder">
+                    </div>
+                    <div class="form-group">
+                        <label for="message" data-i18n="rsvpMsgLabel">Tilaklar (Ixtiyoriy)</label>
+                        <textarea id="message" name="Message" rows="3" placeholder="O'z tilaklaringizni yozishingiz mumkin..." data-i18n-placeholder="rsvpMsgPlaceholder"></textarea>
+                    </div>
+
+                    <input type="hidden" id="attendanceStatus" name="Attendance" value="Albatta Boraman">
+
+                    <div class="rsvp-buttons-row">
+                        <button type="submit" class="rsvp-btn accept" onclick="setStatus('Albatta Boraman')">
+                            <span data-i18n="rsvpAccept">Men Albatta Boraman</span>
+                        </button>
+                        <button type="submit" class="rsvp-btn decline" onclick="setStatus('Afsuski Kela olmayman')">
+                            <span data-i18n="rsvpDecline">Afsuski Kela olmayman</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <footer class="luxury-footer reveal-item">
+            <div class="gold-divider-line"></div>
+            <h2 class="footer-names" data-taklivo="couple_names">Temur & Malika</h2>
+            <p class="with-love-tag">With Love • TAKLIVO</p>
+        </footer>
+
+    </main>
+
+    <div class="success-modal" id="successModal">
+        <div class="modal-box">
+            <div class="modal-checkmark">✨</div>
+            <h3 data-i18n="rsvpThanks">Rahmat!</h3>
+            <p id="modalMessage" data-i18n="rsvpSuccessMsg">Sizning javobingiz muvaffaqiyatli qabul qilindi.</p>
+            <button class="close-modal-btn" onclick="closeModal()" data-i18n="closeBtn">Yopish</button>
+        </div>
+    </div>
+
+    <script src="../assets/engine.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

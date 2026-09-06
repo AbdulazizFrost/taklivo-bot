@@ -146,6 +146,9 @@ async def main() -> None:
         token=config.BOT_TOKEN,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),
     )
+    from bot.api import set_api_bot
+    set_api_bot(bot)
+
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
 
