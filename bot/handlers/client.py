@@ -554,6 +554,8 @@ async def callback_view_single_order(callback: CallbackQuery) -> None:
         has_music=music is not None,
         promocode=order.promocode,
         discount_amount=order.discount_amount,
+        reference_url=order.reference_url,
+        location_url=order.location_url,
         total_price=order.total_price,
         lang=lang,
     )

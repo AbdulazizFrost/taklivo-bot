@@ -40,6 +40,7 @@ class SiteGeneratorService:
                 "event_time": order.wedding_time,
                 "venue": order.venue,
                 "address": order.address,
+                "location_url": getattr(order, "location_url", None),
                 "phone": order.phone,
             },
             "design": {
@@ -156,6 +157,9 @@ class SiteGeneratorService:
                 if order.address:
                     content = content.replace("Toshkent shahri, Yakkasaroy tumani, Shota Rustaveli ko'chasi", order.address)
                     content = content.replace("Toshkent shahri, Yakkasaroy tumani", order.address)
+                if getattr(order, "location_url", None):
+                    content = content.replace("https://maps.google.com", order.location_url)
+                    content = content.replace("https://maps.yandex.ru", order.location_url)
 
                 # Относительные пути к engine.css / engine.js
                 content = content.replace('href="../assets/', 'href="../../demo/assets/')

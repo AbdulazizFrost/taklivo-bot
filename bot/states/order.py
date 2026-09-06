@@ -31,6 +31,7 @@ class OrderStates(StatesGroup):
     wedding_time = State()
     venue = State()
     address = State()
+    location_url = State()
     phone = State()
 
     # Медиа

@@ -119,6 +119,7 @@ class SqliteDatabase:
                     payment_receipt_file_id TEXT,
                     website_url TEXT,
                     reference_url TEXT,
+                    location_url TEXT,
                     revision_text TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -182,6 +183,8 @@ class SqliteDatabase:
                 await db.execute("ALTER TABLE orders ADD COLUMN bonus_used INTEGER DEFAULT 0;")
             if "reference_url" not in o_cols:
                 await db.execute("ALTER TABLE orders ADD COLUMN reference_url TEXT;")
+            if "location_url" not in o_cols:
+                await db.execute("ALTER TABLE orders ADD COLUMN location_url TEXT;")
 
             # Индексы
             await db.execute("CREATE INDEX IF NOT EXISTS idx_users_telegram_id ON users(telegram_id);")
@@ -728,6 +731,7 @@ class SqliteDatabase:
             payment_receipt_file_id=row["payment_receipt_file_id"],
             website_url=row["website_url"],
             reference_url=row["reference_url"] if "reference_url" in keys else None,
+            location_url=row["location_url"] if "location_url" in keys else None,
             revision_text=row["revision_text"],
             created_at=str(row["created_at"]),
             updated_at=str(row["updated_at"]),
@@ -763,6 +767,7 @@ class SqliteDatabase:
         discount_amount: int = 0,
         bonus_used: int = 0,
         reference_url: Optional[str] = None,
+        location_url: Optional[str] = None,
         status: str = OrderStatus.WAITING_PAYMENT.value,
     ) -> int:
         actual_status = status
@@ -788,7 +793,7 @@ class SqliteDatabase:
                     venue, address, phone, rsvp_enabled, map_enabled,
                     music_enabled, gallery_enabled, dresscode_enabled,
                     schedule_enabled, second_language_enabled, total_price,
-                    promocode, discount_amount, bonus_used, payment_status, reference_url
+                    promocode, discount_amount, bonus_used, payment_status, reference_url, location_url
                 ) VALUES (
                     ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
@@ -796,7 +801,7 @@ class SqliteDatabase:
                     ?, ?, ?, ?, ?,
                     ?, ?, ?,
                     ?, ?, ?,
-                    ?, ?, ?, ?, ?
+                    ?, ?, ?, ?, ?, ?
                 )
                 """,
                 (
@@ -809,7 +814,7 @@ class SqliteDatabase:
                     1 if dresscode_enabled else 0, 1 if schedule_enabled else 0,
                     1 if second_language_enabled else 0, total_price,
                     promocode, discount_amount, bonus_used,
-                    actual_payment, reference_url,
+                    actual_payment, reference_url, location_url,
                 ),
             )
             order_id = cursor.lastrowid
@@ -1158,6 +1163,7 @@ class PostgresDatabase:
 
                 ALTER TABLE users ADD COLUMN IF NOT EXISTS promo_expires_at TIMESTAMP;
                 ALTER TABLE users ADD COLUMN IF NOT EXISTS promo_reminder_sent INTEGER DEFAULT 0;
+                ALTER TABLE orders ADD COLUMN IF NOT EXISTS location_url TEXT;
             """)
 
             # Авто-гарантия постоянного промокода TAKLIVO50
@@ -1644,7 +1650,8 @@ class PostgresDatabase:
             payment_status=row["payment_status"],
             payment_receipt_file_id=row["payment_receipt_file_id"],
             website_url=row["website_url"],
-            reference_url=row["reference_url"],
+            reference_url=row["reference_url"] if "reference_url" in row else None,
+            location_url=row["location_url"] if "location_url" in row else None,
             revision_text=row["revision_text"],
             created_at=str(row["created_at"]),
             updated_at=str(row["updated_at"]),
@@ -1680,6 +1687,7 @@ class PostgresDatabase:
         discount_amount: int = 0,
         bonus_used: int = 0,
         reference_url: Optional[str] = None,
+        location_url: Optional[str] = None,
         status: str = OrderStatus.WAITING_PAYMENT.value,
     ) -> int:
         actual_status = status
@@ -1706,7 +1714,7 @@ class PostgresDatabase:
                     venue, address, phone, rsvp_enabled, map_enabled,
                     music_enabled, gallery_enabled, dresscode_enabled,
                     schedule_enabled, second_language_enabled, total_price,
-                    promocode, discount_amount, bonus_used, payment_status, reference_url
+                    promocode, discount_amount, bonus_used, payment_status, reference_url, location_url
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6,
                     $7, $8, $9, $10, $11, $12,
@@ -1714,7 +1722,7 @@ class PostgresDatabase:
                     $15, $16, $17, $18, $19,
                     $20, $21, $22,
                     $23, $24, $25,
-                    $26, $27, $28, $29, $30
+                    $26, $27, $28, $29, $30, $31
                 ) RETURNING id
                 """,
                 user_id, telegram_id, actual_status, template_id, template_name, plan,
@@ -1726,7 +1734,7 @@ class PostgresDatabase:
                 1 if dresscode_enabled else 0, 1 if schedule_enabled else 0,
                 1 if second_language_enabled else 0, total_price,
                 promocode, discount_amount, bonus_used,
-                actual_payment, reference_url,
+                actual_payment, reference_url, location_url,
             )
 
             if promocode:

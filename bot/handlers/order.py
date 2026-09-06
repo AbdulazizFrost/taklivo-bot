@@ -22,6 +22,7 @@ from bot.keyboards import (
     get_payment_keyboard,
     get_back_cancel_keyboard,
     get_phone_request_keyboard,
+    get_location_keyboard,
 )
 from bot.locales import get_text
 from bot.services import calculate_total, order_service, notifications
@@ -609,6 +610,22 @@ async def process_wizard_back(callback: CallbackQuery, state: FSMContext) -> Non
             reply_markup=get_back_cancel_keyboard("wizard_back:to_venue", lang=lang),
             parse_mode="HTML",
         )
+    elif target == "to_location":
+        options = data.get("options", {})
+        if options.get("map", True):
+            await state.set_state(OrderStates.location_url)
+            await callback.message.edit_text(
+                text=get_text(lang, "step_location_url"),
+                reply_markup=get_location_keyboard(lang=lang),
+                parse_mode="HTML",
+            )
+        else:
+            await state.set_state(OrderStates.address)
+            await callback.message.edit_text(
+                text=get_text(lang, "step_address"),
+                reply_markup=get_back_cancel_keyboard("wizard_back:to_venue", lang=lang),
+                parse_mode="HTML",
+            )
     elif target == "to_phone":
         await state.set_state(OrderStates.phone)
         try:
@@ -918,11 +935,83 @@ async def process_address(message: Message, state: FSMContext) -> None:
         return
 
     await state.update_data(address=address)
-    await state.set_state(OrderStates.phone)
+    options = data.get("options", {})
+    if options.get("map", True):
+        await state.set_state(OrderStates.location_url)
+        await message.answer(
+            text=get_text(lang, "step_location_url"),
+            reply_markup=get_location_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
+    else:
+        await state.set_state(OrderStates.phone)
+        await message.answer(
+            text=get_text(lang, "step_phone"),
+            reply_markup=get_phone_request_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
 
+
+@router.message(OrderStates.location_url, F.text | F.location)
+async def process_location_url(message: Message, state: FSMContext) -> None:
+    """Ввод ссылки на локацию (текстом) или отправка точки на карте (геопозиции)."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+
+    if message.location:
+        lat = message.location.latitude
+        lon = message.location.longitude
+        location_url = f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
+    else:
+        location_url = message.text.strip()
+        if len(location_url) > 500:
+            location_url = location_url[:500]
+
+    await state.update_data(location_url=location_url)
+
+    await message.answer(
+        text=get_text(lang, "location_url_received"),
+        parse_mode="HTML",
+    )
+
+    await state.set_state(OrderStates.phone)
     await message.answer(
         text=get_text(lang, "step_phone"),
         reply_markup=get_phone_request_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+
+
+@router.callback_query(OrderStates.location_url, F.data == "wizard_location:skip")
+async def process_location_skip(callback: CallbackQuery, state: FSMContext) -> None:
+    """Пропуск ввода ссылки на локацию."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+
+    await state.update_data(location_url=None)
+    await state.set_state(OrderStates.phone)
+
+    try:
+        await callback.message.delete()
+    except Exception:
+        pass
+
+    await callback.message.answer(
+        text=get_text(lang, "step_phone"),
+        reply_markup=get_phone_request_keyboard(lang=lang),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.message(OrderStates.location_url, ~F.text & ~F.location)
+async def process_location_invalid(message: Message, state: FSMContext) -> None:
+    """Обработка неверного типа сообщения для локации."""
+    data = await state.get_data()
+    lang = data.get("lang", "ru")
+    await message.answer(
+        text=get_text(lang, "step_location_url"),
+        reply_markup=get_location_keyboard(lang=lang),
         parse_mode="HTML",
     )
 
@@ -1130,6 +1219,7 @@ async def _show_order_preview(message_or_msg: Message, state: FSMContext, is_edi
         discount_amount=discount_amount,
         bonus_used=bonus_used,
         reference_url=data.get("reference_url"),
+        location_url=data.get("location_url"),
         total_price=final_price,
         lang=lang,
     )
@@ -1289,6 +1379,9 @@ async def process_jump_to_field(callback: CallbackQuery, state: FSMContext) -> N
     elif field == "address":
         await state.set_state(OrderStates.address)
         await callback.message.edit_text(text=get_text(lang, "step_address"), reply_markup=get_back_cancel_keyboard("wizard_back:to_preview", lang=lang), parse_mode="HTML")
+    elif field == "location_url":
+        await state.set_state(OrderStates.location_url)
+        await callback.message.edit_text(text=get_text(lang, "step_location_url"), reply_markup=get_location_keyboard(lang=lang), parse_mode="HTML")
     elif field == "phone":
         await state.set_state(OrderStates.phone)
         try:

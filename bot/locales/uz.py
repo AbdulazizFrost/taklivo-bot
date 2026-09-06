@@ -178,8 +178,16 @@ TEXTS = {
 
     "step_venue": "🏰 <b>6.1-qadam: To‘yxona / restoran / kafe nomini kiriting</b>\n\n<i>Masalan: «Oqsaroy» to‘yxonasi</i>",
     "step_address": "📍 <b>6.2-qadam: Manzil yoki mo‘ljalni kiriting</b>\n\n<i>Masalan: Toshkent sh., Navoiy ko‘chasi, 15-uy</i>",
+    "step_location_url": (
+        "📍 <b>6.3-qadam: Lokatsiya havolasi yoki geolokatsiyani yuboring</b>\n\n"
+        "To'yxona/joyning Yandex Xaritalar, Google Maps yoki 2GIS havolasini yuboring yoki 📎 qisqich orqali <b>Geolokatsiyani</b> to'g'ridan-to'g'ri yuboring.\n\n"
+        "<i>💡 Bu saytdagi mehmonlarga xaritada to'g'ri yo'nalish olish imkonini beradi.\n"
+        "Agar havola bo'lmasa, «O'tkazib yuborish ⏭» tugmasini bosishingiz mumkin.</i>"
+    ),
+    "btn_skip_location": "O'tkazib yuborish ⏭",
+    "location_url_received": "✅ Lokatsiya havolasi saqlandi!",
     "step_phone": (
-        "📞 <b>6.3-qadam: Bog‘lanish uchun telefon raqamingizni kiriting</b>\n\n"
+        "📞 <b>6.4-qadam: Bog‘lanish uchun telefon raqamingizni kiriting</b>\n\n"
         "Quyidagi <b>«📱 Telefon raqamimni yuborish»</b> tugmasini bosing yoki raqamni xalqaro formatda qo‘lda yozing:\n"
         "<i>Masalan: +998901234567</i>"
     ),

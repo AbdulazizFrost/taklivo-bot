@@ -64,6 +64,7 @@ class OrderService:
             discount_amount=discount_amount,
             bonus_used=bonus_used,
             reference_url=data.get("reference_url"),
+            location_url=data.get("location_url"),
             status=OrderStatus.PAID.value if final_price == 0 else OrderStatus.IN_PROGRESS.value,
         )
 
@@ -255,6 +256,7 @@ class OrderService:
         discount_amount: int = 0,
         bonus_used: int = 0,
         reference_url: Optional[str] = None,
+        location_url: Optional[str] = None,
         lang: str = "ru",
     ) -> str:
         """Форматирует сводку заказа перед подтверждением клиентом."""
@@ -315,6 +317,11 @@ class OrderService:
             ref_label = "🔗 <b>Пример сайта:</b>" if lang == "ru" else "🔗 <b>Sayt namunasi:</b>"
             tmpl_display += f"\n{ref_label} {escape(reference_url)}"
 
+        address_display = escape(address)
+        if location_url:
+            loc_label = "🗺 <b>Локация:</b>" if lang == "ru" else "🗺 <b>Lokatsiya:</b>"
+            address_display += f"\n{loc_label} {escape(location_url)}"
+
         return get_text(
             lang,
             "preview_title",
@@ -324,7 +331,7 @@ class OrderService:
             wedding_date=format_date_pretty(wedding_date, lang=lang),
             wedding_time=escape(wedding_time),
             venue=escape(venue),
-            address=escape(address),
+            address=address_display,
             phone=escape(phone),
             template_name=tmpl_display,
             features_list=features_str,
@@ -383,12 +390,17 @@ class OrderService:
         if getattr(order, "reference_url", None):
             ref_block = f"🔗 <b>Пример сайта клиента:</b> {escape(order.reference_url)}\n"
 
+        loc_block = ""
+        if getattr(order, "location_url", None):
+            loc_block = f"🗺 <b>Локация на карте:</b> {escape(order.location_url)}\n"
+
         return (
             f"🔔 <b>НОВЫЙ ЗАКАЗ #{order.id} [{event_badge}]</b>\n\n"
             f"{hero_block}\n"
             f"📅 <b>Дата:</b> {order.wedding_date} | 🕐 <b>Время:</b> {order.wedding_time}\n"
             f"🏰 <b>Место:</b> {escape(order.venue)}\n"
             f"📍 <b>Адрес:</b> {escape(order.address)}\n"
+            f"{loc_block}"
             f"📞 <b>Телефон:</b> {escape(order.phone)}\n\n"
             f"🎨 <b>Дизайн:</b> {escape(order.template_name)}\n"
             f"{ref_block}\n"

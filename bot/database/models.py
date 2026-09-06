@@ -101,6 +101,7 @@ class Order:
     payment_receipt_file_id: Optional[str]
     website_url: Optional[str] = None
     reference_url: Optional[str] = None
+    location_url: Optional[str] = None
     revision_text: Optional[str] = None
     created_at: str = ""
     updated_at: str = ""

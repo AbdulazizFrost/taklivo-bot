@@ -22,3 +22,8 @@ logs/
 .idea/
 *.swp
 *.swo
+
+# Local database and media downloads
+*.db
+downloads/
+

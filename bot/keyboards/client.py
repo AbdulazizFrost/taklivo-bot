@@ -351,7 +351,10 @@ def get_edit_fields_keyboard(event_type: str = "wedding", lang: str = "ru") -> I
             InlineKeyboardButton(text="📍 Адрес" if lang == "ru" else "📍 Manzil", callback_data="edit_field:address"),
         ],
         [
+            InlineKeyboardButton(text="🗺 Локация" if lang == "ru" else "🗺 Lokatsiya", callback_data="edit_field:location_url"),
             InlineKeyboardButton(text="📞 Телефон" if lang == "ru" else "📞 Telefon", callback_data="edit_field:phone"),
+        ],
+        [
             InlineKeyboardButton(text="🎨 Дизайн" if lang == "ru" else "🎨 Dizayn", callback_data="edit_field:template"),
         ],
         [
@@ -484,5 +487,18 @@ def get_back_cancel_keyboard(back_callback: str, lang: str = "ru") -> InlineKeyb
                 InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data=back_callback),
                 InlineKeyboardButton(text=get_text(lang, "btn_cancel"), callback_data="wizard:cancel"),
             ]
+        ]
+    )
+
+
+def get_location_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
+    """Кнопки для шага отправки ссылки на локацию (с кнопкой пропуска)."""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(lang, "btn_skip_location"), callback_data="wizard_location:skip")],
+            [
+                InlineKeyboardButton(text=get_text(lang, "btn_back"), callback_data="wizard_back:to_address"),
+                InlineKeyboardButton(text=get_text(lang, "btn_cancel"), callback_data="wizard:cancel"),
+            ],
         ]
     )
