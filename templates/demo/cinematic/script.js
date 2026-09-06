@@ -1,11 +1,50 @@
 document.addEventListener("DOMContentLoaded", () => {
     
     // ==========================================
-    // 1. INTRO SCREEN & UNLOCK
+    // 1. INTRO SCREEN & UNLOCK (START FROM BEGINNING ON EVERY REFRESH)
     // ==========================================
     const introScreen = document.getElementById('introScreen');
     const unlockBtn = document.getElementById('unlockBtn');
     const body = document.body;
+
+    function resetToBeginning() {
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
+        if (window.location.hash) {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+
+        body.classList.add('locked');
+
+        if (introScreen) {
+            introScreen.classList.remove('hidden');
+            introScreen.style.removeProperty('opacity');
+            introScreen.style.removeProperty('visibility');
+            introScreen.style.removeProperty('transform');
+        }
+
+        if (unlockBtn) {
+            unlockBtn.style.removeProperty('transform');
+            unlockBtn.style.removeProperty('box-shadow');
+        }
+    }
+
+    // Force reset immediately on DOM load
+    resetToBeginning();
+
+    // Handle bfcache (Safari/Chrome back-forward and mobile reload/pull-to-refresh)
+    window.addEventListener('pageshow', () => {
+        resetToBeginning();
+    });
+
+    window.addEventListener('beforeunload', () => {
+        window.scrollTo(0, 0);
+    });
 
     if (unlockBtn && introScreen) {
         unlockBtn.addEventListener('click', () => {
