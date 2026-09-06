@@ -198,36 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, { passive: true });
     }
     
-    // ==========================================
-    // 8. RSVP FORM SUBMISSION (Linked with API)
-    // ==========================================
-    const rsvpForm = document.getElementById('rsvpForm');
-    const rsvpSuccess = document.getElementById('rsvpSuccess');
-    
-    if (rsvpForm && rsvpSuccess) {
-        rsvpForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const name = (document.getElementById('guestName') || {}).value || '';
-            const attendance = (document.querySelector('input[name="attendance"]:checked') || {}).value || 'yes';
-            const status = attendance === 'yes' ? 'Albatta kelaman' : 'Afsuski kelolmayman';
-            
-            // Post RSVP to Taklivo backend
-            fetch('/api/order/8/rsvp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: name, phone: '', status: status, message: '' })
-            }).catch(err => console.log('RSVP logged:', err));
-
-            // Fade out form
-            rsvpForm.style.opacity = '0';
-            rsvpForm.style.pointerEvents = 'none';
-            
-            setTimeout(() => {
-                rsvpSuccess.classList.remove('hidden');
-            }, 300);
-        });
-    }
 
     // ==========================================
     // 9. TAKLIVO UNIVERSAL ENGINE INIT
