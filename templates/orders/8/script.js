@@ -6,18 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const introScreen = document.getElementById('introScreen');
     const unlockBtn = document.getElementById('unlockBtn');
     const body = document.body;
-    const audio = document.getElementById('weddingAudio');
 
     if (unlockBtn && introScreen) {
         unlockBtn.addEventListener('click', () => {
             // Visual feedback on button press before disappearing
             unlockBtn.style.transform = 'scale(0.95)';
             unlockBtn.style.boxShadow = '0 0 50px rgba(255,255,255,0.8)';
-            
-            // Try playing audio on user interaction
-            if (audio) {
-                audio.play().catch(e => console.log('Audio autoplay prevented:', e));
-            }
 
             // Wait for visual lock to open, then dissolve the intro screen
             setTimeout(() => {
