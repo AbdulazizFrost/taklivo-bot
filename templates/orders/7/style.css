@@ -1,0 +1,1814 @@
+/* ==========================================================================
+   TAKLIVO DARK LUXURY — BLACK-TIE × CARTIER EDITORIAL STYLING
+   ========================================================================== */
+
+:root {
+    --c-obsidian: #07080a;
+    --c-charcoal: #111318;
+    --c-charcoal-card: #141720;
+    --c-charcoal-subtle: #1a1e29;
+    --c-burgundy: #40101b;
+    --c-burgundy-glow: rgba(138, 28, 46, 0.2);
+    --c-champagne-gold: #d8b26e;
+    --c-champagne-light: #f4ebd9;
+    --c-champagne-dark: #98753a;
+    --c-gold-hairline: rgba(216, 178, 110, 0.25);
+    --c-gold-hairline-bright: rgba(216, 178, 110, 0.55);
+    --c-text-primary: #f5f5f7;
+    --c-text-muted: #9fa5b5;
+    --c-text-dim: #6e7485;
+
+    --font-serif: 'Cinzel', Georgia, 'Times New Roman', serif;
+    --font-display: 'Cormorant Garamond', Garamond, serif;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+    --gold-glow: 0 4px 25px rgba(216, 178, 110, 0.18);
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--c-obsidian);
+    color: var(--c-text-primary);
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body.dark-luxury-body {
+    background-color: var(--c-obsidian);
+    color: var(--c-text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* 1. Subtle Film Grain */
+.film-grain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 99990;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* 2. Stardust Particles */
+.stardust-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.stardust-spark {
+    position: absolute;
+    background: radial-gradient(circle, var(--c-champagne-light) 0%, rgba(216, 178, 110, 0) 70%);
+    border-radius: 50%;
+    animation: driftSpark linear infinite;
+}
+
+@keyframes driftSpark {
+    0% {
+        transform: translateY(105vh) scale(0.3);
+        opacity: 0;
+    }
+    30% { opacity: 0.7; }
+    80% { opacity: 0.7; }
+    100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+    }
+}
+
+/* 3. Floating Luxury Vinyl Controller */
+.vinyl-player-widget {
+    position: fixed;
+    bottom: 24px;
+    left: 20px;
+    z-index: 99980;
+    background: rgba(17, 19, 24, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--c-gold-hairline);
+    border-radius: 40px;
+    padding: 6px 14px 6px 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), var(--gold-glow);
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.vinyl-player-widget:hover {
+    border-color: var(--c-champagne-gold);
+    transform: translateY(-2px);
+}
+
+.vinyl-disc {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #2a2a30 0%, #121216 100%);
+    border: 1px solid rgba(216, 178, 110, 0.4);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.vinyl-groove {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px dashed rgba(216, 178, 110, 0.2);
+}
+
+.vinyl-center {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--c-champagne-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vinyl-core {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #000;
+}
+
+.vinyl-disc.spinning {
+    animation: rotateVinyl 6s linear infinite;
+}
+
+@keyframes rotateVinyl {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.vinyl-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.equalizer-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 12px;
+}
+
+.equalizer-bars span {
+    width: 2px;
+    background: var(--c-champagne-gold);
+    border-radius: 1px;
+    height: 4px;
+    transition: height 0.2s ease;
+}
+
+.equalizer-bars.active span:nth-child(1) { animation: eqJump 0.8s infinite ease-in-out; }
+.equalizer-bars.active span:nth-child(2) { animation: eqJump 0.6s 0.2s infinite ease-in-out; }
+.equalizer-bars.active span:nth-child(3) { animation: eqJump 0.9s 0.4s infinite ease-in-out; }
+
+@keyframes eqJump {
+    0%, 100% { height: 4px; }
+    50% { height: 12px; }
+}
+
+.vinyl-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--c-champagne-light);
+    text-transform: uppercase;
+}
+
+/* 4. Opening Experience Curtain */
+.curtain-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: visibility 1.2s ease;
+}
+
+.curtain-panel {
+    position: absolute;
+    top: 0;
+    width: 50vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #141722 0%, var(--c-obsidian) 100%);
+    transition: transform 1.2s var(--ease-editorial);
+    z-index: 1;
+}
+
+.curtain-panel.panel-left { left: 0; }
+.curtain-panel.panel-right { right: 0; }
+
+.curtain-overlay.opened .panel-left { transform: translateX(-100%); }
+.curtain-overlay.opened .panel-right { transform: translateX(100%); }
+
+.curtain-centerpiece {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 30px;
+    max-width: 440px;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.curtain-overlay.opened .curtain-centerpiece {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+}
+
+.embossed-seal {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 24px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #202430 0%, #0d0f14 100%);
+    border: 1px solid var(--c-champagne-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 30px rgba(216, 178, 110, 0.25), inset 0 0 15px rgba(0, 0, 0, 0.8);
+    position: relative;
+}
+
+.seal-inner-ring {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    border: 1px dashed rgba(216, 178, 110, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: rotateSlow 40s linear infinite;
+}
+
+@keyframes rotateSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.seal-initials {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--c-champagne-light);
+    text-shadow: 0 0 10px rgba(216, 178, 110, 0.4);
+}
+
+.curtain-meta {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--c-champagne-gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.curtain-names {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 500;
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+}
+
+.curtain-date {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--c-text-muted);
+    margin-bottom: 32px;
+}
+
+.curtain-enter-btn {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--c-champagne-light) 0%, var(--c-champagne-gold) 50%, var(--c-champagne-dark) 100%);
+    color: #07080a;
+    border: none;
+    padding: 14px 34px;
+    border-radius: 30px;
+    font-family: var(--font-serif);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(216, 178, 110, 0.35);
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.curtain-enter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 40px rgba(216, 178, 110, 0.5);
+}
+
+/* 5. Main Editorial Wrapper */
+.dark-editorial-wrapper {
+    max-width: 520px;
+    margin: 0 auto;
+    background: var(--c-obsidian);
+    min-height: 100vh;
+    box-shadow: 0 0 80px rgba(0, 0, 0, 0.9);
+    position: relative;
+    padding-bottom: 120px;
+}
+
+/* Scroll Reveal System */
+.reveal-block {
+    opacity: 0;
+    transform: translateY(35px);
+    transition: opacity 0.9s var(--ease-editorial), transform 0.9s var(--ease-editorial);
+}
+
+.reveal-block.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   1. HERO SECTION — MASTER EDITORIAL REDESIGN (CARTIER × BLACK-TIE)
+   ========================================================================== */
+
+.hero-cinematic {
+    padding: 72px 20px 48px;
+    text-align: center;
+    position: relative;
+    background: 
+        radial-gradient(ellipse 90% 55% at 50% 10%, rgba(28, 34, 48, 0.45) 0%, rgba(17, 19, 24, 0.25) 45%, rgba(7, 8, 10, 0) 100%),
+        radial-gradient(ellipse 70% 40% at 50% 35%, rgba(55, 14, 25, 0.1) 0%, rgba(7, 8, 10, 0) 100%),
+        var(--c-obsidian);
+    overflow: hidden;
+}
+
+/* 1.1 Haute Horlogerie & Jewelry Crest (Monogram Seal) */
+.hero-crest-emblem {
+    position: relative;
+    z-index: 2;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: heroEditorialFadeUp 1s var(--ease-editorial) 0.15s both;
+}
+
+.crest-frame-outer {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 0.75px solid var(--c-champagne-gold);
+    background: radial-gradient(circle, #181d28 0%, #0c0e14 100%);
+    box-shadow: 0 0 20px rgba(216, 178, 110, 0.2), inset 0 0 10px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.crest-frame-outer:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(216, 178, 110, 0.35), inset 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.crest-frame-inner {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 0.5px dashed rgba(216, 178, 110, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.crest-initials {
+    font-family: var(--font-serif);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--c-champagne-light);
+    text-shadow: 0 0 8px rgba(216, 178, 110, 0.4);
+    padding-left: 2px;
+}
+
+/* 1.2 Top Eyebrow & Editorial Subtitle */
+.hero-eyebrow-container {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: heroEditorialFadeUp 1s var(--ease-editorial) 0.25s both;
+}
+
+.hero-eyebrow-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.hero-eyebrow-pill .eyebrow-rule {
+    width: 28px;
+    height: 0.5px;
+    background: linear-gradient(90deg, transparent, var(--c-champagne-gold), transparent);
+    opacity: 0.55;
+}
+
+.hero-eyebrow-pill .eyebrow-rule.left {
+    background: linear-gradient(90deg, transparent, var(--c-champagne-gold));
+}
+
+.hero-eyebrow-pill .eyebrow-rule.right {
+    background: linear-gradient(90deg, var(--c-champagne-gold), transparent);
+}
+
+.hero-eyebrow-pill .eyebrow-tag {
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    color: var(--c-champagne-gold);
+    text-transform: uppercase;
+}
+
+.hero-eyebrow-pill .eyebrow-dot {
+    font-size: 10px;
+    color: var(--c-champagne-gold);
+    opacity: 0.6;
+}
+
+.hero-eyebrow-pill .eyebrow-year {
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--c-champagne-light);
+}
+
+.hero-editorial-caption {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(11.5px, 2.8vw, 13.5px);
+    line-height: 1.4;
+    letter-spacing: 0.16em;
+    color: rgba(245, 245, 247, 0.72);
+    text-align: center;
+    max-width: 360px;
+    margin: 0 auto;
+    font-weight: 400;
+    text-transform: none;
+}
+
+/* 1.3 Main Visual Anchor: Couple Title & Engraved Date */
+.hero-title-group {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 34px;
+    text-align: center;
+}
+
+.hero-couple-title {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.05;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin: 0 auto 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: clamp(0.12em, 2.2vw, 0.22em);
+}
+
+.hero-couple-title .name-first,
+.hero-couple-title .name-second {
+    display: block;
+    font-size: clamp(2.6rem, 9.5vw, 4.4rem);
+    font-weight: 400;
+    color: #fbf9f5;
+    text-shadow: 0 4px 28px rgba(0, 0, 0, 0.95);
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.hero-couple-title .name-first {
+    animation: heroEditorialFadeUp 1s var(--ease-editorial) 0.38s both;
+}
+
+.hero-couple-title .name-second {
+    animation: heroEditorialFadeUp 1s var(--ease-editorial) 0.66s both;
+}
+
+/* High Jewelry Ampersand Detail */
+.hero-ampersand-ornament {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: -2px 0 0;
+    animation: heroEditorialFadeUp 1s var(--ease-editorial) 0.52s both;
+}
+
+.hero-ampersand-ornament .ampersand-hairline {
+    width: clamp(20px, 6vw, 36px);
+    height: 0.5px;
+    background: linear-gradient(90deg, transparent, rgba(216, 178, 110, 0.45), transparent);
+}
+
+.hero-ampersand-ornament .ampersand-hairline.left {
+    background: linear-gradient(90deg, transparent, rgba(216, 178, 110, 0.45));
+}
+
+.hero-ampersand-ornament .ampersand-hairline.right {
+    background: linear-gradient(90deg, rgba(216, 178, 110, 0.45), transparent);
+}
+
+.hero-couple-title .ampersand {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.8rem, 6.5vw, 2.8rem);
+    line-height: 1;
+    font-weight: 400;
+    background: linear-gradient(135deg, #fbf8f2 0%, var(--c-champagne-gold) 55%, #98753a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    filter: drop-shadow(0 2px 8px rgba(216, 178, 110, 0.25));
+}
+
+/* 1.4 Engraved Date */
+.hero-date-wrapper {
+    animation: heroEditorialFadeUp 1s var(--ease-editorial) 0.8s both;
+}
+
+.hero-date-engraved {
+    font-family: var(--font-sans);
+    font-size: clamp(11.5px, 2.6vw, 13px);
+    letter-spacing: 0.28em;
+    color: rgba(244, 235, 217, 0.88);
+    font-weight: 500;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 2px 14px;
+    position: relative;
+}
+
+/* 1.5 Couture Editorial Portrait Mount */
+.hero-editorial-mount {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto 34px;
+    animation: heroScaleIn 1.3s var(--ease-editorial) 0.95s both;
+}
+
+.mount-matting-frame {
+    position: relative;
+    background: linear-gradient(180deg, #0d0f15 0%, #07080b 100%);
+    border: 0.75px solid rgba(216, 178, 110, 0.22);
+    box-shadow: 
+        0 24px 60px rgba(0, 0, 0, 0.9),
+        0 0 1px rgba(216, 178, 110, 0.25),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    padding: 10px 10px 18px 10px;
+    border-radius: 2px;
+}
+
+/* Cartier Jewel Intersecting Corner Crosses */
+.jewel-corner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.jewel-corner .jewel-axis-h {
+    position: absolute;
+    height: 1px;
+    width: 18px;
+    background: linear-gradient(90deg, var(--c-champagne-light), var(--c-champagne-gold));
+    box-shadow: 0 0 6px rgba(216, 178, 110, 0.4);
+}
+
+.jewel-corner .jewel-axis-v {
+    position: absolute;
+    width: 1px;
+    height: 18px;
+    background: linear-gradient(180deg, var(--c-champagne-light), var(--c-champagne-gold));
+    box-shadow: 0 0 6px rgba(216, 178, 110, 0.4);
+}
+
+/* Corner Positions: hairlines extend 6px past the matting edge */
+.jewel-corner.top-left {
+    top: -6px;
+    left: -6px;
+}
+.jewel-corner.top-left .jewel-axis-h { top: 6px; left: 0; }
+.jewel-corner.top-left .jewel-axis-v { top: 0; left: 6px; }
+
+.jewel-corner.top-right {
+    top: -6px;
+    right: -6px;
+}
+.jewel-corner.top-right .jewel-axis-h { top: 6px; right: 0; }
+.jewel-corner.top-right .jewel-axis-v { top: 0; right: 6px; }
+
+.jewel-corner.bottom-left {
+    bottom: -6px;
+    left: -6px;
+}
+.jewel-corner.bottom-left .jewel-axis-h { bottom: 6px; left: 0; }
+.jewel-corner.bottom-left .jewel-axis-v { bottom: 0; left: 6px; }
+
+.jewel-corner.bottom-right {
+    bottom: -6px;
+    right: -6px;
+}
+.jewel-corner.bottom-right .jewel-axis-h { bottom: 6px; right: 0; }
+.jewel-corner.bottom-right .jewel-axis-v { bottom: 0; right: 6px; }
+
+/* Inner Photo Stage */
+.mount-photo-stage {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: #050608;
+    box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.8);
+}
+
+.hero-photo-layer {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center 25%;
+    position: relative;
+    transform: scale(1.03);
+    transition: transform 1.8s var(--ease-editorial);
+}
+
+.hero-cinematic.active .hero-photo-layer,
+.hero-editorial-mount:hover .hero-photo-layer {
+    transform: scale(1);
+}
+
+/* Multi-Stop Cinematic Vignette & Edge Fade */
+.cinematic-vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at 50% 45%, rgba(0, 0, 0, 0) 35%, rgba(7, 8, 10, 0.45) 72%, rgba(7, 8, 10, 0.88) 100%);
+    pointer-events: none;
+}
+
+.cinematic-edge-fade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(180deg, rgba(7, 8, 10, 0.4) 0%, transparent 22%),
+        linear-gradient(0deg, rgba(7, 8, 10, 0.75) 0%, transparent 32%);
+    pointer-events: none;
+}
+
+.photo-inner-hairline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 0 0 0.5px rgba(216, 178, 110, 0.22);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Mount Bottom Caption Tag */
+.mount-caption-tag {
+    margin-top: 10px;
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    color: rgba(216, 178, 110, 0.55);
+    text-transform: uppercase;
+}
+
+.mount-watermark-seal {
+    position: absolute;
+    bottom: 12px;
+    right: 14px;
+    font-family: var(--font-serif);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--c-champagne-gold);
+    opacity: 0.25;
+    pointer-events: none;
+    user-select: none;
+    z-index: 3;
+}
+
+/* 1.6 Minimalist Couture Scroll Indicator */
+.hero-scroll-cue {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    animation: heroEditorialFadeUp 1s var(--ease-editorial) 1.2s both;
+}
+
+.hero-scroll-cue .cue-label {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: rgba(216, 178, 110, 0.5);
+    text-transform: uppercase;
+}
+
+.cue-line-track {
+    width: 1px;
+    height: 38px;
+    background: rgba(216, 178, 110, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.cue-line-runner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 14px;
+    background: linear-gradient(180deg, var(--c-champagne-light), var(--c-champagne-gold));
+    box-shadow: 0 0 6px rgba(216, 178, 110, 0.6);
+    animation: scrollTrackPulse 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes scrollTrackPulse {
+    0% {
+        transform: translateY(-16px);
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(42px);
+        opacity: 0;
+    }
+}
+
+/* Animations */
+@keyframes heroEditorialFadeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(22px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes heroScaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(1.035) translateY(14px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsive Viewport Optimizations */
+@media (max-width: 480px) {
+    .hero-cinematic {
+        padding: 60px 16px 36px;
+    }
+
+    .mount-photo-stage {
+        height: 450px;
+    }
+}
+
+@media (max-width: 380px) {
+    .hero-cinematic {
+        padding: 52px 12px 30px;
+    }
+
+    .hero-couple-title .name-first,
+    .hero-couple-title .name-second {
+        font-size: clamp(2.3rem, 9vw, 2.7rem);
+        letter-spacing: 0.14em;
+    }
+
+    .mount-matting-frame {
+        padding: 8px 8px 14px 8px;
+    }
+
+    .mount-photo-stage {
+        height: 390px;
+    }
+
+    .hero-eyebrow-pill .eyebrow-rule {
+        width: 18px;
+    }
+}
+
+@media (max-width: 340px) {
+    .hero-couple-title .name-first,
+    .hero-couple-title .name-second {
+        font-size: 2.2rem;
+        letter-spacing: 0.11em;
+    }
+
+    .mount-photo-stage {
+        height: 350px;
+    }
+}
+
+/* 2. HOLY AYAT SECTION */
+.section-ayat {
+    padding: 30px 28px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--c-obsidian) 0%, #0d0f15 50%, var(--c-obsidian) 100%);
+    position: relative;
+}
+
+.ayat-seal-icon {
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: var(--c-champagne-gold);
+}
+
+.ayat-text-arabic {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.8;
+    color: #ffffff;
+    max-width: 440px;
+    margin: 0 auto 16px;
+}
+
+.gold-hairline-separator {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--c-champagne-gold), transparent);
+    margin: 0 auto 14px;
+}
+
+.gold-hairline-separator.small {
+    width: 40px;
+}
+
+.ayat-source {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--c-champagne-gold);
+    font-weight: 600;
+}
+
+/* SECTION HEADERS */
+.editorial-header {
+    padding: 0 28px;
+    margin-bottom: 24px;
+}
+
+.editorial-header.center {
+    text-align: center;
+}
+
+.editorial-num {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--c-champagne-gold);
+    margin-bottom: 4px;
+}
+
+.editorial-heading {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+/* 3. THE COUPLE (EDITORIAL ASYMMETRIC GRID) */
+.section-couple {
+    padding: 40px 0;
+}
+
+.couple-asymmetric-grid {
+    padding: 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.couple-image-card {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    border: 0.5px solid var(--c-gold-hairline);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+}
+
+.couple-photo {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center 30%;
+    transition: transform 1.2s var(--ease-editorial);
+}
+
+.couple-image-card:hover .couple-photo {
+    transform: scale(1.03);
+}
+
+.photo-caption-tag {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--c-champagne-light);
+    background: rgba(7, 8, 10, 0.75);
+    backdrop-filter: blur(8px);
+    padding: 4px 10px;
+    border: 0.5px solid var(--c-gold-hairline);
+    border-radius: 2px;
+}
+
+.couple-text-block {
+    padding: 10px 6px;
+    position: relative;
+}
+
+.couple-lead {
+    font-family: var(--font-display);
+    font-size: 21px;
+    line-height: 1.6;
+    color: var(--c-champagne-light);
+    margin-bottom: 12px;
+}
+
+.couple-body {
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--c-text-muted);
+    margin-bottom: 20px;
+}
+
+.monogram-seal-inline {
+    width: 50px;
+    height: 50px;
+    border: 1px solid var(--c-champagne-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--c-champagne-gold);
+    box-shadow: var(--gold-glow);
+}
+
+/* 4. LOVE STORY TIMELINE */
+.section-timeline {
+    padding: 40px 0;
+    background: linear-gradient(180deg, var(--c-obsidian) 0%, #0d0f15 50%, var(--c-obsidian) 100%);
+}
+
+.cinematic-timeline {
+    position: relative;
+    padding: 20px 28px;
+}
+
+.timeline-track {
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    left: 42px;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--c-champagne-gold), transparent);
+}
+
+.timeline-step {
+    position: relative;
+    padding-left: 48px;
+    margin-bottom: 34px;
+}
+
+.timeline-step:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--c-obsidian);
+    border: 1.5px solid var(--c-champagne-gold);
+    transition: all 0.3s ease;
+}
+
+.timeline-dot.active {
+    background: var(--c-champagne-gold);
+    box-shadow: 0 0 12px var(--c-champagne-gold);
+}
+
+.step-year {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--c-champagne-gold);
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+}
+
+.step-title {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    color: #ffffff;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+}
+
+.step-desc {
+    font-size: 13px;
+    color: var(--c-text-muted);
+    line-height: 1.6;
+}
+
+/* 5. WEDDING DETAILS (MONUMENTAL COMPOSITION) */
+.section-details {
+    padding: 45px 28px;
+}
+
+.details-monumental-layout {
+    border: 0.5px solid var(--c-gold-hairline);
+    border-radius: 4px;
+    padding: 36px 24px;
+    background: radial-gradient(circle at center, #141722 0%, var(--c-charcoal) 100%);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+.details-time-anchor {
+    margin-bottom: 24px;
+}
+
+.time-large {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 10vw, 4rem);
+    font-weight: 400;
+    color: var(--c-champagne-gold);
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: 2px;
+}
+
+.time-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--c-text-muted);
+    text-transform: uppercase;
+}
+
+.gold-vertical-divider {
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--c-champagne-gold), transparent);
+    margin: 0 auto 24px;
+}
+
+.venue-prefix {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--c-champagne-gold);
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.venue-grand-title {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    letter-spacing: 3px;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.venue-hall {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--c-champagne-light);
+    margin-bottom: 12px;
+}
+
+.venue-full-address {
+    font-size: 13px;
+    color: var(--c-text-muted);
+    margin-bottom: 28px;
+}
+
+.cartier-map-button {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 1px solid var(--c-champagne-gold);
+    border-radius: 2px;
+    color: var(--c-champagne-light);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+}
+
+.cartier-map-button:hover {
+    background: var(--c-champagne-gold);
+    color: #07080a;
+    box-shadow: 0 0 20px rgba(216, 178, 110, 0.4);
+}
+
+/* 6. DRESS CODE (BLACK-TIE LUXURY) */
+.section-dresscode {
+    padding: 40px 24px;
+    background: linear-gradient(180deg, var(--c-obsidian) 0%, #0d0f15 50%, var(--c-obsidian) 100%);
+}
+
+.dresscode-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--c-champagne-gold);
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+.dresscode-editorial-card {
+    border: 0.5px solid var(--c-gold-hairline);
+    border-radius: 4px;
+    padding: 32px 20px;
+    background: radial-gradient(circle at center, #141722 0%, var(--c-charcoal) 100%);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7);
+    margin-top: 24px;
+}
+
+.dresscode-columns {
+    display: flex;
+    gap: 20px;
+}
+
+.dresscode-col {
+    flex: 1;
+    text-align: center;
+}
+
+.dresscode-symbol {
+    font-size: 26px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.dresscode-role {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--c-champagne-light);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.dresscode-desc {
+    font-size: 12px;
+    color: var(--c-text-muted);
+    line-height: 1.6;
+}
+
+.dresscode-divider-v {
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--c-gold-hairline-bright), transparent);
+}
+
+.dresscode-swatches {
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 0.5px solid var(--c-gold-hairline);
+    text-align: center;
+}
+
+.swatch-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--c-text-dim);
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.swatches-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.swatch-circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    transition: transform 0.2s ease;
+}
+
+.swatch-circle:hover {
+    transform: scale(1.2);
+}
+
+/* 7. ARCHITECTURAL COUNTDOWN */
+.section-countdown {
+    padding: 40px 24px;
+    background: #0a0b10;
+}
+
+.architectural-countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.countdown-unit {
+    flex: 1;
+    text-align: center;
+}
+
+.count-value {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 6vw, 2.6rem);
+    font-weight: 400;
+    color: var(--c-champagne-light);
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.count-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--c-text-dim);
+    text-transform: uppercase;
+}
+
+.countdown-sep {
+    font-size: 20px;
+    color: var(--c-champagne-gold);
+    opacity: 0.5;
+    margin-bottom: 16px;
+}
+
+/* 7. GALLERY */
+.section-gallery {
+    padding: 40px 24px;
+}
+
+.editorial-gallery-composition {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.gallery-lead-frame {
+    width: 100%;
+    height: 320px;
+    border: 0.5px solid var(--c-gold-hairline);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.gallery-sub-row {
+    display: flex;
+    gap: 14px;
+}
+
+.gallery-photo {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 1.2s var(--ease-editorial);
+}
+
+.gallery-photo.half {
+    width: calc(50% - 7px);
+    height: 220px;
+    border: 0.5px solid var(--c-gold-hairline);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.gallery-lead-frame:hover .gallery-photo,
+.gallery-photo.half:hover {
+    transform: scale(1.03);
+}
+
+/* 8. TO'YONA (VELVET EMBOSSED BLACK CARD) */
+.section-toyona {
+    padding: 40px 28px;
+}
+
+.toyona-editorial-note {
+    font-size: 13px;
+    color: var(--c-text-muted);
+    max-width: 380px;
+    margin: 8px auto 0;
+    line-height: 1.6;
+}
+
+.luxury-black-card {
+    position: relative;
+    border: 1px solid var(--c-gold-hairline-bright);
+    border-radius: 8px;
+    padding: 28px 24px;
+    background: linear-gradient(135deg, #191c28 0%, #0c0e14 100%);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    margin-top: 24px;
+}
+
+.card-chip-gold {
+    width: 38px;
+    height: 28px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #f4ebd9 0%, #d8b26e 50%, #8c6a2e 100%);
+    border: 0.5px solid #fff;
+    margin-bottom: 24px;
+}
+
+.card-monogram-watermark {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-family: var(--font-serif);
+    font-size: 70px;
+    font-weight: 800;
+    color: rgba(216, 178, 110, 0.05);
+    pointer-events: none;
+}
+
+.card-number-display {
+    font-family: monospace;
+    font-size: clamp(1.1rem, 4.5vw, 1.35rem);
+    letter-spacing: 2px;
+    color: var(--c-champagne-light);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.card-bottom-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.card-micro-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--c-text-dim);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.card-holder-val {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.cartier-copy-btn {
+    background: rgba(216, 178, 110, 0.15);
+    border: 1px solid var(--c-champagne-gold);
+    color: var(--c-champagne-light);
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cartier-copy-btn:hover {
+    background: var(--c-champagne-gold);
+    color: #07080a;
+}
+
+/* 9. RSVP FORM */
+.section-rsvp {
+    padding: 40px 28px;
+}
+
+.rsvp-editorial-sub {
+    font-size: 13px;
+    color: var(--c-text-muted);
+    margin-top: 6px;
+}
+
+.couture-form {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-floating-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-floating-field label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: var(--c-champagne-gold);
+    text-transform: uppercase;
+}
+
+.form-floating-field input,
+.form-floating-field textarea {
+    background: var(--c-charcoal);
+    border: 1px solid var(--c-gold-hairline);
+    border-radius: 3px;
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #ffffff;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.form-floating-field input:focus,
+.form-floating-field textarea:focus {
+    border-color: var(--c-champagne-gold);
+    box-shadow: 0 0 15px rgba(216, 178, 110, 0.2);
+}
+
+.form-dual-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.rsvp-primary-gold-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--c-champagne-light) 0%, var(--c-champagne-gold) 50%, var(--c-champagne-dark) 100%);
+    color: #07080a;
+    border: none;
+    border-radius: 3px;
+    font-family: var(--font-serif);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(216, 178, 110, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.rsvp-primary-gold-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(216, 178, 110, 0.5);
+}
+
+.rsvp-ghost-btn {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid var(--c-gold-hairline);
+    color: var(--c-text-muted);
+    border-radius: 3px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.rsvp-ghost-btn:hover {
+    border-color: var(--c-text-muted);
+    color: #ffffff;
+}
+
+/* 10. LUXURY FOOTER */
+.editorial-footer {
+    padding: 50px 24px 30px;
+    text-align: center;
+    border-top: 0.5px solid var(--c-gold-hairline);
+}
+
+.footer-seal {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--c-champagne-gold);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--c-champagne-gold);
+}
+
+.footer-couple-name {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: #ffffff;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.footer-tagline {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--c-champagne-gold);
+    margin-bottom: 16px;
+}
+
+.footer-brand {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--c-text-dim);
+}
+
+/* Success Modal */
+.success-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100002;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.success-modal.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-box-luxury {
+    background: var(--c-charcoal-card);
+    border: 1px solid var(--c-champagne-gold);
+    border-radius: 4px;
+    padding: 36px 28px;
+    text-align: center;
+    max-width: 360px;
+    width: 100%;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), var(--gold-glow);
+}
+
+.modal-crest {
+    font-size: 32px;
+    margin-bottom: 12px;
+    color: var(--c-champagne-gold);
+}
+
+.modal-box-luxury h3 {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    color: #ffffff;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+}
+
+.modal-box-luxury p {
+    font-size: 13.5px;
+    color: var(--c-text-muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.modal-close-gold {
+    background: var(--c-champagne-gold);
+    color: #07080a;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 2px;
+    font-family: var(--font-serif);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+/* --- WEDDING DAY SCHEDULE & DUAL MAP BUTTONS (ORDER #7) --- */
+.wedding-schedule-block {
+    margin-top: 32px;
+    padding-top: 26px;
+    border-top: 1px solid var(--c-gold-hairline);
+    text-align: left;
+}
+
+.schedule-block-title {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: var(--c-champagne-gold);
+    text-align: center;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+}
+
+.schedule-timeline-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    padding-left: 6px;
+}
+
+.schedule-timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+}
+
+.schedule-timeline-time {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--c-champagne-gold);
+    min-width: 55px;
+    text-align: right;
+    letter-spacing: 1px;
+}
+
+.schedule-timeline-node {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.schedule-timeline-node::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--c-champagne-gold);
+    box-shadow: 0 0 10px rgba(216, 178, 110, 0.6);
+}
+
+.schedule-timeline-item:not(:last-child) .schedule-timeline-node::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 6px;
+    bottom: -22px;
+    width: 1px;
+    background: linear-gradient(180deg, var(--c-champagne-gold), transparent);
+}
+
+.schedule-timeline-content h4 {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    color: #ffffff;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+}
+
+.schedule-timeline-content p {
+    font-size: 12.5px;
+    color: var(--c-text-muted);
+    line-height: 1.5;
+}
+
+.map-buttons-dual {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.cartier-map-button.google-maps {
+    background: transparent;
+    border-color: rgba(216, 178, 110, 0.4);
+    color: var(--c-champagne-light);
+}
+
+.cartier-map-button.google-maps:hover {
+    background: rgba(216, 178, 110, 0.15);
+    border-color: var(--c-champagne-gold);
+    color: #ffffff;
+}
+
+@media (min-width: 480px) {
+    .map-buttons-dual {
+        flex-direction: row;
+        justify-content: center;
+        gap: 16px;
+    }
+}

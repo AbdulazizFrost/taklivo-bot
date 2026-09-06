@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Muslimbek & Oyshaxon — Dark Luxury Wedding Invitation</title>
+    
+    <!-- OpenGraph Preview for Telegram / WhatsApp -->
+    <meta property="og:title" content="Muslimbek & Oyshaxon — Nikoh To'yi Taklifnomasi 💍">
+    <meta property="og:description" content="20-Sentabr 2026, 19:00 | Namangan sh. Yangi yo'l ko'cha 4-uy. Sizni to'y oqshomimizga lutfan taklif etamiz!">
+    <meta property="og:image" content="images/hero.jpg">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../../demo/assets/engine.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark-luxury-body">
+
+    <!-- Subtle Film Grain Overlay -->
+    <div class="film-grain" aria-hidden="true"></div>
+
+    <!-- Background Stardust Particles -->
+    <div class="stardust-container" id="stardustContainer" aria-hidden="true"></div>
+
+    <!-- Background Audio -->
+    <audio id="weddingAudio" loop preload="auto">
+        <source src="music.m4a" type="audio/mp4">
+        <source src="music.m4a" type="audio/x-m4a">
+    </audio>
+
+    <!-- Floating Luxury Vinyl Music Controller -->
+    <div class="vinyl-player-widget" id="musicBtn" onclick="toggleMusic()" role="button" aria-label="Toggle Wedding Music" tabindex="0">
+        <div class="vinyl-disc" id="vinylDisc">
+            <div class="vinyl-groove"></div>
+            <div class="vinyl-center">
+                <div class="vinyl-core"></div>
+            </div>
+        </div>
+        <div class="vinyl-info">
+            <div class="equalizer-bars" id="eqBars">
+                <span></span><span></span><span></span>
+            </div>
+            <span class="vinyl-label" id="vinylLabel">SOUNDTRACK</span>
+        </div>
+    </div>
+
+    <!-- Opening Experience Curtain -->
+    <div class="curtain-overlay" id="curtainOverlay">
+        <div class="curtain-panel panel-left"></div>
+        <div class="curtain-panel panel-right"></div>
+        <div class="curtain-centerpiece">
+            <div class="embossed-seal">
+                <div class="seal-inner-ring">
+                    <span class="seal-initials" data-taklivo="monogram">MO</span>
+                </div>
+            </div>
+            <p class="curtain-meta">YOU ARE CORDIALLY INVITED</p>
+            <h1 class="curtain-names" data-taklivo="couple_names">Muslimbek & Oyshaxon</h1>
+            <p class="curtain-date" data-taklivo="event_date">20 • 09 • 2026</p>
+            <button class="curtain-enter-btn" onclick="openInvitation()">
+                <span data-i18n="openInvite">Taklifnomani Ochish ⚜️</span>
+                <div class="btn-shimmer-line"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="dark-editorial-wrapper" id="mainContent">
+
+        <!-- 1. HERO SECTION (MASTER EDITORIAL REDESIGN) -->
+        <header class="hero-cinematic reveal-block">
+            <!-- Haute Horlogerie & Jewelry Crest (Monogram Seal) -->
+            <div class="hero-crest-emblem">
+                <div class="crest-frame-outer">
+                    <div class="crest-frame-inner">
+                        <span class="crest-initials" data-taklivo="monogram">MO</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Luxury Metadata & Editorial Subtitle -->
+            <div class="hero-eyebrow-container">
+                <div class="hero-eyebrow-pill">
+                    <span class="eyebrow-rule left"></span>
+                    <span class="eyebrow-tag">THE WEDDING</span>
+                    <span class="eyebrow-dot">·</span>
+                    <span class="eyebrow-year">2026</span>
+                    <span class="eyebrow-rule right"></span>
+                </div>
+                <p class="hero-editorial-caption" data-i18n="subtitle">Hayotimizning eng go'zal sahifasi boshlanmoqda</p>
+            </div>
+
+            <!-- Main Visual Anchor: Couple Names & Engraved Date -->
+            <div class="hero-title-group">
+                <h1 class="hero-couple-title" data-taklivo="couple_names">
+                    <span class="name-first" data-taklivo="groom_name">MUSLIMBEK</span>
+                    <span class="hero-ampersand-ornament">
+                        <span class="ampersand-hairline left"></span>
+                        <span class="ampersand">&</span>
+                        <span class="ampersand-hairline right"></span>
+                    </span>
+                    <span class="name-second" data-taklivo="bride_name">OYSHAXON</span>
+                </h1>
+                <div class="hero-date-wrapper">
+                    <p class="hero-date-engraved" data-taklivo="event_date">20 · 09 · 2026</p>
+                </div>
+            </div>
+
+            <!-- Couture Editorial Portrait Mount -->
+            <div class="hero-editorial-mount">
+                <div class="mount-matting-frame">
+                    <!-- Architectural Corner Jewel Hairlines -->
+                    <div class="jewel-corner top-left">
+                        <span class="jewel-axis-h"></span>
+                        <span class="jewel-axis-v"></span>
+                    </div>
+                    <div class="jewel-corner top-right">
+                        <span class="jewel-axis-h"></span>
+                        <span class="jewel-axis-v"></span>
+                    </div>
+                    <div class="jewel-corner bottom-left">
+                        <span class="jewel-axis-h"></span>
+                        <span class="jewel-axis-v"></span>
+                    </div>
+                    <div class="jewel-corner bottom-right">
+                        <span class="jewel-axis-h"></span>
+                        <span class="jewel-axis-v"></span>
+                    </div>
+
+                    <!-- Portrait Photograph Layer with Multi-Layer Vignette -->
+                    <div class="mount-photo-stage">
+                        <div class="hero-photo-layer" style="background-image: url('images/hero.jpg');">
+                            <div class="cinematic-vignette"></div>
+                            <div class="cinematic-edge-fade"></div>
+                        </div>
+                        <div class="photo-inner-hairline"></div>
+                    </div>
+
+                    <!-- Fine Engraving Caption Tag & Archival Studio Debossing -->
+                    <div class="mount-caption-tag">
+                        <span>EDITORIAL INVITATION · 2026</span>
+                    </div>
+                    <div class="mount-watermark-seal" data-taklivo="monogram" aria-hidden="true">MO</div>
+                </div>
+            </div>
+
+            <!-- Couture Scroll Indicator -->
+            <div class="hero-scroll-cue">
+                <span class="cue-label">SCROLL TO DISCOVER</span>
+                <div class="cue-line-track">
+                    <div class="cue-line-runner"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. HOLY AYAT / BLESSING SECTION -->
+        <section class="section-ayat reveal-block">
+            <div class="ayat-seal-icon">⚜️</div>
+            <p class="ayat-text-arabic" data-i18n="ayatText">
+                «Uning oyatlaridan biri — sizlar xotirjam bo‘lishingiz uchun o‘zingizdan juftlar yaratishi va o‘rtangizda mehr-muhabbat hamda rahm-shafqat paydo qilishidir.»
+            </p>
+            <div class="gold-hairline-separator"></div>
+            <span class="ayat-source" data-i18n="ayatSource">RUM SURASI, 21-OYAT</span>
+        </section>
+
+        <!-- 3. THE COUPLE (EDITORIAL PRESENTATION) -->
+        <section class="section-couple reveal-block">
+            <div class="editorial-header">
+                <span class="editorial-num">01</span>
+                <h2 class="editorial-heading">THE COUPLE</h2>
+            </div>
+
+            <div class="couple-asymmetric-grid">
+                <div class="couple-image-card">
+                    <div class="couple-photo" style="background-image: url('images/couple.jpg');"></div>
+                    <div class="photo-caption-tag">PRE-WEDDING PORTRAIT</div>
+                </div>
+                <div class="couple-text-block">
+                    <p class="couple-lead" data-i18n="coupleLead">
+                        Ikki qalbning abadiy ittifoqi, o'zaro hurmat va cheksiz muhabbat dostoni.
+                    </p>
+                    <p class="couple-body" data-i18n="coupleBody">
+                        Hayotimizning eng muhim va unutilmas oqshomida siz kabi aziz va qadrli insonlarni yonimizda ko'rishdan behad baxtiyormiz.
+                    </p>
+                    <div class="monogram-seal-inline" data-taklivo="monogram">MO</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. WEDDING DETAILS & TIMELINE (LOCATION & SCHEDULE) -->
+        <section class="section-details reveal-block">
+            <div class="editorial-header">
+                <span class="editorial-num">02</span>
+                <h2 class="editorial-heading">THE CELEBRATION</h2>
+            </div>
+
+            <div class="details-monumental-layout">
+                <div class="details-time-anchor">
+                    <span class="time-large" data-taklivo="event_time">19:00</span>
+                    <span class="time-sub" data-i18n="gatheringTitle">MEHMONLAR TASHRIFI</span>
+                </div>
+
+                <div class="gold-vertical-divider"></div>
+
+                <div class="details-location-anchor">
+                    <span class="venue-prefix">VENUE & RECEPTION</span>
+                    <h3 class="venue-grand-title" data-taklivo="venue">UY</h3>
+                    <p class="venue-hall">Xonadonimizda</p>
+                    <p class="venue-full-address" data-taklivo="address">Namangan sh. Yangi yo'l ko'cha 4-uy</p>
+
+                    <div class="map-buttons-dual">
+                        <a href="https://yandex.uz/maps/?text=Namangan+shahar+Yangi+yo%27l+ko%27cha+4" target="_blank" rel="noopener noreferrer" class="cartier-map-button">
+                            <span data-i18n="mapButton">Yandex Xaritada ochish 📍</span>
+                        </a>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Namangan+shahar+Yangi+yo%27l+ko%27cha+4" target="_blank" rel="noopener noreferrer" class="cartier-map-button google-maps">
+                            <span data-i18n="googleMapButton">Google Xaritada ochish 🗺️</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Wedding Day Schedule Timeline -->
+                <div class="wedding-schedule-block">
+                    <h4 class="schedule-block-title" data-i18n="scheduleTitle">TO'Y DASTURI</h4>
+                    <div class="schedule-timeline-flow">
+                        <div class="schedule-timeline-item">
+                            <span class="schedule-timeline-time">18:30</span>
+                            <div class="schedule-timeline-node"></div>
+                            <div class="schedule-timeline-content">
+                                <h4 data-i18n="schedule1Title">Mehmonlar tashrifi</h4>
+                                <p data-i18n="schedule1Desc">Aziz mehmonlarni kutib olish va xush kelibsiz qadami</p>
+                            </div>
+                        </div>
+                        <div class="schedule-timeline-item">
+                            <span class="schedule-timeline-time">19:00</span>
+                            <div class="schedule-timeline-node"></div>
+                            <div class="schedule-timeline-content">
+                                <h4 data-i18n="schedule2Title">Nikoh Oqshomi Boshlanishi</h4>
+                                <p data-i18n="schedule2Desc">Kelin va kuyovning tantanali kirib kelishi</p>
+                            </div>
+                        </div>
+                        <div class="schedule-timeline-item">
+                            <span class="schedule-timeline-time">20:00</span>
+                            <div class="schedule-timeline-node"></div>
+                            <div class="schedule-timeline-content">
+                                <h4 data-i18n="schedule3Title">To'y Tantanasi & Qutlovlar</h4>
+                                <p data-i18n="schedule3Desc">Yaqinlar duosi va samimiy tilaklar dasturxoni</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. COUNTDOWN (ARCHITECTURAL DIVIDERS) -->
+        <section class="section-countdown reveal-block">
+            <div class="editorial-header center">
+                <h2 class="editorial-heading" data-i18n="countdownTitle">TANTANAGACHA QOLDI</h2>
+                <div class="gold-hairline-separator small"></div>
+            </div>
+
+            <div class="architectural-countdown">
+                <div class="countdown-unit">
+                    <span class="count-value" id="days">00</span>
+                    <span class="count-label" data-i18n="days">KUN</span>
+                </div>
+                <div class="countdown-sep">·</div>
+                <div class="countdown-unit">
+                    <span class="count-value" id="hours">00</span>
+                    <span class="count-label" data-i18n="hours">SOAT</span>
+                </div>
+                <div class="countdown-sep">·</div>
+                <div class="countdown-unit">
+                    <span class="count-value" id="minutes">00</span>
+                    <span class="count-label" data-i18n="minutes">DAQIQA</span>
+                </div>
+                <div class="countdown-sep">·</div>
+                <div class="countdown-unit">
+                    <span class="count-value" id="seconds">00</span>
+                    <span class="count-label" data-i18n="seconds">SONIYA</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. RSVP SECTION (HAUTE-COUTURE FORM) -->
+        <section class="section-rsvp reveal-block">
+            <div class="editorial-header center">
+                <span class="editorial-num">03</span>
+                <h2 class="editorial-heading" data-i18n="rsvpTitle">TASHRIFNI TASDIQLASH</h2>
+                <p class="rsvp-editorial-sub" data-i18n="rsvpSubtitle">Sizning ishtirokingiz biz uchun juda muhim</p>
+            </div>
+
+            <form class="couture-form" id="rsvpForm">
+                <div class="form-row-group">
+                    <div class="form-floating-field">
+                        <label for="name" data-i18n="rsvpNameLabel">Ismingiz</label>
+                        <input type="text" id="name" required placeholder="Masalan: Sardor" data-i18n-placeholder="rsvpNamePlaceholder" autocomplete="name">
+                    </div>
+                    <div class="form-floating-field">
+                        <label for="phone" data-i18n="rsvpPhoneLabel">Telefon raqam</label>
+                        <input type="tel" id="phone" required placeholder="+998 90 123 45 67" data-i18n-placeholder="rsvpPhonePlaceholder" autocomplete="tel">
+                    </div>
+                </div>
+
+                <div class="form-floating-field">
+                    <label for="message" data-i18n="rsvpMsgLabel">Ezgu tilaklaringiz</label>
+                    <textarea id="message" rows="3" placeholder="O'z tilaklaringizni yozishingiz mumkin..." data-i18n-placeholder="rsvpMsgPlaceholder"></textarea>
+                </div>
+
+                <input type="hidden" id="attendanceStatus" value="Albatta Boraman">
+
+                <div class="form-dual-actions">
+                    <button type="submit" class="rsvp-primary-gold-btn" onclick="document.getElementById('attendanceStatus').value = 'Albatta Boraman'">
+                        <span data-i18n="rsvpAccept">Albatta boraman ✨</span>
+                    </button>
+                    <button type="submit" class="rsvp-ghost-btn" onclick="document.getElementById('attendanceStatus').value = 'Afsuski Kela olmayman'">
+                        <span data-i18n="rsvpDecline">Afsuski kela olmayman</span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- 7. LUXURY FOOTER -->
+        <footer class="editorial-footer reveal-block">
+            <div class="footer-seal" data-taklivo="monogram">MO</div>
+            <h2 class="footer-couple-name" data-taklivo="couple_names">Muslimbek & Oyshaxon</h2>
+            <p class="footer-tagline">20.09.2026 · NAMANGAN</p>
+            <div class="gold-hairline-separator small"></div>
+            <p class="footer-brand">TAKLIVO · HAUTE DIGITAL WEDDING INVITATIONS</p>
+        </footer>
+
+    </main>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal" role="dialog" aria-modal="true">
+        <div class="modal-box-luxury">
+            <div class="modal-crest">⚜️</div>
+            <h3 data-i18n="rsvpThanks">Rahmat!</h3>
+            <p data-i18n="rsvpSuccessMsg">Sizning javobingiz muvaffaqiyatli qabul qilindi.</p>
+            <button class="modal-close-gold" onclick="document.getElementById('successModal').classList.remove('open')" data-i18n="closeBtn">Yopish</button>
+        </div>
+    </div>
+
+    <!-- Engine & Local Scripts -->
+    <script src="../../demo/assets/engine.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
