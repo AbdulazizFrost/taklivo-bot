@@ -494,7 +494,7 @@ async def run_async_tests():
             text_with_promo = await _format_step_options_text({"promocode": "TAKLIVO50"}, calc_sample, lang="ru")
             log_test_result(
                 "TEST 16a: Strikethrough price in RU options when promo active",
-                "<s>70 000 сум</s> <b>35 000 сум</b>" in text_with_promo and "• 🎟 <b>Промокод (TAKLIVO50):</b> -35 000 сум (-50%)" in text_with_promo,
+                "<s>30 000 сум</s> <b>15 000 сум</b>" in text_with_promo and "• 🎟 <b>Промокод (TAKLIVO50):</b> -15 000 сум (-50%)" in text_with_promo,
                 f"Текст RU с промокодом: {text_with_promo.split('────────────────')[1].strip()}",
             )
 
@@ -503,7 +503,7 @@ async def run_async_tests():
             text_with_promo_uz = await _format_step_options_text({"promocode": "TAKLIVO50"}, calc_sample_uz, lang="uz")
             log_test_result(
                 "TEST 16b: Strikethrough price in UZ options when promo active",
-                "<s>70 000 so‘m</s> <b>35 000 so‘m</b>" in text_with_promo_uz and "• 🎟 <b>Promokod (TAKLIVO50):</b> -35 000 so‘m (-50%)" in text_with_promo_uz,
+                "<s>30 000 so‘m</s> <b>15 000 so‘m</b>" in text_with_promo_uz and "• 🎟 <b>Promokod (TAKLIVO50):</b> -15 000 so‘m (-50%)" in text_with_promo_uz,
                 f"Текст UZ с промокодом: {text_with_promo_uz.split('────────────────')[1].strip()}",
             )
 
@@ -511,7 +511,7 @@ async def run_async_tests():
             text_no_promo = await _format_step_options_text({}, calc_sample, lang="ru")
             log_test_result(
                 "TEST 16c: Normal price without promo in options",
-                "<s>" not in text_no_promo and "💰 <b>ИТОГО К ОПЛАТЕ:</b> <b>70 000 сум</b>" in text_no_promo,
+                "<s>" not in text_no_promo and "💰 <b>ИТОГО К ОПЛАТЕ:</b> <b>30 000 сум</b>" in text_no_promo,
                 f"Текст RU без промокода: {text_no_promo.split('────────────────')[1].strip()}",
             )
 
@@ -602,7 +602,7 @@ async def run_async_tests():
                 "address": "Tashkent",
                 "phone": "+998909998877",
                 "options": {"timer": True, "map": True},
-                "discount_amount": 35000,
+                "discount_amount": 0,
             }
             postpay_order_id = await OrderService.create_new_order(
                 user_id=timer_user.id,
@@ -612,7 +612,7 @@ async def run_async_tests():
             postpay_order = await OrderService.get_order_by_id(postpay_order_id)
             log_test_result(
                 "TEST 18b: Order created with IN_PROGRESS status and UNPAID payment status (Post-payment)",
-                postpay_order.status == OrderStatus.IN_PROGRESS.value and postpay_order.payment_status == PaymentStatus.UNPAID.value and postpay_order.total_price == 35000,
+                postpay_order.status == OrderStatus.IN_PROGRESS.value and postpay_order.payment_status == PaymentStatus.UNPAID.value and postpay_order.total_price == 30000,
                 f"Статус заказа: {postpay_order.status}, Оплата: {postpay_order.payment_status}, Сумма: {postpay_order.total_price}",
             )
 

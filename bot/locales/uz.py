@@ -14,7 +14,8 @@ TEXTS = {
     # Asosiy menyu
     "main_menu_title": (
         "💍 <b>TAKLIVO</b>\n\n"
-        "<b>Nikoh to‘yi, Tug‘ilgan kun / Yubiley yoki Sunnat to‘yi</b> uchun bir necha daqiqada zamonaviy onlayn taklifnoma yarating!\n\n"
+        "🔥 <b>24 SOATLIK AKSIYA:</b> Barcha imkoniyatlarga ega to‘liq taklifnoma sayti atigi <b>30 000 so‘m</b> <s>70 000 so‘m</s>!\n"
+        "🛡 <b>0 so‘m oldindan to‘lov:</b> buyurtmani bepul to‘ldirasiz, tayyor demo-saytni ko‘rasiz va faqat sizga yoqsa to‘laysiz!\n\n"
         "✨ Nafis interaktiv dizayn\n"
         "📱 Barcha smartfonlarda qulay ochiladi\n"
         "💌 Mehmonlar uchun RSVP so‘rovnomasi\n"

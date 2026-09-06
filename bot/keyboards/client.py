@@ -253,7 +253,10 @@ def get_options_toggle_keyboard(
         is_active = selected_options.get(key, False)
         icon = "🟢" if is_active else "⚪️"
         price = extra_prices.get(key, 0)
-        price_str = f"+{format_currency(price, lang)}"
+        if price == 0:
+            price_str = "Бесплатно 🎁" if lang == "ru" else "Bepul 🎁"
+        else:
+            price_str = f"+{format_currency(price, lang)}"
         btn_text = f"{icon} {label} ({price_str})"
         callback = f"opt_toggle:{key}"
 

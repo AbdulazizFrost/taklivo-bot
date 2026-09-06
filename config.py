@@ -53,18 +53,18 @@ class Config:
     DATABASE_URL: str = os.getenv("DATABASE_URL", DEFAULT_POSTGRES_URL).strip()
     DATABASE_PATH: str = os.getenv("DATABASE_PATH", os.getenv("DB_PATH", "data/wedding_bot.db"))
 
-    # Базовая стоимость создания сайта
-    BASE_PRICE: int = int(os.getenv("BASE_PRICE", "50000"))
+    # Базовая стоимость создания сайта (Эксперимент 24 часа: 30 000 сум)
+    BASE_PRICE: int = int(os.getenv("BASE_PRICE", "30000"))
 
-    # Цены на дополнительные функции (в сумах)
-    TIMER_PRICE: int = int(os.getenv("TIMER_PRICE", "10000"))
-    RSVP_PRICE: int = int(os.getenv("RSVP_PRICE", "20000"))
-    MAP_PRICE: int = int(os.getenv("MAP_PRICE", "10000"))
+    # Цены на дополнительные функции (в сумах) - по акции 24 часа все включено бесплатно
+    TIMER_PRICE: int = int(os.getenv("TIMER_PRICE", "0"))
+    RSVP_PRICE: int = int(os.getenv("RSVP_PRICE", "0"))
+    MAP_PRICE: int = int(os.getenv("MAP_PRICE", "0"))
     GALLERY_PRICE: int = int(os.getenv("GALLERY_PRICE", "0"))
     MUSIC_PRICE: int = int(os.getenv("MUSIC_PRICE", "0"))
-    DRESSCODE_PRICE: int = int(os.getenv("DRESSCODE_PRICE", "10000"))
-    SCHEDULE_PRICE: int = int(os.getenv("SCHEDULE_PRICE", "10000"))
-    SECOND_LANGUAGE_PRICE: int = int(os.getenv("SECOND_LANGUAGE_PRICE", "10000"))
+    DRESSCODE_PRICE: int = int(os.getenv("DRESSCODE_PRICE", "0"))
+    SCHEDULE_PRICE: int = int(os.getenv("SCHEDULE_PRICE", "0"))
+    SECOND_LANGUAGE_PRICE: int = int(os.getenv("SECOND_LANGUAGE_PRICE", "0"))
 
     # Реферальная бонусная программа (в сумах / бонусах)
     # Реферальная бонусная программа (в сумах / бонусах)

@@ -367,18 +367,23 @@ async def callback_pricing(callback: CallbackQuery) -> None:
     lang = await db.get_user_language(callback.from_user.id)
     extra_prices = config.get_extra_options_prices()
 
+    def fmt_price(val: int) -> str:
+        if val == 0:
+            return "БЕСПЛАТНО 🎁" if lang == "ru" else "BEPUL 🎁"
+        return format_currency(val, lang=lang)
+
     pricing_text = get_text(
         lang,
         "pricing_title",
         base_price=format_currency(config.BASE_PRICE, lang=lang),
-        timer_price=format_currency(extra_prices["timer"], lang=lang),
-        rsvp_price=format_currency(extra_prices["rsvp"], lang=lang),
-        map_price=format_currency(extra_prices["map"], lang=lang),
+        timer_price=fmt_price(extra_prices["timer"]),
+        rsvp_price=fmt_price(extra_prices["rsvp"]),
+        map_price=fmt_price(extra_prices["map"]),
         gallery_price="БЕСПЛАТНО 🎁" if lang == "ru" else "BEPUL 🎁",
         music_price="БЕСПЛАТНО 🎁" if lang == "ru" else "BEPUL 🎁",
-        dresscode_price=format_currency(extra_prices["dresscode"], lang=lang),
-        schedule_price=format_currency(extra_prices["schedule"], lang=lang),
-        second_language_price=format_currency(extra_prices["second_language"], lang=lang),
+        dresscode_price=fmt_price(extra_prices["dresscode"]),
+        schedule_price=fmt_price(extra_prices["schedule"]),
+        second_language_price=fmt_price(extra_prices["second_language"]),
     )
 
     await callback.message.edit_text(
