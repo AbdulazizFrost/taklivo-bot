@@ -23,6 +23,7 @@ from bot.keyboards import (
     get_cancel_keyboard,
     get_back_cancel_keyboard,
     get_promo_activated_keyboard,
+    get_event_type_keyboard,
 )
 from bot.locales import get_text
 from bot.services import order_service, notifications
@@ -38,16 +39,21 @@ logger = logging.getLogger(__name__)
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext) -> None:
-    """Обработка команды /start с поддержкой реферальных ссылок и промокодов."""
+    """Обработка команды /start с поддержкой реферальных ссылок, промокодов и прямого старта заказа."""
     await state.clear()
 
-    # Проверка параметров в deep link: /start ref_123456 или /start promo_TAKLIVO50
+    existing_user = await db.get_user(message.from_user.id)
+
+    # Проверка параметров в deep link: /start ref_123456 или /start promo или /start promo_TAKLIVO50
     referrer_id = None
     promo_code_to_activate = None
+    is_direct_order = False
     args = message.text.split()
     if len(args) > 1:
         param = args[1].strip()
-        if param.startswith("ref_"):
+        if param in ("promo", "create", "order", "flash"):
+            is_direct_order = True
+        elif param.startswith("ref_"):
             try:
                 ref_str = param.replace("ref_", "")
                 referrer_id = int(ref_str)
@@ -78,8 +84,85 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
             if not user_orders:
                 await db.set_user_active_promocode(user.telegram_id, "TAKLIVO50")
 
+    lang = user.language or "ru"
+
+    # Если пользователь перешел по кнопке "Создать приглашение" (из рассылки /start=promo):
+    if is_direct_order:
+        user_orders = await db.get_user_orders(user.telegram_id)
+        active_unpaid = next(
+            (
+                o for o in user_orders
+                if o.payment_status != PaymentStatus.PAID.value
+                and o.status in (
+                    OrderStatus.IN_PROGRESS.value,
+                    OrderStatus.PREVIEW.value,
+                    OrderStatus.REVISION.value,
+                    OrderStatus.WAITING_PAYMENT.value,
+                )
+            ),
+            None,
+        )
+        if active_unpaid:
+            await message.answer(
+                text=get_text(lang, "err_already_has_active_order", order_id=active_unpaid.id),
+                reply_markup=get_main_menu_keyboard(lang=lang),
+                parse_mode="HTML",
+            )
+            return
+
+        active_promo_code = await db.get_user_active_promocode(user.telegram_id)
+        promo_obj = await db.get_promocode(active_promo_code) if active_promo_code else None
+        promocode = promo_obj.code if (promo_obj and promo_obj.is_active and promo_obj.used_count < promo_obj.max_uses) else None
+
+        await state.update_data(
+            lang=lang,
+            event_type="wedding",
+            promocode=promocode,
+            options={
+                "timer": True,
+                "rsvp": False,
+                "map": True,
+                "gallery": False,
+                "music": False,
+                "dresscode": False,
+                "schedule": False,
+                "second_language": False,
+            },
+        )
+        await state.set_state(OrderStates.choosing_event_type)
+        await message.answer(
+            text=get_text(lang, "step_event_type"),
+            reply_markup=get_event_type_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
+        return
+
+    # Если пользователь уже зарегистрирован, сразу открываем главное меню на его языке
+    if existing_user:
+        active_promo_code = await db.get_user_active_promocode(user.telegram_id)
+        promo_banner = ""
+        if active_promo_code:
+            is_active, time_left, deadline, _ = await db.get_user_promo_timer(user.telegram_id, lang=lang)
+            if not is_active and active_promo_code == "TAKLIVO50":
+                await db.set_user_active_promocode(user.telegram_id, None)
+                active_promo_code = None
+
+            if active_promo_code:
+                promo = await db.get_promocode(active_promo_code)
+                if promo and promo.is_active and promo.used_count < promo.max_uses:
+                    disc_str = f"{promo.discount_percent}%" if promo.discount_percent > 0 else format_currency(promo.discount_amount, lang)
+                    promo_banner = f"\n\n{get_text(lang, 'start_promo_activated', code=promo.code, discount=disc_str, time_left=time_left, deadline=deadline)}"
+
+        await message.answer(
+            text=get_text(lang, "main_menu_title") + promo_banner,
+            reply_markup=get_main_menu_keyboard(lang=lang),
+            parse_mode="HTML",
+        )
+        return
+
+    # Для новых пользователей показываем экран выбора языка
     await message.answer(
-        text=get_text(user.language, "select_language"),
+        text=get_text(lang, "select_language"),
         reply_markup=get_language_keyboard(),
     )
 
