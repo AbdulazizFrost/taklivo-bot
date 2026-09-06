@@ -29,13 +29,12 @@
     <!-- Background Stardust Particles -->
     <div class="stardust-container" id="stardustContainer" aria-hidden="true"></div>
 
-    <!-- Background Audio -->
+    <!-- 🎵 1. BACKGROUND AUDIO & VINYL CONTROLLER (Включенная опция: Музыка) -->
     <audio id="weddingAudio" loop preload="auto">
         <source src="music.m4a" type="audio/mp4">
         <source src="music.m4a" type="audio/x-m4a">
     </audio>
 
-    <!-- Floating Luxury Vinyl Music Controller -->
     <div class="vinyl-player-widget" id="musicBtn" onclick="toggleMusic()" role="button" aria-label="Toggle Wedding Music" tabindex="0">
         <div class="vinyl-disc" id="vinylDisc">
             <div class="vinyl-groove"></div>
@@ -74,9 +73,8 @@
     <!-- Main Content Container -->
     <main class="dark-editorial-wrapper" id="mainContent">
 
-        <!-- 1. HERO SECTION (MASTER EDITORIAL REDESIGN) -->
+        <!-- HERO SECTION: NAMES & DATE -->
         <header class="hero-cinematic reveal-block">
-            <!-- Haute Horlogerie & Jewelry Crest (Monogram Seal) -->
             <div class="hero-crest-emblem">
                 <div class="crest-frame-outer">
                     <div class="crest-frame-inner">
@@ -85,7 +83,6 @@
                 </div>
             </div>
 
-            <!-- Top Luxury Metadata & Editorial Subtitle -->
             <div class="hero-eyebrow-container">
                 <div class="hero-eyebrow-pill">
                     <span class="eyebrow-rule left"></span>
@@ -97,7 +94,6 @@
                 <p class="hero-editorial-caption" data-i18n="subtitle">Hayotimizning eng go'zal sahifasi boshlanmoqda</p>
             </div>
 
-            <!-- Main Visual Anchor: Couple Names & Engraved Date -->
             <div class="hero-title-group">
                 <h1 class="hero-couple-title" data-taklivo="couple_names">
                     <span class="name-first" data-taklivo="groom_name">MUSLIMBEK</span>
@@ -113,10 +109,8 @@
                 </div>
             </div>
 
-            <!-- Couture Editorial Portrait Mount -->
             <div class="hero-editorial-mount">
                 <div class="mount-matting-frame">
-                    <!-- Architectural Corner Jewel Hairlines -->
                     <div class="jewel-corner top-left">
                         <span class="jewel-axis-h"></span>
                         <span class="jewel-axis-v"></span>
@@ -134,7 +128,6 @@
                         <span class="jewel-axis-v"></span>
                     </div>
 
-                    <!-- Portrait Photograph Layer with Multi-Layer Vignette -->
                     <div class="mount-photo-stage">
                         <div class="hero-photo-layer" style="background-image: url('images/hero.jpg');">
                             <div class="cinematic-vignette"></div>
@@ -143,7 +136,6 @@
                         <div class="photo-inner-hairline"></div>
                     </div>
 
-                    <!-- Fine Engraving Caption Tag & Archival Studio Debossing -->
                     <div class="mount-caption-tag">
                         <span>EDITORIAL INVITATION · 2026</span>
                     </div>
@@ -151,7 +143,6 @@
                 </div>
             </div>
 
-            <!-- Couture Scroll Indicator -->
             <div class="hero-scroll-cue">
                 <span class="cue-label">SCROLL TO DISCOVER</span>
                 <div class="cue-line-track">
@@ -160,45 +151,21 @@
             </div>
         </header>
 
-        <!-- 2. HOLY AYAT / BLESSING SECTION -->
+        <!-- INVITATION MESSAGE SECTION -->
         <section class="section-ayat reveal-block">
             <div class="ayat-seal-icon">⚜️</div>
-            <p class="ayat-text-arabic" data-i18n="ayatText">
-                «Uning oyatlaridan biri — sizlar xotirjam bo‘lishingiz uchun o‘zingizdan juftlar yaratishi va o‘rtangizda mehr-muhabbat hamda rahm-shafqat paydo qilishidir.»
+            <p class="ayat-text-arabic" data-i18n="inviteText" style="font-family: var(--font-display); font-size: 20px; line-height: 1.8; color: var(--c-champagne-light); max-width: 500px; margin: 0 auto 16px;">
+                Hurmatli mehmonimiz! Hayotimizning eng quvonchli va unutilmas kuni — nikoh to'yimiz tantanasida sizni aziz va qadrli mehmonimiz sifatida ko'rishdan behad mamnun bo'lamiz.
             </p>
             <div class="gold-hairline-separator"></div>
-            <span class="ayat-source" data-i18n="ayatSource">RUM SURASI, 21-OYAT</span>
+            <span class="ayat-source" data-i18n="venueHall">XONADONIMIZDA</span>
         </section>
 
-        <!-- 3. THE COUPLE (EDITORIAL PRESENTATION) -->
-        <section class="section-couple reveal-block">
-            <div class="editorial-header">
-                <span class="editorial-num">01</span>
-                <h2 class="editorial-heading">THE COUPLE</h2>
-            </div>
-
-            <div class="couple-asymmetric-grid">
-                <div class="couple-image-card">
-                    <div class="couple-photo" style="background-image: url('images/couple.jpg');"></div>
-                    <div class="photo-caption-tag">PRE-WEDDING PORTRAIT</div>
-                </div>
-                <div class="couple-text-block">
-                    <p class="couple-lead" data-i18n="coupleLead">
-                        Ikki qalbning abadiy ittifoqi, o'zaro hurmat va cheksiz muhabbat dostoni.
-                    </p>
-                    <p class="couple-body" data-i18n="coupleBody">
-                        Hayotimizning eng muhim va unutilmas oqshomida siz kabi aziz va qadrli insonlarni yonimizda ko'rishdan behad baxtiyormiz.
-                    </p>
-                    <div class="monogram-seal-inline" data-taklivo="monogram">MO</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. WEDDING DETAILS & TIMELINE (LOCATION & SCHEDULE) -->
+        <!-- 📍 2. КАРТА ПРОЕЗДА & 📅 3. РАСПИСАНИЕ (Включенные опции) -->
         <section class="section-details reveal-block">
-            <div class="editorial-header">
-                <span class="editorial-num">02</span>
-                <h2 class="editorial-heading">THE CELEBRATION</h2>
+            <div class="editorial-header center">
+                <span class="editorial-num">01</span>
+                <h2 class="editorial-heading" data-i18n="celebrationTitle">THE CELEBRATION</h2>
             </div>
 
             <div class="details-monumental-layout">
@@ -210,11 +177,12 @@
                 <div class="gold-vertical-divider"></div>
 
                 <div class="details-location-anchor">
-                    <span class="venue-prefix">VENUE & RECEPTION</span>
+                    <span class="venue-prefix" data-i18n="venueTitle">MANZIL & QABUL</span>
                     <h3 class="venue-grand-title" data-taklivo="venue">UY</h3>
-                    <p class="venue-hall">Xonadonimizda</p>
+                    <p class="venue-hall" data-i18n="venueHall">Xonadonimizda</p>
                     <p class="venue-full-address" data-taklivo="address">Namangan sh. Yangi yo'l ko'cha 4-uy</p>
 
+                    <!-- Карта проезда (Yandex & Google) -->
                     <div class="map-buttons-dual">
                         <a href="https://yandex.uz/maps/?text=Namangan+shahar+Yangi+yo%27l+ko%27cha+4" target="_blank" rel="noopener noreferrer" class="cartier-map-button">
                             <span data-i18n="mapButton">Yandex Xaritada ochish 📍</span>
@@ -225,7 +193,7 @@
                     </div>
                 </div>
 
-                <!-- Wedding Day Schedule Timeline -->
+                <!-- 📅 Расписание (To'y dasturi) -->
                 <div class="wedding-schedule-block">
                     <h4 class="schedule-block-title" data-i18n="scheduleTitle">TO'Y DASTURI</h4>
                     <div class="schedule-timeline-flow">
@@ -258,40 +226,10 @@
             </div>
         </section>
 
-        <!-- 5. COUNTDOWN (ARCHITECTURAL DIVIDERS) -->
-        <section class="section-countdown reveal-block">
-            <div class="editorial-header center">
-                <h2 class="editorial-heading" data-i18n="countdownTitle">TANTANAGACHA QOLDI</h2>
-                <div class="gold-hairline-separator small"></div>
-            </div>
-
-            <div class="architectural-countdown">
-                <div class="countdown-unit">
-                    <span class="count-value" id="days">00</span>
-                    <span class="count-label" data-i18n="days">KUN</span>
-                </div>
-                <div class="countdown-sep">·</div>
-                <div class="countdown-unit">
-                    <span class="count-value" id="hours">00</span>
-                    <span class="count-label" data-i18n="hours">SOAT</span>
-                </div>
-                <div class="countdown-sep">·</div>
-                <div class="countdown-unit">
-                    <span class="count-value" id="minutes">00</span>
-                    <span class="count-label" data-i18n="minutes">DAQIQA</span>
-                </div>
-                <div class="countdown-sep">·</div>
-                <div class="countdown-unit">
-                    <span class="count-value" id="seconds">00</span>
-                    <span class="count-label" data-i18n="seconds">SONIYA</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 6. RSVP SECTION (HAUTE-COUTURE FORM) -->
+        <!-- ✍️ 4. RSVP ОПРОС (Включенная опция) -->
         <section class="section-rsvp reveal-block">
             <div class="editorial-header center">
-                <span class="editorial-num">03</span>
+                <span class="editorial-num">02</span>
                 <h2 class="editorial-heading" data-i18n="rsvpTitle">TASHRIFNI TASDIQLASH</h2>
                 <p class="rsvp-editorial-sub" data-i18n="rsvpSubtitle">Sizning ishtirokingiz biz uchun juda muhim</p>
             </div>
@@ -326,7 +264,7 @@
             </form>
         </section>
 
-        <!-- 7. LUXURY FOOTER -->
+        <!-- LUXURY FOOTER -->
         <footer class="editorial-footer reveal-block">
             <div class="footer-seal" data-taklivo="monogram">MO</div>
             <h2 class="footer-couple-name" data-taklivo="couple_names">Muslimbek & Oyshaxon</h2>
@@ -337,7 +275,7 @@
 
     </main>
 
-    <!-- Success Modal -->
+    <!-- Success Modal for RSVP -->
     <div class="success-modal" id="successModal" role="dialog" aria-modal="true">
         <div class="modal-box-luxury">
             <div class="modal-crest">⚜️</div>
@@ -347,7 +285,7 @@
         </div>
     </div>
 
-    <!-- Engine & Local Scripts -->
+    <!-- 🌐 5. ВТОРОЙ ЯЗЫК & Engine Scripts -->
     <script src="../../demo/assets/engine.js"></script>
     <script src="script.js"></script>
 </body>

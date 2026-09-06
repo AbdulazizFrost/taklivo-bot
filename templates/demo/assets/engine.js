@@ -11,6 +11,10 @@
             uz: {
                 openInvite: "Taklifnomani Ochish ⚜️",
                 subtitle: "Hayotimizning eng go'zal sahifasi boshlanmoqda",
+                inviteText: "Hurmatli mehmonimiz! Hayotimizning eng quvonchli va unutilmas kuni — nikoh to'yimiz tantanasida sizni aziz va qadrli mehmonimiz sifatida ko'rishdan behad mamnun bo'lamiz.",
+                celebrationTitle: "THE CELEBRATION",
+                venueTitle: "MANZIL & QABUL",
+                venueHall: "Xonadonimizda",
                 ourDay: "BIZNING KUNIMIZ 💍",
                 ourStoryTitle: "Bizning Hikoya",
                 galleryTitle: "Galereya",
@@ -68,6 +72,10 @@
             ru: {
                 openInvite: "Открыть приглашение ⚜️",
                 subtitle: "Начинается самая прекрасная глава нашей жизни",
+                inviteText: "Дорогие гости! В один из самых счастливых и знаменательных дней нашей жизни — день нашей свадьбы, мы будем искренне рады видеть вас среди наших почётных гостей.",
+                celebrationTitle: "СВАДЕБНОЕ ТОРЖЕСТВО",
+                venueTitle: "АДРЕС И ПРИЁМ ГОСТЕЙ",
+                venueHall: "В кругу семьи",
                 ourDay: "НАШ ДЕНЬ 💍",
                 ourStoryTitle: "Наша история",
                 galleryTitle: "Галерея",
