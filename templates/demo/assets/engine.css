@@ -124,34 +124,44 @@
 /* Language Switcher Pill */
 .taklivo-lang-toggle {
     position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 99990;
-    background: rgba(18, 19, 22, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    border-radius: 20px;
-    padding: 3px 6px;
+    top: 18px;
+    right: 18px;
+    z-index: 999999;
+    background: rgba(10, 12, 16, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(216, 178, 110, 0.45);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65), 0 0 12px rgba(216, 178, 110, 0.2);
+    border-radius: 24px;
+    padding: 3px 5px;
     display: flex;
-    gap: 3px;
+    gap: 4px;
+    pointer-events: auto;
 }
 
 .taklivo-lang-btn {
     background: transparent;
     border: none;
-    color: #bbb;
+    color: #9fa5b5;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 11px;
-    font-weight: 600;
-    padding: 4px 8px;
-    border-radius: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 5px 11px;
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
+}
+
+.taklivo-lang-btn:hover {
+    color: #ffffff;
 }
 
 .taklivo-lang-btn.active {
-    background: rgba(212, 175, 55, 0.3);
-    color: #ffd700;
-    box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+    background: linear-gradient(135deg, #d8b26e, #a8813a);
+    color: #07080a;
+    font-weight: 800;
+    box-shadow: 0 0 10px rgba(216, 178, 110, 0.45);
 }
 
 @media (max-width: 480px) {

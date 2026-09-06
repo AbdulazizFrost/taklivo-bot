@@ -164,21 +164,32 @@
         },
 
         createLanguageToggle: function () {
-            if (this.orderData && this.orderData.options && this.orderData.options.second_language === false) return;
-            if (document.getElementById('taklivoLangToggle')) return;
-            const container = document.createElement('div');
-            container.id = 'taklivoLangToggle';
-            container.className = 'taklivo-lang-toggle';
-            container.innerHTML = `
-                <button class="taklivo-lang-btn ${this.lang === 'uz' ? 'active' : ''}" onclick="TaklivoEngine.setLanguage('uz')">UZ</button>
-                <button class="taklivo-lang-btn ${this.lang === 'ru' ? 'active' : ''}" onclick="TaklivoEngine.setLanguage('ru')">RU</button>
-            `;
-            document.body.appendChild(container);
+            if (this.orderData && this.orderData.options && this.orderData.options.second_language === false) {
+                const existing = document.getElementById('taklivoLangToggle');
+                if (existing) existing.style.display = 'none';
+                return;
+            }
+            let container = document.getElementById('taklivoLangToggle');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'taklivoLangToggle';
+                container.className = 'taklivo-lang-toggle';
+                container.innerHTML = `
+                    <button class="taklivo-lang-btn ${this.lang === 'uz' ? 'active' : ''}" onclick="TaklivoEngine.setLanguage('uz')">UZ</button>
+                    <button class="taklivo-lang-btn ${this.lang === 'ru' ? 'active' : ''}" onclick="TaklivoEngine.setLanguage('ru')">RU</button>
+                `;
+                document.body.appendChild(container);
+            } else {
+                container.style.display = 'flex';
+                container.querySelectorAll('.taklivo-lang-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.innerText.toLowerCase() === this.lang);
+                });
+            }
         },
 
         setLanguage: function (newLang) {
             this.lang = newLang;
-            localStorage.setItem('taklivo_lang', newLang);
+            try { localStorage.setItem('taklivo_lang', newLang); } catch (e) {}
             document.querySelectorAll('.taklivo-lang-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.innerText.toLowerCase() === newLang);
             });
@@ -256,6 +267,7 @@
                 if (!el.querySelector('[data-taklivo="groom_name"]')) {
                     el.innerText = coupleNames;
                 }
+            });
             document.querySelectorAll('[data-taklivo="monogram"]').forEach(el => {
                 const letters = el.querySelectorAll('.crest-letter');
                 if (letters.length >= 2) {

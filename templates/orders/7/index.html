@@ -29,6 +29,12 @@
     <!-- Background Stardust Particles -->
     <div class="stardust-container" id="stardustContainer" aria-hidden="true"></div>
 
+    <!-- 🌐 ВТОРОЙ ЯЗЫК (Language Switcher: UZ / RU) -->
+    <div id="taklivoLangToggle" class="taklivo-lang-toggle" role="region" aria-label="Language Selector">
+        <button class="taklivo-lang-btn active" onclick="if(window.TaklivoEngine){TaklivoEngine.setLanguage('uz')}">UZ</button>
+        <button class="taklivo-lang-btn" onclick="if(window.TaklivoEngine){TaklivoEngine.setLanguage('ru')}">RU</button>
+    </div>
+
     <!-- 🎵 1. BACKGROUND AUDIO & VINYL CONTROLLER (Включенная опция: Музыка) -->
     <audio id="weddingAudio" loop preload="auto">
         <source src="music.m4a" type="audio/mp4">
@@ -285,7 +291,7 @@
         </div>
     </div>
 
-    <!-- 🌐 5. ВТОРОЙ ЯЗЫК & Engine Scripts -->
+    <!-- 🌐 Engine Scripts -->
     <script src="../../demo/assets/engine.js"></script>
     <script src="script.js"></script>
 </body>
