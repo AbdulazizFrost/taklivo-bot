@@ -822,6 +822,38 @@ async def callback_admin_view_receipt(callback: CallbackQuery) -> None:
         )
 
 
+@router.callback_query(F.data.startswith("adm_view_music:"))
+async def callback_admin_view_music(callback: CallbackQuery) -> None:
+    """Отправка прикрепленной музыки заказа администратору."""
+    if not is_admin(callback.from_user.id):
+        return
+
+    order_id = int(callback.data.split(":")[1])
+    music = await db.get_order_music(order_id)
+
+    if not music:
+        await callback.answer("К этому заказу нет прикрепленной музыки", show_alert=True)
+        return
+
+    await callback.answer("Отправка музыки...")
+    try:
+        await callback.message.answer_audio(
+            audio=music.file_id,
+            caption=f"🎵 <b>Музыка к заказу #{order_id}</b>\nФайл: <code>{music.file_name or 'music'}</code>",
+            parse_mode="HTML",
+        )
+    except Exception as e:
+        try:
+            await callback.message.answer_document(
+                document=music.file_id,
+                caption=f"🎵 <b>Музыка к заказу #{order_id}</b>\nФайл: <code>{music.file_name or 'music'}</code>",
+                parse_mode="HTML",
+            )
+        except Exception as err:
+            logger.error(f"Ошибка отправки музыки к заказу #{order_id}: {err}")
+            await callback.message.answer(f"⚠️ Ошибка отправки аудиофайла: {err}")
+
+
 # --- Экспорт JSON для генератора сайта ---
 
 @router.callback_query(F.data.startswith("adm_export_json:"))

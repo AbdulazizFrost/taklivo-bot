@@ -59,6 +59,8 @@ def get_admin_order_actions_keyboard(order: Order) -> InlineKeyboardMarkup:
     media_row = []
     if order.gallery_enabled:
         media_row.append(InlineKeyboardButton(text="📸 Фото заказа", callback_data=f"adm_view_photos:{order.id}"))
+    if order.music_enabled:
+        media_row.append(InlineKeyboardButton(text="🎵 Музыка заказа", callback_data=f"adm_view_music:{order.id}"))
     if order.payment_receipt_file_id:
         media_row.append(InlineKeyboardButton(text="🧾 Показать чек", callback_data=f"adm_view_receipt:{order.id}"))
     if media_row:
