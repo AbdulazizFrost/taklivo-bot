@@ -159,7 +159,7 @@
             }
 
             this.initCountdown(config.defaultDate || '2026-10-24T18:30:00');
-            this.setupRSVPForm(orderId);
+            this.setupRSVPForm(orderId, config);
             this.setupCardCopy();
         },
 
@@ -447,7 +447,7 @@
             this._timerInterval = setInterval(updateTimer, 1000);
         },
 
-        setupRSVPForm: function (orderId) {
+        setupRSVPForm: function (orderId, config) {
             const form = document.getElementById('rsvpForm');
             if (!form) return;
 
@@ -466,7 +466,9 @@
 
                 // If orderId is present, post to API
                 if (orderId) {
-                    fetch(`/api/order/${orderId}/rsvp`, {
+                    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                    const apiBase = isLocal ? '' : ((config && config.apiBase) || 'https://taklivo.uz');
+                    fetch(`${apiBase}/api/order/${orderId}/rsvp`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ name, phone, message, status })
