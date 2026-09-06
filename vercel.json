@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "cleanUrls": false,
+  "trailingSlash": true,
+  "routes": [
+    {
+      "src": "^/assets/(.*)",
+      "dest": "/templates/demo/assets/$1"
+    },
+    {
+      "src": "^/demo/?$",
+      "dest": "/templates/demo/index.html"
+    },
+    {
+      "src": "^/demo/(.*)",
+      "dest": "/templates/demo/$1"
+    },
+    {
+      "src": "^/orders/(.*)",
+      "dest": "/templates/orders/$1"
+    },
+    {
+      "src": "^/order/(.*)",
+      "dest": "/templates/orders/$1"
+    },
+    {
+      "src": "^/$",
+      "dest": "/templates/demo/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS" }
+      ]
+    }
+  ]
+}
