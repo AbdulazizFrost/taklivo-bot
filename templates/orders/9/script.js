@@ -1,19 +1,8 @@
 // ==========================================================================
-// Oriental Wedding Invitation Scripts — Uchqunbek & Charosxon
+// Uchqunbek & Charosxon Wedding Invitation Scripts
 // ==========================================================================
 
-function openInvitation() {
-    const introScreen = document.getElementById('introScreen');
-    if (introScreen) {
-        introScreen.classList.add('hide');
-        setTimeout(() => {
-            introScreen.style.display = 'none';
-        }, 800);
-    }
-}
-
-// Add to Calendar helper
-function addToCalendar() {
+function saveToCalendar() {
     const title = encodeURIComponent("Uchqunbek & Charosxon Nikoh To‘yi");
     const details = encodeURIComponent("Uchqunbek va Charosxonlarning nikoh to‘y tantanasi. Manzil: Buxoro viloyati, Olot tumani, Xo‘jaqul Ota to‘yxonasi.");
     const location = encodeURIComponent("Xo‘jaqul Ota to‘yxonasi, Olot tumani, Buxoro viloyati");
@@ -25,19 +14,3 @@ function addToCalendar() {
     
     window.open(googleCalUrl, '_blank');
 }
-
-// Subtle golden particle animation
-document.addEventListener('DOMContentLoaded', () => {
-    const bg = document.getElementById('particlesBg');
-    if (!bg) return;
-
-    for (let i = 0; i < 24; i++) {
-        const p = document.createElement('div');
-        p.className = 'gold-dust-dot';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.top = Math.random() * 100 + '%';
-        p.style.animationDelay = (Math.random() * 5) + 's';
-        p.style.animationDuration = (4 + Math.random() * 6) + 's';
-        bg.appendChild(p);
-    }
-});
