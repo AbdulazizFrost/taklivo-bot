@@ -51,6 +51,11 @@ body.dark-luxury-body {
     min-height: 100vh;
 }
 
+body.curtain-active {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
 /* 1. Subtle Film Grain */
 .film-grain {
     position: fixed;

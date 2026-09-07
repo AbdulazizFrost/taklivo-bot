@@ -19,9 +19,16 @@
     
     <link rel="stylesheet" href="assets/engine.css">
     <link rel="stylesheet" href="style.css">
+    <!-- Reset scroll position to top on page load / refresh -->
+    <script>
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+    </script>
 </head>
 
-<body class="dark-luxury-body">
+<body class="dark-luxury-body curtain-active">
 
     <!-- Subtle Film Grain Overlay -->
     <div class="film-grain" aria-hidden="true"></div>

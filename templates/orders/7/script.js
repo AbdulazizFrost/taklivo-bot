@@ -3,6 +3,16 @@
  * Black-Tie Cartier Editorial Controller
  */
 
+// Ensure browser always starts from top on reload/refresh
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
+window.addEventListener('beforeunload', () => {
+    window.scrollTo(0, 0);
+});
+
 let isPlaying = false;
 const audio = document.getElementById('weddingAudio');
 const vinylDisc = document.getElementById('vinylDisc');
@@ -10,6 +20,8 @@ const eqBars = document.getElementById('eqBars');
 const vinylLabel = document.getElementById('vinylLabel');
 
 function openInvitation() {
+    document.body.classList.remove('curtain-active');
+    window.scrollTo(0, 0);
     const curtain = document.getElementById('curtainOverlay');
     if (curtain) {
         curtain.classList.add('opened');
@@ -104,6 +116,10 @@ function initScrollReveal() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     if (window.TaklivoEngine) {
         window.TaklivoEngine.init({
             orderId: 7,
