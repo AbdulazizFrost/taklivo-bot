@@ -254,42 +254,32 @@ body.dark-luxury-body {
 }
 
 .embossed-seal {
-    width: 90px;
-    height: 90px;
+    width: 106px;
+    height: 106px;
     margin: 0 auto 24px;
     border-radius: 50%;
-    background: radial-gradient(circle, #202430 0%, #0d0f14 100%);
-    border: 1px solid var(--c-champagne-gold);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 30px rgba(216, 178, 110, 0.25), inset 0 0 15px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 35px rgba(216, 178, 110, 0.35), 0 8px 25px rgba(0, 0, 0, 0.9);
     position: relative;
+    transform: none !important;
+    transition: transform 0.4s var(--ease-editorial), box-shadow 0.4s var(--ease-editorial);
 }
 
-.seal-inner-ring {
-    width: 76px;
-    height: 76px;
-    border-radius: 50%;
-    border: 1px dashed rgba(216, 178, 110, 0.45);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: rotateSlow 40s linear infinite;
+.embossed-seal:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 0 45px rgba(216, 178, 110, 0.5), 0 10px 30px rgba(0, 0, 0, 0.95);
 }
 
-@keyframes rotateSlow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.seal-initials {
-    font-family: var(--font-serif);
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--c-champagne-light);
-    text-shadow: 0 0 10px rgba(216, 178, 110, 0.4);
+.seal-crest-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 10px rgba(0,0,0,0.6));
+    animation: none !important;
+    transform: none !important;
 }
 
 .curtain-meta {
@@ -382,50 +372,24 @@ body.dark-luxury-body {
 .hero-crest-emblem {
     position: relative;
     z-index: 2;
-    margin: 0 auto 18px;
+    margin: 0 auto 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     animation: heroEditorialFadeUp 1s var(--ease-editorial) 0.15s both;
 }
 
-.crest-frame-outer {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 0.75px solid var(--c-champagne-gold);
-    background: radial-gradient(circle, #181d28 0%, #0c0e14 100%);
-    box-shadow: 0 0 20px rgba(216, 178, 110, 0.2), inset 0 0 10px rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.hero-crest-img {
+    width: 68px;
+    height: 68px;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 0 16px rgba(216, 178, 110, 0.35));
+    transition: transform 0.3s ease;
 }
 
-.crest-frame-outer:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(216, 178, 110, 0.35), inset 0 0 10px rgba(0, 0, 0, 0.8);
-}
-
-.crest-frame-inner {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 0.5px dashed rgba(216, 178, 110, 0.45);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.crest-initials {
-    font-family: var(--font-serif);
-    font-size: 13.5px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    color: var(--c-champagne-light);
-    text-shadow: 0 0 8px rgba(216, 178, 110, 0.4);
-    padding-left: 2px;
+.hero-crest-img:hover {
+    transform: scale(1.06);
 }
 
 /* 1.2 Top Eyebrow & Editorial Subtitle */
