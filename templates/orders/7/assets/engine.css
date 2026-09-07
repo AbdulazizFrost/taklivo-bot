@@ -1,0 +1,180 @@
+/* TAKLIVO Universal Demo Engine Styles */
+:root {
+    --taklivo-gold: #d4af37;
+    --taklivo-gold-light: #f5e6b3;
+    --taklivo-dark: #121316;
+    --taklivo-accent: #e5a93b;
+}
+
+/* Floating Banner Container */
+.taklivo-floating-banner {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-width: 520px;
+    background: rgba(18, 19, 22, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.15);
+    border-radius: 16px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 99999;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #ffffff;
+    box-sizing: border-box;
+    animation: taklivoSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes taklivoSlideUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 40px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.taklivo-banner-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+
+.taklivo-banner-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #ffd700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.taklivo-banner-badge {
+    font-size: 10px;
+    background: rgba(212, 175, 55, 0.2);
+    border: 1px solid #d4af37;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+.taklivo-banner-desc {
+    font-size: 11px;
+    color: #c9cdd4;
+    line-height: 1.35;
+}
+
+.taklivo-banner-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #d4af37, #aa8010);
+    color: #111;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.4);
+    transition: all 0.2s ease;
+}
+
+.taklivo-banner-btn:hover {
+    transform: scale(1.03);
+    filter: brightness(1.1);
+}
+
+/* Watermark Overlay for Unpaid Custom Orders */
+.taklivo-unpaid-watermark {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(220, 38, 38, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    z-index: 99998;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    text-transform: uppercase;
+}
+
+/* Language Switcher Pill */
+.taklivo-lang-toggle {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 999999;
+    background: rgba(10, 12, 16, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(216, 178, 110, 0.45);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65), 0 0 12px rgba(216, 178, 110, 0.2);
+    border-radius: 24px;
+    padding: 3px 5px;
+    display: flex;
+    gap: 4px;
+    pointer-events: auto;
+}
+
+.taklivo-lang-btn {
+    background: transparent;
+    border: none;
+    color: #9fa5b5;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 5px 11px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.taklivo-lang-btn:hover {
+    color: #ffffff;
+}
+
+.taklivo-lang-btn.active {
+    background: linear-gradient(135deg, #d8b26e, #a8813a);
+    color: #07080a;
+    font-weight: 800;
+    box-shadow: 0 0 10px rgba(216, 178, 110, 0.45);
+}
+
+@media (max-width: 480px) {
+    .taklivo-floating-banner {
+        bottom: 10px;
+        width: calc(100% - 20px);
+        padding: 10px 14px;
+    }
+    .taklivo-banner-desc {
+        font-size: 10px;
+    }
+    .taklivo-banner-btn {
+        padding: 7px 11px;
+        font-size: 11px;
+    }
+}
