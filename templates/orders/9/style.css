@@ -1,6 +1,6 @@
 /* ==========================================================================
    ORIENTAL EMERALD LUXURY THEME — TAKLIVO
-   Matching Exact Royal Heritage Style from Reference Screenshot
+   Matching Exact Royal Heritage Style with Real 3D Golden Ornaments
    Deep Emerald Green (#091f1a) + Harlequin Diamond Tile + Radiant Antique Gold
    ========================================================================== */
 
@@ -59,7 +59,7 @@ body {
     min-height: 100vh;
 }
 
-/* Mobile Frame Wrapper (Centered on all screens, native feel on mobile) */
+/* Mobile Frame Wrapper */
 .mobile-frame {
     max-width: 440px;
     margin: 0 auto;
@@ -67,13 +67,13 @@ body {
     position: relative;
 }
 
-/* Decorative Top Dots (From screenshot top right) */
+/* Decorative Top Dots */
 .top-nav-decor {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 6px;
-    padding: 0 8px 16px;
+    padding: 0 8px 14px;
 }
 
 .decor-dot {
@@ -88,17 +88,17 @@ body {
 .content-stream {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 22px;
 }
 
 /* ==========================================================================
-   THE EMERALD CARD (Exact match to screenshot container)
+   THE EMERALD CARD
    ========================================================================== */
 .emerald-card {
     background: var(--bg-card-gradient);
     border: 1px solid var(--gold-border);
     border-radius: var(--radius-card);
-    padding: 32px 22px 28px;
+    padding: 28px 22px 28px;
     text-align: center;
     position: relative;
     box-shadow: var(--shadow-emerald), inset 0 0 35px rgba(223, 189, 110, 0.04);
@@ -128,25 +128,47 @@ body {
 }
 
 /* ==========================================================================
-   ORNAMENTS & EMBLEMS
+   REAL 3D GOLD ORNAMENTS (From Reference Assets)
    ========================================================================== */
-.gold-taj-ornament {
-    width: 140px;
-    margin: 0 auto 12px;
-}
-
-.gold-taj-ornament.mini {
-    width: 120px;
-    margin: 0 auto 10px;
-}
-
-.taj-svg {
+.gold-arch-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: -6px auto 14px;
     width: 100%;
+}
+
+.gold-arch-img {
+    width: 220px;
+    max-width: 68%;
     height: auto;
     display: block;
-    filter: drop-shadow(0 2px 6px rgba(223, 189, 110, 0.3));
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5)) drop-shadow(0 2px 6px rgba(223, 189, 110, 0.25));
 }
 
+.gold-arch-wrap.mini .gold-arch-img {
+    width: 180px;
+    max-width: 58%;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+}
+
+.gold-divider-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 12px auto 18px;
+    width: 100%;
+}
+
+.gold-divider-img {
+    width: 270px;
+    max-width: 84%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.45));
+}
+
+/* Sub-header Tag */
 .sub-header-tag {
     display: block;
     font-family: var(--font-heading);
@@ -195,38 +217,8 @@ body {
     margin-left: 2px;
 }
 
-/* Rosette Divider (8-pointed star with gold whisker lines from screenshot) */
-.rosette-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin: 14px auto 20px;
-    max-width: 260px;
-}
-
-.rosette-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold-antique), transparent);
-}
-
-.rosette-symbol {
-    width: 26px;
-    height: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.rosette-svg {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 0 4px rgba(223, 189, 110, 0.4));
-}
-
 /* ==========================================================================
-   HEADLINES & TYPOGRAPHY (Matching Screenshot)
+   HEADLINES & TYPOGRAPHY
    ========================================================================== */
 .main-card-headline {
     font-family: var(--font-heading);
@@ -248,71 +240,72 @@ body {
 
 .hero-name {
     font-family: var(--font-heading);
-    color: var(--text-white);
-    font-size: 1.85rem;
+    font-size: 1.95rem;
     font-weight: 700;
+    color: var(--gold-light);
     letter-spacing: 2px;
     text-transform: uppercase;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .hero-amp {
     font-family: var(--font-body);
+    font-size: 1.7rem;
     font-style: italic;
     color: var(--gold-primary);
-    font-size: 1.8rem;
     line-height: 1;
 }
 
 .event-type-badge {
     display: inline-block;
+    padding: 4px 18px;
+    background: rgba(223, 189, 110, 0.12);
+    border: 1px solid var(--gold-border);
+    border-radius: 20px;
+    color: var(--gold-light);
     font-family: var(--font-ui);
-    color: var(--gold-primary);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 3px;
-    text-transform: uppercase;
-    background: rgba(223, 189, 110, 0.1);
-    border: 1px solid rgba(223, 189, 110, 0.35);
-    padding: 5px 16px;
-    border-radius: 20px;
-    margin-top: 6px;
+    margin-bottom: 8px;
 }
 
 .hero-subtext {
     font-family: var(--font-body);
+    font-size: 1.2rem;
     font-style: italic;
     color: var(--text-muted);
-    font-size: 1.05rem;
 }
 
 /* ==========================================================================
-   LETTER BODY (Card 2)
+   CARD 2: INVITATION LETTER
    ========================================================================== */
 .letter-body-paragraphs {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 14px;
+    margin: 8px 0 22px;
 }
 
 .paragraph-text {
     font-family: var(--font-body);
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     line-height: 1.65;
     color: var(--text-ivory);
+    font-weight: 400;
 }
 
 .highlight-gold-name {
     color: var(--gold-light);
     font-weight: 600;
-    text-shadow: 0 0 8px rgba(223, 189, 110, 0.3);
+    font-style: italic;
 }
 
 .letter-gold-separator {
-    width: 90%;
     height: 1px;
-    background: rgba(223, 189, 110, 0.25);
+    width: 60%;
     margin: 0 auto 20px;
+    background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
 }
 
 .letter-signature-block {
@@ -322,127 +315,131 @@ body {
 .signature-intro {
     font-family: var(--font-body);
     font-style: italic;
-    color: var(--text-muted);
-    font-size: 1.05rem;
+    font-size: 1.12rem;
+    color: var(--gold-primary);
     margin-bottom: 6px;
 }
 
 .signature-family {
     font-family: var(--font-heading);
-    color: var(--gold-primary);
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-white);
+    letter-spacing: 2px;
+    line-height: 1.4;
 }
 
 /* ==========================================================================
-   EVENT DATE & TIME (Card 3 — Exact match to screenshot date pill)
+   CARD 3: EVENT DETAILS & DATE
    ========================================================================== */
 .event-date-badge-pill {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
-    background: #09211b;
-    border: 1px solid rgba(223, 189, 110, 0.5);
-    padding: 12px 22px;
+    background: rgba(7, 26, 21, 0.85);
+    border: 1px solid var(--gold-border-bright);
+    padding: 10px 20px;
     border-radius: 30px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-    margin-bottom: 22px;
+    margin: 4px auto 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .pill-cal-icon {
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 .pill-cal-text {
     font-family: var(--font-ui);
-    color: var(--text-white);
-    font-size: 0.88rem;
-    font-weight: 600;
-    letter-spacing: 1px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--gold-light);
     text-transform: uppercase;
 }
 
 .time-callout-box {
-    background: rgba(7, 26, 21, 0.6);
-    border: 1px solid rgba(223, 189, 110, 0.25);
+    background: rgba(223, 189, 110, 0.05);
+    border: 1px solid var(--gold-border);
     border-radius: var(--radius-inner);
-    padding: 16px;
-    margin-bottom: 22px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
 }
 
 .time-label {
     display: block;
     font-family: var(--font-ui);
-    color: var(--gold-antique);
     font-size: 0.72rem;
     font-weight: 600;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px;
+    color: var(--gold-antique);
+    text-transform: uppercase;
     margin-bottom: 4px;
 }
 
 .time-main {
     display: block;
     font-family: var(--font-heading);
-    color: var(--text-white);
-    font-size: 2.2rem;
+    font-size: 2.6rem;
     font-weight: 700;
+    color: var(--text-white);
     letter-spacing: 2px;
     line-height: 1.1;
-    margin-bottom: 4px;
+    text-shadow: 0 0 15px rgba(223, 189, 110, 0.4);
 }
 
 .time-sub {
     display: block;
     font-family: var(--font-body);
+    font-size: 1.05rem;
     font-style: italic;
     color: var(--text-muted);
-    font-size: 0.95rem;
+    margin-top: 4px;
 }
 
 /* Mini Calendar Box */
 .emerald-calendar-box {
-    background: rgba(7, 26, 21, 0.7);
-    border: 1px solid rgba(223, 189, 110, 0.28);
+    background: #061813;
+    border: 1px solid var(--gold-border);
     border-radius: var(--radius-inner);
-    padding: 16px 14px;
-    max-width: 300px;
-    margin: 0 auto 20px;
+    padding: 18px 14px;
+    margin-bottom: 20px;
 }
 
 .cal-month-title {
-    font-family: var(--font-ui);
-    font-size: 0.88rem;
+    font-family: var(--font-heading);
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--gold-primary);
-    letter-spacing: 1.5px;
+    color: var(--gold-light);
+    letter-spacing: 2px;
     text-transform: uppercase;
     margin-bottom: 12px;
+    text-align: center;
 }
 
 .cal-days-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 6px;
-    align-items: center;
     text-align: center;
     font-family: var(--font-ui);
     font-size: 0.8rem;
-    color: var(--text-ivory);
 }
 
 .c-head {
-    font-size: 0.7rem;
-    font-weight: 600;
     color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
     padding-bottom: 6px;
 }
 
-.c-gold {
+.c-head.c-gold {
     color: var(--gold-primary);
-    font-weight: 700;
+}
+
+.cal-days-grid span {
+    padding: 6px 0;
+    border-radius: 8px;
+    color: var(--text-ivory);
 }
 
 .c-empty {
@@ -450,59 +447,59 @@ body {
 }
 
 .c-active-day {
-    background: var(--gold-primary);
-    color: #09211b;
-    font-weight: 700;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-    margin: 0 auto;
-    box-shadow: 0 0 14px rgba(223, 189, 110, 0.7);
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-antique)) !important;
+    color: #071a15 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 12px rgba(223, 189, 110, 0.6);
+    transform: scale(1.08);
 }
 
 .btn-cal-add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 13px 20px;
     background: transparent;
-    border: 1px solid var(--gold-antique);
+    border: 1px solid var(--gold-primary);
+    border-radius: 30px;
     color: var(--gold-light);
     font-family: var(--font-ui);
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     font-weight: 600;
-    letter-spacing: 0.8px;
-    padding: 10px 22px;
-    border-radius: 30px;
+    letter-spacing: 1px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
 .btn-cal-add:hover {
-    background: rgba(223, 189, 110, 0.15);
-    border-color: var(--gold-primary);
+    background: var(--gold-primary);
+    color: #071a15;
+    box-shadow: 0 4px 15px rgba(223, 189, 110, 0.4);
 }
 
 /* ==========================================================================
-   VENUE & MAP SECTION (Card 4)
+   CARD 4: VENUE & LOCATION
    ========================================================================== */
 .venue-showcase-box {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .venue-prominent-name {
     font-family: var(--font-heading);
-    color: var(--text-white);
-    font-size: 1.85rem;
+    color: var(--gold-light);
+    font-size: 1.8rem;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     margin-bottom: 4px;
 }
 
 .venue-badge-label {
     font-family: var(--font-ui);
-    color: var(--gold-primary);
-    font-size: 0.78rem;
-    letter-spacing: 2px;
-    font-weight: 600;
-    text-transform: uppercase;
+    color: var(--gold-antique);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 3px;
     margin-bottom: 12px;
 }
 
@@ -510,53 +507,53 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(7, 26, 21, 0.6);
-    border: 1px solid rgba(223, 189, 110, 0.25);
-    padding: 8px 18px;
+    background: rgba(223, 189, 110, 0.08);
+    border: 1px solid var(--gold-border);
+    padding: 8px 16px;
     border-radius: 20px;
     font-family: var(--font-ui);
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     color: var(--text-ivory);
 }
 
-/* Map Frame */
+.pin-symbol {
+    font-size: 0.95rem;
+}
+
 .map-embed-wrapper {
     position: relative;
     border-radius: var(--radius-inner);
     overflow: hidden;
-    border: 1px solid var(--gold-border-bright);
-    margin-bottom: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    height: 240px;
+    border: 1px solid var(--gold-border);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    margin-bottom: 18px;
+    background: #061813;
 }
 
 .map-embed-wrapper iframe {
     display: block;
-    width: 100%;
-    height: 100%;
 }
 
 .map-overlay-title {
     position: absolute;
     bottom: 10px;
     left: 10px;
-    background: rgba(9, 35, 28, 0.92);
-    color: var(--gold-light);
-    border: 1px solid var(--gold-antique);
+    background: rgba(7, 26, 21, 0.92);
+    border: 1px solid var(--gold-border);
     padding: 6px 14px;
-    border-radius: 20px;
+    border-radius: 12px;
     font-family: var(--font-ui);
     font-size: 0.75rem;
     font-weight: 600;
+    color: var(--gold-light);
+    backdrop-filter: blur(4px);
     pointer-events: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
-/* Map Action Buttons */
 .map-action-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
 .btn-nav-action {
@@ -564,60 +561,59 @@ body {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 14px 20px;
+    padding: 13px 18px;
     border-radius: 30px;
-    font-family: var(--font-ui);
-    font-size: 0.88rem;
-    font-weight: 600;
     text-decoration: none;
+    font-family: var(--font-ui);
+    font-size: 0.84rem;
+    font-weight: 600;
     letter-spacing: 0.5px;
-    transition: all 0.25s ease;
+    transition: all 0.3s ease;
 }
 
-.nav-icon {
+.btn-nav-action .nav-icon {
     width: 18px;
     height: 18px;
     flex-shrink: 0;
 }
 
 .btn-google {
-    background: linear-gradient(135deg, #dfbd6e 0%, #b8923a 100%);
-    color: #071914;
-    box-shadow: 0 8px 22px rgba(223, 189, 110, 0.35);
-    border: 1px solid var(--gold-light);
+    background: linear-gradient(135deg, #dfbd6e, #c5a059);
+    color: #071a15;
+    box-shadow: 0 4px 15px rgba(223, 189, 110, 0.35);
 }
 
 .btn-google:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(223, 189, 110, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(223, 189, 110, 0.5);
 }
 
 .btn-yandex {
-    background: rgba(7, 26, 21, 0.7);
+    background: rgba(7, 26, 21, 0.9);
+    border: 1px solid var(--gold-border-bright);
     color: var(--gold-light);
-    border: 1px solid var(--gold-border);
 }
 
 .btn-yandex:hover {
-    background: rgba(223, 189, 110, 0.12);
+    background: rgba(223, 189, 110, 0.15);
     border-color: var(--gold-primary);
-    transform: translateY(-2px);
 }
 
 /* ==========================================================================
-   SACRED AYAH CARD (Card 5)
+   CARD 5: SACRED AYAH
    ========================================================================== */
 .ayah-blessing-card {
-    padding: 28px 20px;
+    padding: 26px 22px;
 }
 
 .ayah-arabic-text {
     font-family: var(--font-arabic);
     color: var(--gold-light);
-    font-size: 1.35rem;
-    line-height: 1.9;
-    margin-bottom: 14px;
+    font-size: 1.45rem;
+    line-height: 1.8;
+    margin-bottom: 8px;
     direction: rtl;
+    text-shadow: 0 0 10px rgba(223, 189, 110, 0.3);
 }
 
 .ayah-uzbek-translation {
