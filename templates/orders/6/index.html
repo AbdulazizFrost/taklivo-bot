@@ -22,7 +22,7 @@
 
 <body>
 
-    <!-- Audio Player Element -->
+    <!-- ➕ Musiqa (Fayl biriktirilgan) -->
     <audio id="weddingAudio" src="music.mp3" loop preload="auto"></audio>
     <button class="music-toggle-btn" id="musicBtn" onclick="toggleMusic()" aria-label="Musiqa nazorati">
         <svg class="icon-play" viewBox="0 0 24 24" id="musicIconPlay" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
@@ -96,39 +96,32 @@
             <p class="names-footer-span">AXADBEK &amp; SABRINAXON</p>
         </section>
 
-        <!-- Love Story Editorial -->
-        <section class="love-story-section reveal-item">
-            <span class="section-tag">Vogue Wedding Editorial</span>
-            <h3 class="serif-section-title">Bizning Hikoya</h3>
-            <p class="story-paragraph">
-                Ikki qalbning bir butunlikka aylanishi, samimiy tuyg‘ulardan boshlangan cheksiz muhabbat dostoni. Biz
-                baxtli kelajagimiz sari ilk qadamni tashlamoqdamiz va ushbu sehrli lahzalarda sizni yonimizda ko'rishdan
-                mamnun bo'lamiz.
-            </p>
-        </section>
-
-        <!-- Event Location & Time (Google Maps) -->
+        <!-- ➕ Karta proezda: Event Location & Interactive Map -->
         <section class="event-info-section reveal-item">
             <div class="info-architecture-card">
                 <div class="building-icon-luxury"></div>
                 <h2 class="time-display">18:00</h2>
                 <p class="schedule-title">Mehmonlar yig'ilishi</p>
                 <p class="venue-name">«Osiyo» To'yxonasi</p>
-                <p class="venue-city" style="color: var(--text-light); font-size: 14px; margin-bottom: 20px;">Qashqadaryo viloyati, Qarshi, Beshkent</p>
+                <p class="venue-city" style="color: var(--text-light); font-size: 14px; margin-bottom: 18px;">Qashqadaryo viloyati, Qarshi, Beshkent</p>
+                
+                <!-- Google Maps Embed -->
+                <div class="venue-map-frame" style="width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); border: 1px solid rgba(199, 168, 107, 0.3);">
+                    <iframe 
+                        src="https://maps.google.com/maps?q=38.8287075,65.7014877&hl=uz&z=16&output=embed" 
+                        width="100%" 
+                        height="200" 
+                        style="border:0; display: block;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Osiyo to'yxonasi xaritasi">
+                    </iframe>
+                </div>
+
                 <a href="https://www.google.com/maps/place/Osiyo+to'yxonasi/@38.8287117,65.6989128,17z/data=!3m1!4b1!4m6!3m5!1s0x3f4ea564b2a7e491:0x9ece476f6687dab9!8m2!3d38.8287075!4d65.7014877!16s%2Fg%2F11c7t2dfw4?entry=ttu" target="_blank" class="luxury-action-btn">
                     <span>Google Xaritada ochish</span>
                 </a>
-            </div>
-        </section>
-
-        <!-- Countdown Timer -->
-        <section class="countdown-section reveal-item">
-            <h3 class="serif-section-title">Tantanagacha Qoldi</h3>
-            <div class="timer-grid">
-                <div class="timer-block"><span class="timer-num" id="days">00</span><span class="timer-label">Kun</span></div>
-                <div class="timer-block"><span class="timer-num" id="hours">00</span><span class="timer-label">Soat</span></div>
-                <div class="timer-block"><span class="timer-num" id="minutes">00</span><span class="timer-label">Daqiqa</span></div>
-                <div class="timer-block"><span class="timer-num" id="seconds">00</span><span class="timer-label">Soniya</span></div>
             </div>
         </section>
 
