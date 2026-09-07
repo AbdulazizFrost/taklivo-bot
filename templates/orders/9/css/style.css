@@ -624,7 +624,7 @@ body {
 .hero-cta-wrap {
   position: absolute;
   top: auto;
-  bottom: clamp(16px, 3.5vh, 32px);
+  bottom: clamp(80px, 11.5vh, 105px);
   left: 50%;
   transform: translateX(-50%) translateY(16px);
   width: 90%;
@@ -1566,61 +1566,44 @@ body.site-unlocked #yakun-section {
 }
 
 /* Navigation Buttons Grid */
-.nav-buttons-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+.nav-single-wrap {
+  width: 100%;
+  margin-top: 14px;
 }
 
-@media (max-width: 360px) {
-  .nav-buttons-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.nav-btn {
+.nav-btn-google-only {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 11px 12px;
-  background: rgba(6, 42, 32, 0.9);
-  border: 1px solid var(--border-gold);
+  gap: 10px;
+  width: 100%;
+  height: 48px;
+  background: linear-gradient(135deg, rgba(198, 161, 91, 0.16) 0%, rgba(6, 42, 32, 0.95) 100%);
+  border: 1.5px solid var(--gold-primary);
   border-radius: var(--radius-md);
   color: var(--gold-lighter);
   text-decoration: none;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 15px rgba(198, 161, 91, 0.2);
   transition: var(--transition-smooth);
   cursor: pointer;
 }
 
-.nav-btn:hover {
-  background: rgba(10, 58, 45, 0.95);
+.nav-btn-google-only:hover {
+  background: linear-gradient(135deg, rgba(198, 161, 91, 0.28) 0%, rgba(10, 58, 45, 0.98) 100%);
   border-color: var(--gold-light);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(198, 161, 91, 0.25);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.6), 0 0 25px rgba(198, 161, 91, 0.35);
 }
 
-.nav-btn svg {
-  width: 15px;
-  height: 15px;
+.nav-btn-google-only svg {
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
-  fill: currentColor;
-}
-
-.nav-btn-copy {
-  grid-column: span 2;
-  background: rgba(198, 161, 91, 0.12);
-  border-color: var(--border-gold-bright);
-}
-
-@media (max-width: 360px) {
-  .nav-btn-copy {
-    grid-column: span 1;
-  }
+  fill: var(--gold-light);
 }
 
 /* ==========================================================================
