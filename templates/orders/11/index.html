@@ -23,10 +23,11 @@
     TAKLIVO DEMO PREVIEW • 24H
   </div>
 
-  <!-- Language Switcher (UZ / RU) -->
+  <!-- Language Switcher (UZ / RU / EN) -->
   <div class="lang-toggle" id="langSwitcher">
     <button data-lang="uz" class="active">UZ</button>
     <button data-lang="ru">RU</button>
+    <button data-lang="en">EN</button>
   </div>
 
   <!-- 3D Opening Cover Screen -->
@@ -244,11 +245,11 @@
       </div>
     </section>
 
-    <!-- OPTION 4: RSVP SURVEY -->
-    <section class="section alt">
+    <!-- OPTION 4: RSVP SURVEY (MATCHING USER SCREENSHOT) -->
+    <section class="section" id="rsvpSection">
       <div class="container">
         <span class="eyebrow reveal" data-i18n="rsvpEyebrow">Tasdiqlash</span>
-        <h2 class="section-title reveal" data-i18n="rsvpTitle">Ishtirokingizni tasdiqlang</h2>
+        <h2 class="section-title reveal" data-i18n="rsvpTitle">Ishtirokingiz</h2>
         
         <div class="laurel-divider reveal">
           <span class="line"></span>
@@ -260,50 +261,58 @@
         
         <form class="rsvp-form reveal" id="rsvpForm">
           <div class="field">
-            <label class="field-title" data-i18n="nameLabel">Ismingiz va familiyangiz</label>
-            <input type="text" data-i18n-ph="namePh" placeholder="Ism va familiyangizni kiriting" required />
+            <label class="rsvp-label" data-i18n="nameLabel">Ismingiz</label>
+            <input type="text" data-i18n-ph="namePh" placeholder="Ism va familiya" required />
           </div>
 
           <div class="field">
-            <label class="field-title" data-i18n="attendLabel">To‘yda ishtirok etasizmi?</label>
-            <div class="radio-row">
-              <label class="radio-pill">
+            <div class="radio-plain-row">
+              <label class="radio-plain">
                 <input type="radio" name="attending" value="yes" checked />
-                <span data-i18n="willAttend">Ha, albatta kelaman</span>
+                <span data-i18n="willAttend">Men kelaman</span>
               </label>
-              <label class="radio-pill">
+              <label class="radio-plain">
                 <input type="radio" name="attending" value="no" />
-                <span data-i18n="wontAttend">Afsuski, kela olmayman</span>
+                <span data-i18n="wontAttend">Kela olmayman</span>
               </label>
             </div>
           </div>
 
           <div class="field">
-            <label class="field-title" data-i18n="guestsLabel">Hamrohlaringiz soni</label>
-            <div class="radio-row">
-              <label class="radio-pill">
-                <input type="radio" name="guest_count" value="1" checked />
-                <span data-i18n="guests1">Bir o‘zim</span>
-              </label>
-              <label class="radio-pill">
-                <input type="radio" name="guest_count" value="2" />
-                <span data-i18n="guests2">Juftlikda (+1)</span>
-              </label>
-              <label class="radio-pill">
-                <input type="radio" name="guest_count" value="3" />
-                <span data-i18n="guests3">Oila bilan</span>
-              </label>
-            </div>
+            <label class="rsvp-label" data-i18n="commentLabel">Tilagingiz (ixtiyoriy)</label>
+            <textarea rows="3" data-i18n-ph="commentPh" placeholder="Bizga bir necha so'z yozing..."></textarea>
           </div>
 
-          <div class="field">
-            <label class="field-title" data-i18n="commentLabel">Kelin-kuyovga tilaklar (ixtiyoriy)</label>
-            <textarea rows="3" data-i18n-ph="commentPh" placeholder="Bizga samimiy tilaklaringizni yozing..."></textarea>
-          </div>
-
-          <button type="submit" class="rsvp-btn" data-i18n="submitBtn">Javobni tasdiqlash</button>
+          <button type="submit" class="rsvp-btn" data-i18n="submitBtn">Yuborish</button>
           <p class="form-msg" id="formMsg"></p>
         </form>
+      </div>
+    </section>
+
+    <!-- WISHES SECTION (MATCHING USER SCREENSHOT) -->
+    <section class="section alt" id="wishesSection">
+      <div class="container">
+        <span class="eyebrow reveal" data-i18n="wishesEyebrow">Mehr bilan</span>
+        <h2 class="section-title reveal" data-i18n="wishesTitle">Tilaklar</h2>
+        
+        <div class="laurel-divider reveal">
+          <span class="line"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M12 3v18M6 8c0 4 3 6 6 6M18 8c0 4-3 6-6 6" />
+          </svg>
+          <span class="line"></span>
+        </div>
+        
+        <div class="wishes-scroll reveal" id="wishesList">
+          <div class="wish-item">
+            <p class="wish-name" data-i18n="w1Name">Dilnoza</p>
+            <p class="wish-text" data-i18n="w1Text">Совет да любовь! Пусть ваш дом всегда будет полон радости.</p>
+          </div>
+          <div class="wish-item">
+            <p class="wish-name" data-i18n="w2Name">Abror</p>
+            <p class="wish-text" data-i18n="w2Text">Поздравляем! Желаем крепкой и счастливой семьи.</p>
+          </div>
+        </div>
       </div>
     </section>
 

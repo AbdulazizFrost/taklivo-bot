@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cover.classList.add('gone');
         document.body.classList.remove('locked');
         site.classList.add('on');
+        checkReveals();
       }, 900);
 
       setTimeout(() => {
@@ -107,20 +108,35 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', checkReveals);
   setTimeout(checkReveals, 1200);
 
-  // --- 5. RSVP FORM SUBMISSION ---
+  // --- 5. RSVP FORM SUBMISSION & WISH APPEND ---
   const rsvpForm = document.getElementById('rsvpForm');
   const formMsg = document.getElementById('formMsg');
+  const wishesList = document.getElementById('wishesList');
+
   if (rsvpForm && formMsg) {
     rsvpForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      const nameInput = rsvpForm.querySelector('input[type="text"]');
+      const commentInput = rsvpForm.querySelector('textarea');
       const btn = rsvpForm.querySelector('.rsvp-btn');
+
+      const guestName = nameInput ? nameInput.value.trim() : '';
+      const guestComment = commentInput ? commentInput.value.trim() : '';
+
+      if (guestComment && wishesList) {
+        const newWish = document.createElement('div');
+        newWish.className = 'wish-item';
+        newWish.innerHTML = `
+          <p class="wish-name">${guestName || (currentLang === 'uz' ? 'Mehmon' : currentLang === 'en' ? 'Guest' : 'Гость')}</p>
+          <p class="wish-text">${guestComment}</p>
+        `;
+        wishesList.prepend(newWish);
+      }
+
       if (btn) btn.disabled = true;
 
-      const successText = currentLang === 'uz'
-        ? "✓ Rahmat! Javobingiz qabul qilindi."
-        : "✓ Спасибо! Ваш ответ принят.";
-
-      formMsg.textContent = successText;
+      const dict = T[currentLang] || T.uz;
+      formMsg.textContent = "✓ " + dict.thanksMsg;
       formMsg.style.color = "var(--gold-dark)";
     });
   }
@@ -178,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 7. LANGUAGE TRANSLATIONS ---
+  // --- 7. LANGUAGE TRANSLATIONS (UZ, RU, EN) ---
   const T = {
     uz: {
       coverHint: "Ochish uchun bosing",
@@ -217,19 +233,21 @@ document.addEventListener('DOMContentLoaded', () => {
       dcDark: "Klassik to'q",
       dcText: "Bizning bayramimiz uchun qulay va chiroyli kiyinishingizni so'raymiz. Pastel, tilla va nozik pudra tusidagi liboslar bayramimizga yanada ko‘rk bag‘ishlaydi.",
       rsvpEyebrow: "Tasdiqlash",
-      rsvpTitle: "Ishtirokingizni tasdiqlang",
-      nameLabel: "Ismingiz va familiyangiz",
-      namePh: "Ism va familiyangizni kiriting",
-      attendLabel: "To‘yda ishtirok etasizmi?",
-      willAttend: "Ha, albatta kelaman",
-      wontAttend: "Afsuski, kela olmayman",
-      guestsLabel: "Hamrohlaringiz soni",
-      guests1: "Bir o‘zim",
-      guests2: "Juftlikda (+1)",
-      guests3: "Oila bilan",
-      commentLabel: "Kelin-kuyovga tilaklar (ixtiyoriy)",
-      commentPh: "Bizga samimiy tilaklaringizni yozing...",
-      submitBtn: "Javobni tasdiqlash",
+      rsvpTitle: "Ishtirokingiz",
+      nameLabel: "Ismingiz",
+      namePh: "Ism va familiya",
+      willAttend: "Men kelaman",
+      wontAttend: "Kela olmayman",
+      commentLabel: "Tilagingiz (ixtiyoriy)",
+      commentPh: "Bizga bir necha so'z yozing...",
+      submitBtn: "Yuborish",
+      wishesEyebrow: "Mehr bilan",
+      wishesTitle: "Tilaklar",
+      w1Name: "Dilnoza",
+      w1Text: "Совет да любовь! Пусть ваш дом всегда будет полон радости.",
+      w2Name: "Abror",
+      w2Text: "Поздравляем! Желаем крепкой и счастливой семьи.",
+      thanksMsg: "Rahmat! Javobingiz qabul qilindi.",
       ftDate: "15-sentyabr, 2026-yil",
       ftCredit: "Taklivo · Maxsus taklifnomalar"
     },
@@ -271,20 +289,77 @@ document.addEventListener('DOMContentLoaded', () => {
       dcText: "Будем признательны, если вы поддержите нашу цветовую гамму — пастельные, золотистые и нежные пудровые оттенки.",
       rsvpEyebrow: "Подтверждение",
       rsvpTitle: "Ваше присутствие",
-      nameLabel: "Ваше имя и фамилия",
+      nameLabel: "Ваше имя",
       namePh: "Имя и фамилия",
-      attendLabel: "Планируете ли присутствовать?",
-      willAttend: "Я обязательно приду",
-      wontAttend: "К сожалению, не смогу",
-      guestsLabel: "Количество гостей",
-      guests1: "Один(на)",
-      guests2: "С парой (+1)",
-      guests3: "Всей семьей",
+      willAttend: "Я приду",
+      wontAttend: "Не смогу",
       commentLabel: "Ваше пожелание (необязательно)",
-      commentPh: "Напишите нам несколько теплых слов...",
-      submitBtn: "Отправить ответ",
+      commentPh: "Напишите нам несколько слов...",
+      submitBtn: "Отправить",
+      wishesEyebrow: "С любовью",
+      wishesTitle: "Пожелания",
+      w1Name: "Дилноза",
+      w1Text: "Совет да любовь! Пусть ваш дом всегда будет полон радости.",
+      w2Name: "Аброр",
+      w2Text: "Поздравляем! Желаем крепкой и счастливой семьи.",
+      thanksMsg: "Спасибо! Ваш ответ принят.",
       ftDate: "15 сентября 2026 года",
       ftCredit: "Taklivo · Индивидуальные пригласительные"
+    },
+    en: {
+      coverHint: "Tap to open",
+      heroEyebrow: "Wedding Invitation",
+      heroLoc: "Tashkent, «Oqsaroy» Banquet Hall",
+      cdEyebrow: "The Big Day",
+      cdTitle: "Time until the wedding",
+      days: "Days",
+      hours: "Hours",
+      mins: "Minutes",
+      secs: "Seconds",
+      inviteEyebrow: "Invitation",
+      inviteTitle: "Dear guests",
+      inviteText: "Fate has united our hearts, and we are ready to begin a new journey of love and joy. We invite you to share the happiness of our special day with us.",
+      tlEyebrow: "Schedule",
+      tlTitle: "Celebration timeline",
+      tl1Time: "18:00",
+      tl1Title: "Guest arrival & welcome reception",
+      tl2Time: "18:30",
+      tl2Title: "Grand entrance of bride and groom",
+      tl3Time: "19:00",
+      tl3Title: "Celebration banquet",
+      tl4Time: "21:00",
+      tl4Title: "Wedding cake & toasts",
+      venueEyebrow: "Venue",
+      venueTitle: "Location",
+      venueName: "«Oqsaroy» Banquet Hall",
+      venueAddr: "Tashkent, Navoiy Street, 15",
+      venueTime: "September 15, 2026 · 18:00",
+      venueBtn: "View on Google Maps",
+      dcEyebrow: "Recommendations",
+      dcTitle: "Dress code",
+      dcGold: "Gold",
+      dcBlush: "Blush",
+      dcCream: "Cream",
+      dcDark: "Classic dark",
+      dcText: "We would be grateful if you embrace our celebration color palette — warm gold and soft blush tones.",
+      rsvpEyebrow: "Confirmation",
+      rsvpTitle: "Your presence",
+      nameLabel: "Your name",
+      namePh: "Full name",
+      willAttend: "I'll attend",
+      wontAttend: "I can't attend",
+      commentLabel: "Your wish (optional)",
+      commentPh: "Write a few words for us...",
+      submitBtn: "Send",
+      wishesEyebrow: "With love",
+      wishesTitle: "Wishes",
+      w1Name: "Dilnoza",
+      w1Text: "Wishing you a lifetime of love, harmony, and endless happiness.",
+      w2Name: "Abror",
+      w2Text: "Warmest congratulations! May your journey together be blessed.",
+      thanksMsg: "Thank you! Your response has been received.",
+      ftDate: "September 15, 2026",
+      ftCredit: "Taklivo · Bespoke Invitations"
     }
   };
 
