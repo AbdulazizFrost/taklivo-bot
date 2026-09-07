@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Axadbek &amp; Sabrinaxon — To'y Taklifnomasi 💍</title>
+    
+    <!-- OpenGraph Preview for Telegram / Socials -->
+    <meta property="og:title" content="Axadbek &amp; Sabrinaxon — Nikoh To'yi Taklifnomasi 💍">
+    <meta property="og:description" content="18-Oktabr 2026, 18:00 | «Osiyo» To'yxonasi, Beshkent. Sizni to'y oqshomimizga lutfan taklif etamiz!">
+    <meta property="og:image" content="images/bosh_rasm.jpg">
+    <meta property="og:type" content="website">
+
+    <!-- Google Fonts Preconnect & Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Audio Player Element -->
+    <audio id="weddingAudio" src="music.mp3" loop preload="auto"></audio>
+    <button class="music-toggle-btn" id="musicBtn" onclick="toggleMusic()" aria-label="Musiqa nazorati">
+        <svg class="icon-play" viewBox="0 0 24 24" id="musicIconPlay" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="icon-pause" viewBox="0 0 24 24" id="musicIconPause"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        <div class="music-pulse"></div>
+    </button>
+
+    <!-- Background Golden Dust / Particles -->
+    <div class="particles-container" id="particles"></div>
+
+    <!-- 1. Intro Curtain Overlay Screen -->
+    <div class="intro-overlay" id="introOverlay">
+        <div class="cloud-layer cloud-bg-1"></div>
+        <div class="cloud-layer cloud-bg-2"></div>
+        <div class="cloud-layer cloud-bg-3"></div>
+
+        <div class="intro-content">
+            <div class="luxury-crest-wrapper">
+                <div class="luxury-monogram-intro">AS</div>
+            </div>
+            <h1 class="intro-names">Axadbek &amp; Sabrinaxon</h1>
+            <p class="intro-subtitle">Hayotimizning eng go'zal sahifasi boshlanmoqda</p>
+            <button class="open-invite-btn" onclick="revealInvitation()">
+                <span>Taklifnomani Ochish</span>
+                <div class="btn-glow"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. Main Invitation Content -->
+    <main class="app-container" id="mainContent">
+
+        <!-- Hero Card Section -->
+        <section class="card-hero reveal-item">
+            <div class="card-header">
+                <div class="luxury-crest-wrapper small">
+                    <div class="gold-monogram">AS</div>
+                </div>
+                <h2 class="serif-title font-accent-names">Axadbek &amp; Sabrinaxon</h2>
+            </div>
+
+            <div class="premium-image-frame">
+                <div class="image-inner-shadow"></div>
+                <div class="photo-placeholder" style="background-image: url('images/bosh_rasm.jpg');"></div>
+            </div>
+
+            <div class="scroll-down-notice">
+                <span>Pastga suring</span>
+                <div class="chevron-down"></div>
+            </div>
+        </section>
+
+        <!-- Sacred Ayat & Blessing -->
+        <section class="card-body-text reveal-item">
+            <p class="date-badge">18.10 — BIZNING KUNIMIZ 💍</p>
+            <p class="ayat">
+                «Alloh ularning qalblarini sevgi ila birlashtirdi»<br>
+                <span>Anfol surasi, 63-oyat</span>
+            </p>
+            <p class="main-invite-message">
+                Ota-onalarimizning duosi bilan sizni nikoh oqshomimizning unutilmas lahzalariga guvoh bo‘lishga lutfan taklif qilamiz.
+            </p>
+
+            <div class="divider-gold-line"></div>
+
+            <h3 class="big-date-display">18/10/2026</h3>
+            <p class="location-sub-text">Qashqadaryo viloyati, Qarshi, Beshkent</p>
+            <p class="city-title-serif">Baxt Oqshomi</p>
+
+            <div class="divider-gold-line small"></div>
+            <p class="names-footer-span">AXADBEK &amp; SABRINAXON</p>
+        </section>
+
+        <!-- Love Story Editorial -->
+        <section class="love-story-section reveal-item">
+            <span class="section-tag">Vogue Wedding Editorial</span>
+            <h3 class="serif-section-title">Bizning Hikoya</h3>
+            <p class="story-paragraph">
+                Ikki qalbning bir butunlikka aylanishi, samimiy tuyg‘ulardan boshlangan cheksiz muhabbat dostoni. Biz
+                baxtli kelajagimiz sari ilk qadamni tashlamoqdamiz va ushbu sehrli lahzalarda sizni yonimizda ko'rishdan
+                mamnun bo'lamiz.
+            </p>
+        </section>
+
+        <!-- Event Location & Time (Google Maps) -->
+        <section class="event-info-section reveal-item">
+            <div class="info-architecture-card">
+                <div class="building-icon-luxury"></div>
+                <h2 class="time-display">18:00</h2>
+                <p class="schedule-title">Mehmonlar yig'ilishi</p>
+                <p class="venue-name">«Osiyo» To'yxonasi</p>
+                <p class="venue-city" style="color: var(--text-light); font-size: 14px; margin-bottom: 20px;">Qashqadaryo viloyati, Qarshi, Beshkent</p>
+                <a href="https://www.google.com/maps/place/Osiyo+to'yxonasi/@38.8287117,65.6989128,17z/data=!3m1!4b1!4m6!3m5!1s0x3f4ea564b2a7e491:0x9ece476f6687dab9!8m2!3d38.8287075!4d65.7014877!16s%2Fg%2F11c7t2dfw4?entry=ttu" target="_blank" class="luxury-action-btn">
+                    <span>Google Xaritada ochish</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Countdown Timer -->
+        <section class="countdown-section reveal-item">
+            <h3 class="serif-section-title">Tantanagacha Qoldi</h3>
+            <div class="timer-grid">
+                <div class="timer-block"><span class="timer-num" id="days">00</span><span class="timer-label">Kun</span></div>
+                <div class="timer-block"><span class="timer-num" id="hours">00</span><span class="timer-label">Soat</span></div>
+                <div class="timer-block"><span class="timer-num" id="minutes">00</span><span class="timer-label">Daqiqa</span></div>
+                <div class="timer-block"><span class="timer-num" id="seconds">00</span><span class="timer-label">Soniya</span></div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="luxury-footer reveal-item">
+            <div class="gold-divider-line"></div>
+            <h2 class="footer-names">Axadbek &amp; Sabrinaxon</h2>
+            <p class="with-love-tag">With Love • TAKLIVO</p>
+        </footer>
+
+    </main>
+
+    <!-- Watermark Pill (Unpaid / Demo Mode) -->
+    <div id="taklivoWatermark" class="taklivo-unpaid-watermark">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        TAKLIVO DEMO PREVIEW • 24H
+    </div>
+
+    <!-- Floating Demo Bottom Banner -->
+    <div id="taklivoBanner" class="taklivo-floating-banner">
+        <div class="taklivo-banner-left">
+            <span class="taklivo-banner-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                ДЕМО-РЕЖИМ
+                <span class="taklivo-banner-badge">BUYURTMA #6</span>
+            </span>
+            <span class="taklivo-banner-desc">Сайт в предварительном просмотре. После оплаты водяной знак будет снят.</span>
+        </div>
+        <a href="https://t.me/taklivo_bot" class="taklivo-banner-btn" target="_blank">Подтвердить в боте</a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
