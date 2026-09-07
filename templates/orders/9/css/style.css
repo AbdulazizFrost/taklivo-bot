@@ -273,20 +273,154 @@ body {
   z-index: 1;
 }
 
-/* 1. Four 3D Gold Girih Corner Arch Frames (Hidden to let artwork's own frame shine) */
+/* 1. Four 3D Gold Girih Corner Arch Frames (frame_corner_tr) */
 .hero-corner-frame {
-  display: none !important;
+  position: absolute;
+  width: clamp(88px, 27vw, 180px);
+  height: auto;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 1.2s ease 0.2s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55));
 }
 
-/* 2. Hanging 3D Gold Lanterns (Hidden to let artwork's own lantern & Quran shine) */
+.hero-corner-frame.corner-tl {
+  top: 0px;
+  left: 0px;
+  transform: translateY(-8px) scaleY(-1);
+}
+
+.hero-corner-frame.corner-tr {
+  top: 0px;
+  right: 0px;
+  transform: translateY(-8px) scale(-1, -1);
+}
+
+.hero-corner-frame.corner-bl {
+  bottom: 0px;
+  left: 0px;
+  transform: translateY(8px);
+}
+
+.hero-corner-frame.corner-br {
+  bottom: 0px;
+  right: 0px;
+  transform: translateY(8px) scaleX(-1);
+}
+
+.hero-loaded .hero-corner-frame.corner-tl {
+  opacity: 0.95;
+  transform: translate(0, 0) scaleY(-1);
+}
+
+.hero-loaded .hero-corner-frame.corner-tr {
+  opacity: 0.95;
+  transform: translate(0, 0) scale(-1, -1);
+}
+
+.hero-loaded .hero-corner-frame.corner-bl {
+  opacity: 0.95;
+  transform: translate(0, 0);
+}
+
+.hero-loaded .hero-corner-frame.corner-br {
+  opacity: 0.95;
+  transform: translate(0, 0) scaleX(-1);
+}
+
+/* 2. Hanging 3D Gold Lanterns (Enlarged + Anchored with Top Chains) */
 .lantern-wrapper {
-  display: none !important;
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease 0.4s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s;
 }
 
-/* 2. Top Header: Bismillahir Rohmanir Rohiym */
+/* Realistic Golden Suspension Chain extending all the way to the top frame */
+.lantern-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -240px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 260px;
+  background: repeating-linear-gradient(
+    180deg,
+    #dfc285 0px,
+    #c6a15b 3px,
+    #9d7d43 6px,
+    #dfc285 8px
+  );
+  box-shadow: 0 0 5px rgba(198, 161, 91, 0.6), 1px 0 2px rgba(0, 0, 0, 0.8);
+  z-index: 1;
+}
+
+/* Left Lantern */
+.lantern-left-wrap {
+  top: 8.5%;
+  left: 7.5%;
+  width: 100%;
+  max-width: 88px;
+  transform: translateY(-12px);
+}
+
+/* Right Lantern */
+.lantern-right-wrap {
+  top: 10.5%;
+  right: 7.0%;
+  width: 100%;
+  max-width: 70px;
+  transform: translateY(-12px);
+}
+
+.hero-loaded .lantern-left-wrap {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-loaded .lantern-right-wrap {
+  opacity: 0.92;
+  transform: translateY(0);
+}
+
+.hero-hanging-lantern {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 16px rgba(198, 161, 91, 0.6));
+  transform-origin: top center;
+  animation: lanternSway 5.5s ease-in-out infinite alternate;
+}
+
+.lantern-right-wrap .hero-hanging-lantern {
+  filter: blur(1px) drop-shadow(0 8px 18px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 16px rgba(198, 161, 91, 0.45));
+  animation-delay: -2.8s;
+}
+
+@keyframes lanternSway {
+  0% { transform: rotate(-2deg); }
+  100% { transform: rotate(2deg); }
+}
+
+.lantern-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, rgba(223, 194, 133, 0.45) 0%, transparent 70%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+/* 3. Top Header: Bismillahir Rohmanir Rohiym */
 .hero-bismillah-wrap {
   position: absolute;
-  top: clamp(18px, 3vh, 28px);
+  top: clamp(28px, 5.2vh, 46px);
   left: 50%;
   transform: translateX(-50%) translateY(10px);
   width: 85%;
@@ -304,7 +438,7 @@ body {
 
 .bismillah-text {
   font-family: var(--font-serif-sub);
-  font-size: clamp(12.5px, 3.4vw, 14.5px);
+  font-size: clamp(12px, 3.2vw, 14px);
   font-weight: 500;
   letter-spacing: 0.12em;
   color: var(--gold-light);
@@ -336,10 +470,10 @@ body {
   transform: rotate(45deg);
 }
 
-/* 3. Central Title Group (Arch Crown, NIKOH TO'YI, Line, UCHQUNBEK & CHAROSXON, Divider) */
+/* 4. Central Title Group (Arch Crown, NIKOH TO'YI, Line, UCHQUNBEK & CHAROSXON, Divider) */
 .hero-title-group {
   position: absolute;
-  top: clamp(52px, 7.8vh, 76px);
+  top: clamp(23%, 25.5vh, 27.5%);
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -352,10 +486,10 @@ body {
 
 /* Arch Crown Ornament */
 .hero-arch-ornament {
-  width: clamp(120px, 32vw, 150px);
-  max-width: 160px;
+  width: clamp(95px, 25vw, 125px);
+  max-width: 130px;
   height: auto;
-  margin-bottom: clamp(4px, 0.8vh, 8px);
+  margin-bottom: clamp(3px, 0.6vh, 6px);
   filter: drop-shadow(0 4px 12px rgba(198, 161, 91, 0.45));
   opacity: 0;
   transform: translateY(12px) scale(0.95);
@@ -370,7 +504,7 @@ body {
 /* NIKOH TO'YI */
 .hero-event-type {
   font-family: var(--font-serif-title);
-  font-size: clamp(15px, 4vw, 19px);
+  font-size: clamp(13px, 3.6vw, 16px);
   font-weight: 600;
   letter-spacing: 0.32em;
   color: var(--gold-light);
@@ -394,8 +528,8 @@ body {
   justify-content: center;
   gap: 6px;
   width: 100%;
-  max-width: 140px;
-  margin: clamp(4px, 0.8vh, 8px) 0 clamp(6px, 1.2vh, 10px);
+  max-width: 120px;
+  margin: clamp(3px, 0.6vh, 6px) 0 clamp(4px, 0.8vh, 8px);
   opacity: 0;
   transition: opacity 0.8s ease 1.0s;
 }
@@ -419,36 +553,32 @@ body {
   transform: rotate(45deg);
 }
 
-/* UCHQUNBEK & CHAROSXON — Elegant Vertical Stacking within Arch */
+/* UCHQUNBEK & CHAROSXON — Single Majestic Line (Fits 100% inside Arch) */
 .hero-child-name {
   font-family: var(--font-serif-title);
-  font-size: clamp(19px, 5.2vw, 24px);
+  font-size: clamp(14px, 3.8vw, 18.5px);
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-left: 0.16em;
-  width: 100%;
-  max-width: 280px;
+  margin-left: 0.12em;
+  width: auto;
+  max-width: 82%;
+  white-space: nowrap;
   text-align: center;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
+  display: inline-block;
   opacity: 0;
-  transform: translateY(12px);
+  transform: scale(0.96);
   transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.0s,
               transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.0s;
 }
 
 .hero-loaded .hero-child-name {
   opacity: 1;
-  transform: translateY(0);
+  transform: scale(1);
 }
 
-.name-line {
-  display: block;
-  white-space: nowrap;
+.name-text {
   background: linear-gradient(
     115deg,
     #d4af37 0%,
@@ -471,22 +601,12 @@ body {
   animation: royalGoldGleam 6s ease-in-out infinite alternate;
 }
 
-.name-amp {
-  font-family: var(--font-serif-sub);
-  font-size: clamp(13px, 3.5vw, 16px);
-  font-style: italic;
-  color: var(--gold-light);
-  line-height: 1;
-  margin: 1px 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 10px rgba(198, 161, 91, 0.5);
-}
-
-/* Floral Divider Ornament below (Width = 30vw) */
+/* Floral Divider Ornament below */
 .hero-divider-ornament {
-  width: clamp(110px, 30vw, 140px);
-  max-width: 145px;
+  width: clamp(95px, 25vw, 125px);
+  max-width: 130px;
   height: auto;
-  margin-top: clamp(6px, 1.1vh, 10px);
+  margin-top: clamp(4px, 0.8vh, 8px);
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
   opacity: 0;
   transform: translateY(8px);
@@ -497,6 +617,8 @@ body {
   opacity: 0.95;
   transform: translateY(0);
 }
+
+
 
 /* 4. CTA Button (Anchored gracefully at bottom above marble floor reflection) */
 .hero-cta-wrap {
