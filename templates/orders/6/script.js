@@ -1,19 +1,10 @@
 /**
  * PREMIUM UZBEK WEDDING DIGITAL INVITATION — AXADBEK & SABRINAXON
- * Luxury Gold Design System
+ * Luxury Light Gold System
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. HERO OPENING ANIMATION SEQUENCE
-  const heroSection = document.getElementById('hero-section');
-  
-  setTimeout(() => {
-    if (heroSection) {
-      heroSection.classList.add('hero-loaded');
-    }
-  }, 100);
-
-  // 2. AUDIO MUSIC PLAYER LOGIC
+  // 1. AUDIO MUSIC PLAYER LOGIC
   const audio = document.getElementById('weddingAudio');
   const musicBtn = document.getElementById('musicBtn');
   const playIcon = document.getElementById('musicIconPlay');
@@ -50,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // 3. CTA 2-PHASE SCREEN TRANSITION ("TAKLIFNOMANI OCHISH")
+  // 2. CTA SCREEN TRANSITION ("TAKLIFNOMANI OCHISH")
   const ctaBtn = document.getElementById('hero-cta-btn');
   const heroSectionEl = document.getElementById('hero-section');
 
@@ -65,26 +56,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Play closing exit animation on the Hero cover screen
-      document.body.classList.add('is-transitioning');
       heroSectionEl.classList.add('hero-closing');
 
       // Smoothly switch to the unlocked full invitation site
       setTimeout(() => {
-        document.body.classList.remove('is-transitioning');
         document.body.classList.add('site-unlocked');
         window.scrollTo({ top: 0, behavior: 'instant' });
-      }, 750);
+      }, 700);
     });
   }
 
-  // 4. ADD TO CALENDAR (GOOGLE CALENDAR)
+  // 3. ADD TO CALENDAR (GOOGLE CALENDAR)
   const calendarBtn = document.getElementById('add-calendar-btn');
   if (calendarBtn) {
     calendarBtn.addEventListener('click', (e) => {
       e.preventDefault();
       
       const title = "Axadbek & Sabrinaxon Nikoh To‘yi";
-      const description = "Axadbek va Sabrinaxonlarning nikoh to‘yi tantanasi va dasturxoni. «Osiyo» To‘yxonasi, Qashqadaryo viloyati, Qarshi, Beshkent.";
+      const description = "Axadbek va Sabrinaxonlarning nikoh to‘yi tantanasi va fayzli dasturxoni. «Osiyo» To‘yxonasi, Qashqadaryo viloyati, Qarshi, Beshkent.";
       const location = "«Osiyo» To‘yxonasi, Qashqadaryo viloyati, Qarshi, Beshkent";
       const startDate = "20261018T130000Z"; // 18:00 UTC+5 is 13:00 UTC
       const endDate = "20261018T180000Z";   // 23:00 UTC+5 is 18:00 UTC
@@ -92,23 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDate}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(location)}`;
       
       window.open(googleCalUrl, '_blank');
-      showToast("Tadbir taqvimingizga qo'shilmoqda... 📅");
     });
-  }
-
-  // 5. TOAST NOTIFICATION UTILITY
-  function showToast(message) {
-    let toast = document.getElementById('global-toast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'global-toast';
-      toast.className = 'toast-msg';
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3200);
   }
 });

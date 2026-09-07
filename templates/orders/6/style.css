@@ -1,0 +1,797 @@
+/* ==========================================================================
+   PREMIUM UZBEK WEDDING DIGITAL INVITATION — AXADBEK & SABRINAXON
+   Theme: Luxury Light Gold / Ivory Gold
+   ========================================================================== */
+
+:root {
+  /* Color Palette — Luxury Light Gold */
+  --bg-page: #FAF6EE;
+  --bg-page-gradient: radial-gradient(circle at 50% 15%, #FFFFFF 0%, #FAF5EB 50%, #F1E5D1 100%);
+  
+  --card-bg: #FFFFFF;
+  --card-border: rgba(199, 168, 107, 0.45);
+  --card-border-gold: #DFC488;
+  --card-shadow: 0 12px 36px rgba(180, 140, 60, 0.10), 0 2px 10px rgba(0, 0, 0, 0.03);
+
+  --gold-primary: #B48737;
+  --gold-deep: #8E651E;
+  --gold-light: #DFC488;
+  --gold-shimmer: #F5E8C7;
+  --gold-gradient: linear-gradient(135deg, #B48737 0%, #DFC488 40%, #B48737 70%, #F5E8C7 100%);
+
+  --text-primary: #2D251E;
+  --text-secondary: #5A4E42;
+  --text-muted: #8C7E70;
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', 'Georgia', serif;
+  --font-arabic: 'Amiri', 'Traditional Arabic', serif;
+  --font-cinzel: 'Cinzel', serif;
+  --font-sans: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Reset & Global */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  background-image: var(--bg-page-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* App Wrapper & Centered Mobile Canvas */
+.app-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+  background-color: var(--bg-page);
+}
+
+.invitation-container {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  min-height: 100vh;
+  background: var(--bg-page-gradient);
+  box-shadow: 0 0 50px rgba(180, 140, 60, 0.12);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subtle Golden Diamond Lattice Overlay */
+.pattern-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: 
+    linear-gradient(45deg, rgba(199, 168, 107, 0.10) 25%, transparent 25%), 
+    linear-gradient(-45deg, rgba(199, 168, 107, 0.10) 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, rgba(199, 168, 107, 0.10) 75%), 
+    linear-gradient(-45deg, transparent 75%, rgba(199, 168, 107, 0.10) 75%);
+  background-size: 32px 32px;
+  background-position: 0 0, 0 16px, 16px -16px, -16px 0px;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   SECTION 1: HERO / OPENING SCREEN (LIGHT GOLD ROYAL CREST)
+   ========================================================================== */
+.hero-section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1000;
+  background: radial-gradient(circle at 50% 30%, #FFFFFF 0%, #FAF4E8 50%, #EFE4D2 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
+}
+
+.hero-section.hero-closing {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.site-unlocked .hero-section {
+  display: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Royal 3D Embossed Gold Crest Monogram */
+.hero-crest-container {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: floatCrest 4s ease-in-out infinite alternate;
+}
+
+.hero-crest-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(180, 135, 55, 0.35));
+}
+
+.crest-glow {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(223, 196, 136, 0.4) 0%, transparent 70%);
+  z-index: -1;
+  animation: pulseGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes floatCrest {
+  0% { transform: translateY(0px) scale(1); }
+  100% { transform: translateY(-8px) scale(1.02); }
+}
+
+@keyframes pulseGlow {
+  0% { opacity: 0.5; transform: scale(0.9); }
+  100% { opacity: 0.9; transform: scale(1.15); }
+}
+
+.hero-event-badge {
+  font-family: var(--font-cinzel);
+  font-size: 0.95rem;
+  letter-spacing: 5px;
+  color: var(--gold-deep);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.hero-gold-line {
+  width: 70px;
+  height: 1.5px;
+  background: var(--gold-gradient);
+  margin: 0 auto 16px;
+  border-radius: 2px;
+}
+
+.hero-names {
+  font-family: var(--font-serif);
+  font-size: 2.6rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-names .name-amp {
+  font-style: italic;
+  font-size: 2rem;
+  color: var(--gold-primary);
+  margin: 2px 0;
+}
+
+.hero-subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  max-width: 320px;
+}
+
+.hero-date-text {
+  font-family: var(--font-cinzel);
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  color: var(--gold-deep);
+  font-weight: 600;
+  margin-bottom: 28px;
+}
+
+/* Hero CTA Button */
+.hero-cta-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 36px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #C7A04A 0%, #E7D095 50%, #B48737 100%);
+  color: #261D12;
+  font-family: var(--font-cinzel);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(180, 135, 55, 0.4), 0 2px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(180, 135, 55, 0.5);
+}
+
+.hero-cta-button:active {
+  transform: translateY(1px);
+}
+
+.cta-arrow {
+  font-size: 1.1rem;
+  color: #261D12;
+  transition: transform 0.2s ease;
+}
+
+.hero-cta-button:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+.cta-shine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: rotate(25deg);
+  animation: shineSweep 3.5s infinite;
+}
+
+@keyframes shineSweep {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  35%, 100% { transform: translateX(100%) rotate(25deg); }
+}
+
+.hero-subtext {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+}
+
+/* ==========================================================================
+   MAIN INVITATION CONTENT — CARDS (LIGHT GOLD LUXURY PAPYRUS)
+   ========================================================================== */
+.invitation-body {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 58px 18px 120px; /* 58px top padding ensures watermark pill never overlaps card ornament */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Individual Content Card */
+.content-card {
+  position: relative;
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border-gold);
+  border-radius: 24px;
+  box-shadow: var(--card-shadow);
+  padding: 34px 22px 30px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-inner-frame {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Card Top Gold Arch Ornament */
+.card-top-ornament {
+  width: 120px;
+  height: auto;
+  margin-bottom: 12px;
+  object-fit: contain;
+}
+
+/* Card Badge (MUBORAK TAKLIFNOMA, TANTANA VAQTI, TO'Y MANZILI) */
+.card-badge {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* Arabic Bismillah Calligraphy */
+.arabic-bismillah {
+  font-family: var(--font-arabic);
+  font-size: 1.85rem;
+  line-height: 1.5;
+  color: var(--gold-deep);
+  margin-bottom: 10px;
+  direction: rtl;
+  text-shadow: 0 1px 2px rgba(180, 135, 55, 0.2);
+}
+
+/* Main Card Header */
+.card-main-title {
+  font-family: var(--font-cinzel);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* Floral Divider Ornament */
+.card-divider-ornament {
+  width: 135px;
+  height: auto;
+  margin-bottom: 20px;
+  object-fit: contain;
+}
+
+/* Invitation Body Text */
+.taklif-text-wrap {
+  width: 100%;
+  margin-bottom: 22px;
+}
+
+.taklif-p {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  line-height: 1.75;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+.taklif-p:last-child {
+  margin-bottom: 0;
+}
+
+.gold-name {
+  color: var(--gold-deep);
+  font-weight: 700;
+}
+
+/* Subtle Golden Separator Line */
+.card-separator-line {
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(180, 135, 55, 0.35), transparent);
+  margin: 18px auto;
+}
+
+/* Signature Block */
+.taklif-signature {
+  margin-top: 8px;
+}
+
+.signature-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.signature-names {
+  font-family: var(--font-cinzel);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   CARD 2: TADBIR HAQIDA & VAQTI
+   ========================================================================== */
+.event-date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  background: #FAF5EB;
+  border: 1px solid var(--card-border-gold);
+  border-radius: 50px;
+  font-family: var(--font-cinzel);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--gold-deep);
+  margin-bottom: 20px;
+}
+
+.pill-icon {
+  width: 18px;
+  height: 18px;
+  fill: var(--gold-deep);
+}
+
+.event-subcard {
+  width: 100%;
+  background: #FAF7F1;
+  border: 1px solid rgba(199, 168, 107, 0.35);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.event-icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #C7A04A, #DFC488);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(180, 135, 55, 0.25);
+}
+
+.event-icon-circle svg {
+  width: 26px;
+  height: 26px;
+  fill: #FFFFFF;
+}
+
+.event-subcard-info {
+  flex-grow: 1;
+}
+
+.event-subcard-tag {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: var(--font-sans);
+}
+
+.event-subcard-name {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin: 2px 0 4px;
+}
+
+.event-subcard-time {
+  font-family: var(--font-cinzel);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gold-deep);
+}
+
+.calendar-btn-wrap {
+  width: 100%;
+}
+
+.calendar-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 20px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--card-border-gold);
+  border-radius: 50px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gold-deep);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-action-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--gold-deep);
+}
+
+.calendar-action-btn:hover {
+  background: #FAF5EB;
+  border-color: var(--gold-primary);
+}
+
+/* ==========================================================================
+   CARD 3: TO'Y MANZILI & INTERACTIVE MAP (➕ KARTA PROEZDA)
+   ========================================================================== */
+.venue-location-info {
+  margin-bottom: 16px;
+}
+
+.venue-city {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+}
+
+.map-embed-wrapper {
+  width: 100%;
+  height: 220px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1.5px solid var(--card-border-gold);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  margin-bottom: 18px;
+}
+
+.map-embed-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.map-action-wrap {
+  width: 100%;
+}
+
+.google-map-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #C7A04A 0%, #E7D095 50%, #B48737 100%);
+  border: none;
+  border-radius: 50px;
+  color: #261D12;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(180, 135, 55, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.google-map-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: #261D12;
+}
+
+.google-map-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(180, 135, 55, 0.4);
+}
+
+/* ==========================================================================
+   CARD 4: YAKUN / XOTIMA (FINAL BLESSING)
+   ========================================================================== */
+.xotima-card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAF6EE 100%);
+}
+
+.xotima-names {
+  font-family: var(--font-cinzel);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: var(--gold-deep);
+  margin-bottom: 16px;
+}
+
+.quran-blessing-box {
+  background: #FCF9F2;
+  border: 1px solid rgba(199, 168, 107, 0.35);
+  border-radius: 18px;
+  padding: 20px 16px;
+  margin-bottom: 16px;
+}
+
+.quran-arabic {
+  font-family: var(--font-arabic);
+  font-size: 1.45rem;
+  line-height: 1.8;
+  color: var(--gold-deep);
+  direction: rtl;
+  margin-bottom: 10px;
+}
+
+.quran-translation {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.quran-surah {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--gold-primary);
+  text-transform: uppercase;
+}
+
+.footer-credits {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   FLOATING MUSIC TOGGLE BUTTON
+   ========================================================================== */
+.music-toggle-btn {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1.5px solid var(--card-border-gold);
+  box-shadow: 0 6px 18px rgba(180, 135, 55, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1050;
+  transition: transform 0.2s ease;
+}
+
+.music-toggle-btn:hover {
+  transform: scale(1.08);
+}
+
+.music-toggle-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: var(--gold-deep);
+}
+
+.music-pulse-ring {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-light);
+  animation: pulseMusic 2s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes pulseMusic {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+/* ==========================================================================
+   WATERMARK & DEMO BANNER (BUYURTMA #6)
+   ========================================================================== */
+.taklivo-unpaid-watermark {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(180, 30, 30, 0.92);
+  color: #FFFFFF;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 5px 14px;
+  border-radius: 50px;
+  z-index: 1100;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+.taklivo-floating-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1200;
+  background: linear-gradient(135deg, #1c1815 0%, #2e261f 100%);
+  border-top: 2px solid #dfc488;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+  font-family: var(--font-sans);
+}
+
+.taklivo-banner-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.taklivo-banner-title {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.taklivo-banner-badge {
+  background: #dfc488;
+  color: #1a1612;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.taklivo-banner-desc {
+  color: #a89f91;
+  font-size: 10px;
+}
+
+.taklivo-banner-btn {
+  background: linear-gradient(135deg, #dfc488 0%, #b48737 100%);
+  color: #1a1612;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(223, 196, 136, 0.4);
+}
