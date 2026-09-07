@@ -266,7 +266,7 @@ body.site-unlocked .hero-section {
 /* 3. Top Header: Bismillahir Rohmanir Rohiym */
 .hero-bismillah-wrap {
   position: absolute;
-  top: clamp(52px, 7.2vh, 64px);
+  top: clamp(58px, 8vh, 70px);
   left: 50%;
   transform: translateX(-50%);
   width: 85%;
