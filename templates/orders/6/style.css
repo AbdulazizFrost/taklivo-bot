@@ -1,10 +1,10 @@
 /* ==========================================================================
    PREMIUM UZBEK WEDDING DIGITAL INVITATION — AXADBEK & SABRINAXON
-   Theme: Luxury Light Gold / Ivory Gold
+   Master Design System: Photo 2 Master Artwork Background + Photo 3 Ornate Plaque Button
    ========================================================================== */
 
 :root {
-  /* Color Palette — Luxury Light Gold */
+  /* Color Palette — Luxury Light Gold / Warm Master Gold */
   --bg-page: #FAF6EE;
   --bg-page-gradient: radial-gradient(circle at 50% 15%, #FFFFFF 0%, #FAF5EB 50%, #F1E5D1 100%);
   
@@ -16,6 +16,7 @@
   --gold-primary: #B48737;
   --gold-deep: #8E651E;
   --gold-light: #DFC488;
+  --gold-lighter: #FFF4D6;
   --gold-shimmer: #F5E8C7;
   --gold-gradient: linear-gradient(135deg, #B48737 0%, #DFC488 40%, #B48737 70%, #F5E8C7 100%);
 
@@ -40,7 +41,7 @@
 html, body {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--bg-page);
+  background-color: #120e09;
   background-image: var(--bg-page-gradient);
   background-attachment: fixed;
   color: var(--text-primary);
@@ -61,7 +62,7 @@ html, body {
   justify-content: center;
   align-items: flex-start;
   padding: 0;
-  background-color: var(--bg-page);
+  background-color: #120e09;
 }
 
 .invitation-container {
@@ -70,7 +71,7 @@ html, body {
   max-width: 460px;
   min-height: 100vh;
   background: var(--bg-page-gradient);
-  box-shadow: 0 0 50px rgba(180, 140, 60, 0.12);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
 }
@@ -95,7 +96,7 @@ html, body {
 }
 
 /* ==========================================================================
-   SECTION 1: HERO / OPENING SCREEN (LIGHT GOLD ROYAL CREST CARD)
+   SECTION 1: HERO / OPENING SCREEN (EXACT REFERENCE 1 WITH PHOTO 2 BG & PHOTO 3 BUTTON)
    ========================================================================== */
 .hero-section {
   position: fixed;
@@ -104,14 +105,13 @@ html, body {
   width: 100%;
   height: 100vh;
   z-index: 1000;
-  background: radial-gradient(circle at 50% 30%, #FFFFFF 0%, #FAF4E8 50%, #EFE4D2 100%);
+  background-color: #14100b;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px;
   transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
-  overflow-y: auto;
 }
 
 .hero-section.hero-closing {
@@ -124,238 +124,393 @@ body.site-unlocked .hero-section {
   display: none;
 }
 
-/* Enclosed Luxury Gold Hero Card */
-.hero-card {
-  position: relative;
+/* Hero Background Artwork (Photo 2: Cream cushion with gold rings in mosque) */
+.hero-bg-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 410px;
-  background: #FFFFFF;
-  border: 1.5px solid var(--card-border-gold);
-  border-radius: 26px;
-  box-shadow: 0 20px 60px rgba(180, 135, 55, 0.18), 0 4px 16px rgba(0, 0, 0, 0.04);
-  padding: 28px 20px 24px;
-  text-align: center;
-  z-index: 2;
-  margin: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 1;
+  transform: scale(1.01);
+  transition: opacity 1.2s ease, transform 1.5s ease;
 }
 
-.hero-card-inner {
-  position: relative;
+.hero-ambient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(14, 11, 7, 0.65) 0%,
+    rgba(14, 11, 7, 0.25) 25%,
+    rgba(14, 11, 7, 0.10) 45%,
+    rgba(14, 11, 7, 0.35) 75%,
+    rgba(14, 11, 7, 0.75) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* Top Arch Ornament */
-.hero-card-arch {
-  width: 115px;
+/* 1. Four 3D Gold Girih Corner Arch Frames (frame_corner_tr) */
+.hero-corner-frame {
+  position: absolute;
+  width: clamp(88px, 27vw, 170px);
   height: auto;
-  margin-bottom: 8px;
-  object-fit: contain;
+  pointer-events: none;
+  z-index: 10;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
 }
 
-.hero-card-badge {
+.hero-corner-frame.corner-tl {
+  top: 0px;
+  left: 0px;
+  transform: scaleY(-1);
+}
+
+.hero-corner-frame.corner-tr {
+  top: 0px;
+  right: 0px;
+  transform: scale(-1, -1);
+}
+
+.hero-corner-frame.corner-bl {
+  bottom: 0px;
+  left: 0px;
+  transform: none;
+}
+
+.hero-corner-frame.corner-br {
+  bottom: 0px;
+  right: 0px;
+  transform: scaleX(-1);
+}
+
+/* 2. Hanging 3D Gold Lanterns */
+.lantern-wrapper {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.lantern-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -240px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 260px;
+  background: repeating-linear-gradient(
+    180deg,
+    #dfc285 0px,
+    #c6a15b 3px,
+    #9d7d43 6px,
+    #dfc285 8px
+  );
+  box-shadow: 0 0 5px rgba(198, 161, 91, 0.6), 1px 0 2px rgba(0, 0, 0, 0.8);
+  z-index: 1;
+}
+
+.lantern-left-wrap {
+  top: 9%;
+  left: 7%;
+  width: 100%;
+  max-width: 82px;
+}
+
+.lantern-right-wrap {
+  top: 11%;
+  right: 6.5%;
+  width: 100%;
+  max-width: 66px;
+}
+
+.hero-hanging-lantern {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 16px rgba(198, 161, 91, 0.6));
+  transform-origin: top center;
+  animation: lanternSway 5.5s ease-in-out infinite alternate;
+}
+
+.lantern-right-wrap .hero-hanging-lantern {
+  filter: blur(0.5px) drop-shadow(0 8px 18px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 16px rgba(198, 161, 91, 0.45));
+  animation-delay: -2.8s;
+}
+
+@keyframes lanternSway {
+  0% { transform: rotate(-2deg); }
+  100% { transform: rotate(2deg); }
+}
+
+.lantern-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, rgba(223, 194, 133, 0.45) 0%, transparent 70%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+/* 3. Top Header: Bismillahir Rohmanir Rohiym */
+.hero-bismillah-wrap {
+  position: absolute;
+  top: clamp(52px, 7.2vh, 64px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 85%;
+  max-width: 320px;
+  text-align: center;
+  z-index: 12;
+}
+
+.bismillah-text {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 0.9rem;
+  font-size: clamp(13px, 3.4vw, 15px);
   font-weight: 600;
-  letter-spacing: 3px;
-  color: var(--gold-deep);
-  text-transform: uppercase;
-  margin-bottom: 8px;
+  letter-spacing: 0.12em;
+  color: var(--gold-light);
+  text-transform: capitalize;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 15px rgba(198, 161, 91, 0.4);
+  white-space: nowrap;
 }
 
-/* Royal 3D Embossed Gold Crest Monogram */
-.hero-crest-container {
-  position: relative;
-  width: 125px;
-  height: 125px;
-  margin-bottom: 12px;
+.bismillah-divider {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: floatCrest 4s ease-in-out infinite alternate;
+  gap: 8px;
+  margin-top: 4px;
 }
 
-.hero-crest-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 18px rgba(180, 135, 55, 0.35));
+.bismillah-divider::before,
+.bismillah-divider::after {
+  content: '';
+  width: 36px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
 }
 
-.crest-glow {
+.bismillah-divider .diamond {
+  width: 4px;
+  height: 4px;
+  background: var(--gold-primary);
+  transform: rotate(45deg);
+}
+
+/* 4. Central Title Group (Arch Crown, NIKOH TO'YI, Line, AXADBEK & SABRINAXON, Divider) */
+.hero-title-group {
   position: absolute;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(223, 196, 136, 0.4) 0%, transparent 70%);
-  z-index: -1;
-  animation: pulseGlow 3s ease-in-out infinite alternate;
-}
-
-@keyframes floatCrest {
-  0% { transform: translateY(0px) scale(1); }
-  100% { transform: translateY(-6px) scale(1.02); }
-}
-
-@keyframes pulseGlow {
-  0% { opacity: 0.5; transform: scale(0.9); }
-  100% { opacity: 0.9; transform: scale(1.15); }
-}
-
-.hero-event-badge {
-  font-family: var(--font-cinzel);
-  font-size: 0.85rem;
-  letter-spacing: 4px;
-  color: var(--gold-deep);
-  font-weight: 700;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-.hero-gold-line {
-  width: 60px;
-  height: 1.5px;
-  background: var(--gold-gradient);
-  margin: 0 auto 12px;
-  border-radius: 2px;
-}
-
-.hero-names {
-  font-family: var(--font-serif);
-  font-size: 2.2rem;
-  font-weight: 600;
-  line-height: 1.15;
-  color: var(--text-primary);
-  margin-bottom: 8px;
+  top: clamp(40%, 44vh, 47%);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
+  z-index: 12;
 }
 
-.hero-names .name-amp {
-  font-style: italic;
-  font-size: 1.6rem;
-  color: var(--gold-primary);
-  margin: 1px 0;
+.hero-arch-ornament {
+  width: clamp(85px, 21vw, 110px);
+  max-width: 120px;
+  height: auto;
+  margin-bottom: clamp(2px, 0.4vh, 4px);
+  filter: drop-shadow(0 4px 12px rgba(198, 161, 91, 0.45));
+}
+
+.hero-event-type {
+  font-family: var(--font-cinzel);
+  font-size: clamp(13px, 3.6vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  margin-left: 0.32em;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(198, 161, 91, 0.4);
+}
+
+.hero-thin-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 120px;
+  margin: clamp(3px, 0.6vh, 6px) 0 clamp(4px, 0.8vh, 8px);
+}
+
+.hero-thin-line::before,
+.hero-thin-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+}
+
+.hero-thin-line .line-diamond {
+  width: 4px;
+  height: 4px;
+  background: var(--gold-primary);
+  transform: rotate(45deg);
+}
+
+/* AXADBEK & SABRINAXON — Majestic Single Line */
+.hero-child-name {
+  font-family: var(--font-cinzel);
+  font-size: clamp(11.5px, 3.4vw, 16px);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-left: 0.06em;
+  width: auto;
+  max-width: 92%;
+  white-space: nowrap;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+.name-text {
+  background: linear-gradient(
+    115deg,
+    #d4af37 0%,
+    #fff6dd 18%,
+    #ffffff 26%,
+    #f3dfa2 34%,
+    #c6a15b 50%,
+    #8f6e30 62%,
+    #eed599 76%,
+    #ffffff 84%,
+    #d4af37 100%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: 
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 6px 18px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 0 20px rgba(212, 175, 55, 0.45));
 }
 
 .hero-divider-ornament {
-  width: 120px;
+  width: clamp(75px, 18vw, 98px);
+  max-width: 105px;
   height: auto;
-  margin: 6px auto 10px;
-  object-fit: contain;
+  margin-top: clamp(2px, 0.4vh, 4px);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
 }
 
-.hero-subtitle {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-  margin-bottom: 10px;
-  max-width: 300px;
-}
-
-.hero-meta-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 16px;
-  background: #FAF5EB;
-  border: 1px solid var(--card-border-gold);
-  border-radius: 50px;
-  font-family: var(--font-cinzel);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--gold-deep);
-  margin-bottom: 18px;
-}
-
-.meta-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.meta-svg {
-  width: 13px;
-  height: 13px;
-  fill: var(--gold-deep);
-}
-
-.meta-sep {
-  color: var(--gold-light);
-}
-
-/* Hero CTA Button */
+/* 5. CTA Button (Photo 3: Baroque Ornate Gold Plaque) */
 .hero-cta-wrap {
-  width: 100%;
+  position: absolute;
+  top: auto;
+  bottom: clamp(75px, 11vh, 95px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  max-width: 390px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 15;
 }
 
 .hero-cta-button {
   position: relative;
-  display: inline-flex;
+  width: 100%;
+  height: clamp(68px, 10vh, 86px);
+  min-height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.hero-cta-button:hover {
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 18px rgba(223, 196, 136, 0.6));
+}
+
+.hero-cta-button:active {
+  transform: scale(0.98);
+}
+
+/* Photo 3 Plate Image */
+.cta-plate-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 14px rgba(198, 161, 91, 0.5));
+  transition: filter 0.3s ease;
+}
+
+.cta-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 14px 28px;
-  border: none;
-  border-radius: 50px;
-  background: linear-gradient(135deg, #C7A04A 0%, #E7D095 50%, #B48737 100%);
-  color: #261D12;
+  height: 100%;
+  padding: 0 28px 2px;
+}
+
+.cta-mosque-icon {
+  width: clamp(22px, 5.5vw, 28px);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(198, 161, 91, 0.8));
+}
+
+.cta-label {
   font-family: var(--font-cinzel);
-  font-size: 0.9rem;
+  font-size: clamp(13px, 3.8vw, 15.5px);
   font-weight: 700;
-  letter-spacing: 1.5px;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(180, 135, 55, 0.38), 0 2px 6px rgba(0,0,0,0.08);
-  overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  letter-spacing: 0.16em;
+  color: #FFF4D6;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 12px rgba(198, 161, 91, 0.4);
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.hero-cta-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(180, 135, 55, 0.48);
+.cta-chevron {
+  font-size: 1.1rem;
+  color: #dfc285;
+  text-shadow: 0 0 10px rgba(223, 194, 133, 0.8);
+  transition: transform 0.25s ease;
 }
 
-.hero-cta-button:active {
-  transform: translateY(1px);
-}
-
-.cta-arrow {
-  font-size: 1rem;
-  color: #261D12;
-  transition: transform 0.2s ease;
-}
-
-.hero-cta-button:hover .cta-arrow {
+.hero-cta-button:hover .cta-chevron {
   transform: translateX(4px);
 }
 
-.cta-shine {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transform: rotate(25deg);
-  animation: shineSweep 3.5s infinite;
-}
-
-@keyframes shineSweep {
-  0% { transform: translateX(-100%) rotate(25deg); }
-  35%, 100% { transform: translateX(100%) rotate(25deg); }
-}
-
 .hero-subtext {
+  font-family: var(--font-sans);
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: rgba(235, 215, 175, 0.85);
   margin-top: 8px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
 /* ==========================================================================

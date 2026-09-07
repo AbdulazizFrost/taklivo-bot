@@ -1,6 +1,6 @@
 /**
  * PREMIUM UZBEK WEDDING DIGITAL INVITATION — AXADBEK & SABRINAXON
- * Luxury Light Gold System
+ * Master Design System: Photo 2 Master Artwork Background + Photo 3 Ornate Plaque Button
  */
 
 document.addEventListener('DOMContentLoaded', () => {
