@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aziz & Malika — Nikoh to‘yi taklifnomasi</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Parisienne&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="locked">
+
+  <!-- Watermark Pill (Unpaid / Demo Mode) -->
+  <div id="taklivoWatermark" class="taklivo-unpaid-watermark">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    TAKLIVO DEMO PREVIEW • 24H
+  </div>
+
+  <!-- Language Switcher (UZ / RU) -->
+  <div class="lang-toggle" id="langSwitcher">
+    <button data-lang="uz" class="active">UZ</button>
+    <button data-lang="ru">RU</button>
+  </div>
+
+  <!-- 3D Opening Cover Screen -->
+  <div id="cover">
+    <div class="cover-card" id="coverCard">
+      <div class="cover-face">
+        <svg class="cover-heart" viewBox="0 0 32 29" fill="currentColor">
+          <path d="M16 28.5C16 28.5 2 20.3 2 10.6 2 5.9 5.7 2.5 10 2.5c2.7 0 5 1.4 6 3.6 1-2.2 3.3-3.6 6-3.6 4.3 0 8 3.4 8 8.1 0 9.7-14 17.9-14 17.9z" />
+        </svg>
+        <div class="cover-mono">A &amp; M</div>
+        <div class="cover-hint" data-i18n="coverHint">Ochish uchun bosing</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Music Toggle Button -->
+  <button class="music-btn" id="musicBtn" aria-label="Musiqani yoqish/o‘chirish">♪</button>
+
+  <!-- Main Website Content -->
+  <div id="site">
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="heroSection">
+      <div class="hero-frame"></div>
+      <div class="sparkles" id="sparkles"></div>
+      
+      <p class="hero-eyebrow hero-anim" style="animation-delay: .1s" data-i18n="heroEyebrow">Bizning to‘yimiz</p>
+      
+      <h1 class="hero-names hero-anim" style="animation-delay: .35s">
+        Aziz<span class="hero-amp">&amp;</span>Malika
+      </h1>
+      
+      <!-- Couple Monogram Crest Medallion -->
+      <div class="hero-photo hero-anim" style="animation-delay: .65s">
+        <img src="images/wedding_crest.svg" alt="Aziz & Malika Nikoh ramzi" />
+      </div>
+      
+      <div class="hero-date-row hero-anim" style="animation-delay: .95s">
+        <span>15</span><span class="dot">·</span><span>09</span><span class="dot">·</span><span>2026</span>
+      </div>
+      
+      <p class="hero-loc hero-anim" style="animation-delay: 1.1s" data-i18n="heroLoc">Toshkent sh., «Oqsaroy» to‘yxonasi</p>
+    </section>
+
+    <!-- COUNTDOWN TIMER SECTION -->
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow reveal" data-i18n="cdEyebrow">Unutilmas kun</span>
+        <h2 class="section-title reveal" data-i18n="cdTitle">To‘ygacha qoldi</h2>
+        
+        <div class="laurel-divider reveal">
+          <span class="line"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M12 3v18M6 8c0 4 3 6 6 6M18 8c0 4-3 6-6 6" />
+          </svg>
+          <span class="line"></span>
+        </div>
+        
+        <div class="cd-grid reveal">
+          <div class="cd-item">
+            <div class="cd-ring"></div>
+            <div class="cd-inner">
+              <span class="cd-num" id="cd-d">00</span>
+              <span class="cd-lab" data-i18n="days">Kun</span>
+            </div>
+          </div>
+          <div class="cd-item">
+            <div class="cd-ring"></div>
+            <div class="cd-inner">
+              <span class="cd-num" id="cd-h">00</span>
+              <span class="cd-lab" data-i18n="hours">Soat</span>
+            </div>
+          </div>
+          <div class="cd-item">
+            <div class="cd-ring"></div>
+            <div class="cd-inner">
+              <span class="cd-num" id="cd-m">00</span>
+              <span class="cd-lab" data-i18n="mins">Daqiqa</span>
+            </div>
+          </div>
+          <div class="cd-item">
+            <div class="cd-ring"></div>
+            <div class="cd-inner">
+              <span class="cd-num" id="cd-s">00</span>
+              <span class="cd-lab" data-i18n="secs">Soniya</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVITATION MESSAGE SECTION -->
+    <section class="section alt">
+      <div class="container">
+        <span class="eyebrow reveal" data-i18n="inviteEyebrow">Taklifnoma</span>
+        <h2 class="section-title reveal" data-i18n="inviteTitle">Aziz mehmonlarimiz!</h2>
+        
+        <div class="laurel-divider reveal">
+          <span class="line"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M12 3v18M6 8c0 4 3 6 6 6M18 8c0 4-3 6-6 6" />
+          </svg>
+          <span class="line"></span>
+        </div>
+        
+        <p class="invite-text reveal" data-i18n="inviteText">
+          Taqdir bizning yuraklarimizni birlashtirdi va endi biz birgalikda yangi hayot ostonasiga qadam qo'ymoqdamiz. Sizni ushbu eng quvonchli va unutilmas kunimizda — nikoh to‘yimizda qadrdon mehmonimiz bo‘lishga taklif etamiz.
+        </p>
+      </div>
+    </section>
+
+    <!-- OPTION 1: SCHEDULE / PROGRAM -->
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow reveal" data-i18n="tlEyebrow">Kun dasturi</span>
+        <h2 class="section-title reveal" data-i18n="tlTitle">Tantana rejasi</h2>
+        
+        <div class="laurel-divider reveal">
+          <span class="line"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M12 3v18M6 8c0 4 3 6 6 6M18 8c0 4-3 6-6 6" />
+          </svg>
+          <span class="line"></span>
+        </div>
+        
+        <div class="tl-wrap reveal">
+          <div class="tl-item">
+            <div class="tl-time" data-i18n="tl1Time">18:00</div>
+            <div class="tl-title" data-i18n="tl1Title">Mehmonlar tashrifi va kutib olish</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time" data-i18n="tl2Time">18:30</div>
+            <div class="tl-title" data-i18n="tl2Title">Kelin-kuyovning tantanali kirib kelishi</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time" data-i18n="tl3Time">19:00</div>
+            <div class="tl-title" data-i18n="tl3Title">Bayramona to‘y oqshomi dasturxoni</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time" data-i18n="tl4Time">21:00</div>
+            <div class="tl-title" data-i18n="tl4Title">To‘y torti va qutlovlar</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OPTION 2: VENUE & MAP -->
+    <section class="section alt">
+      <div class="container">
+        <span class="eyebrow reveal" data-i18n="venueEyebrow">Tadbir joyi</span>
+        <h2 class="section-title reveal" data-i18n="venueTitle">To‘yxona manzili</h2>
+        
+        <div class="laurel-divider reveal">
+          <span class="line"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M12 3v18M6 8c0 4 3 6 6 6M18 8c0 4-3 6-6 6" />
+          </svg>
+          <span class="line"></span>
+        </div>
+        
+        <div class="venue-card reveal">
+          <div class="venue-photo">
+            <img src="images/venue.jpg" alt="«Oqsaroy» to‘yxonasi" />
+          </div>
+          <div class="venue-name" data-i18n="venueName">«Oqsaroy» to‘yxonasi</div>
+          <div class="venue-addr" data-i18n="venueAddr">Toshkent sh., Navoiy ko‘chasi, 15-uy</div>
+          <div class="venue-time" data-i18n="venueTime">15-sentyabr, 2026-yil · 18:00</div>
+          <a class="venue-btn" href="https://share.google/zis4UR8uMp8wsYJBL" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span data-i18n="venueBtn">Google xaritasida ochish</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- OPTION 3: DRESS-CODE -->
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow reveal" data-i18n="dcEyebrow">Tavsiyalar</span>
+        <h2 class="section-title reveal" data-i18n="dcTitle">Dress-kod</h2>
+        
+        <div class="laurel-divider reveal">
+          <span class="line"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M12 3v18M6 8c0 4 3 6 6 6M18 8c0 4-3 6-6 6" />
+          </svg>
+          <span class="line"></span>
+        </div>
+        
+        <div class="dc-swatches reveal">
+          <div class="dc-swatch-item">
+            <div class="dc-swatch" style="background: #c9a96e;" title="Oltin"></div>
+            <span class="dc-swatch-label" data-i18n="dcGold">Oltin rang</span>
+          </div>
+          <div class="dc-swatch-item">
+            <div class="dc-swatch" style="background: #e8cfc2;" title="Pudra"></div>
+            <span class="dc-swatch-label" data-i18n="dcBlush">Pudra</span>
+          </div>
+          <div class="dc-swatch-item">
+            <div class="dc-swatch" style="background: #fbf3ec; border: 1px solid #ddd;" title="Krem"></div>
+            <span class="dc-swatch-label" data-i18n="dcCream">Krem</span>
+          </div>
+          <div class="dc-swatch-item">
+            <div class="dc-swatch" style="background: #3a2e28;" title="Klassik to‘q"></div>
+            <span class="dc-swatch-label" data-i18n="dcDark">Klassik to‘q</span>
+          </div>
+        </div>
+        
+        <p class="dc-text reveal" data-i18n="dcText">
+          Bizning bayramimiz uchun qulay va chiroyli kiyinishingizni so'raymiz. Pastel, tilla va nozik pudra tusidagi liboslar bayramimizga yanada ko‘rk bag‘ishlaydi.
+        </p>
+      </div>
+    </section>
+
+    <!-- OPTION 4: RSVP SURVEY -->
+    <section class="section alt">
+      <div class="container">
+        <span class="eyebrow reveal" data-i18n="rsvpEyebrow">Tasdiqlash</span>
+        <h2 class="section-title reveal" data-i18n="rsvpTitle">Ishtirokingizni tasdiqlang</h2>
+        
+        <div class="laurel-divider reveal">
+          <span class="line"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M12 3v18M6 8c0 4 3 6 6 6M18 8c0 4-3 6-6 6" />
+          </svg>
+          <span class="line"></span>
+        </div>
+        
+        <form class="rsvp-form reveal" id="rsvpForm">
+          <div class="field">
+            <label class="field-title" data-i18n="nameLabel">Ismingiz va familiyangiz</label>
+            <input type="text" data-i18n-ph="namePh" placeholder="Ism va familiyangizni kiriting" required />
+          </div>
+
+          <div class="field">
+            <label class="field-title" data-i18n="attendLabel">To‘yda ishtirok etasizmi?</label>
+            <div class="radio-row">
+              <label class="radio-pill">
+                <input type="radio" name="attending" value="yes" checked />
+                <span data-i18n="willAttend">Ha, albatta kelaman</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="attending" value="no" />
+                <span data-i18n="wontAttend">Afsuski, kela olmayman</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-title" data-i18n="guestsLabel">Hamrohlaringiz soni</label>
+            <div class="radio-row">
+              <label class="radio-pill">
+                <input type="radio" name="guest_count" value="1" checked />
+                <span data-i18n="guests1">Bir o‘zim</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="guest_count" value="2" />
+                <span data-i18n="guests2">Juftlikda (+1)</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="guest_count" value="3" />
+                <span data-i18n="guests3">Oila bilan</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-title" data-i18n="commentLabel">Kelin-kuyovga tilaklar (ixtiyoriy)</label>
+            <textarea rows="3" data-i18n-ph="commentPh" placeholder="Bizga samimiy tilaklaringizni yozing..."></textarea>
+          </div>
+
+          <button type="submit" class="rsvp-btn" data-i18n="submitBtn">Javobni tasdiqlash</button>
+          <p class="form-msg" id="formMsg"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="ft-names">Aziz &amp; Malika</div>
+      <div class="ft-date" data-i18n="ftDate">15-sentyabr, 2026-yil</div>
+      <p class="ft-credit">
+        <span data-i18n="ftCredit">Taklivo · Maxsus taklifnomalar</span>
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- Floating Demo Bottom Banner -->
+  <div id="taklivoBanner" class="taklivo-floating-banner">
+    <div class="taklivo-banner-left">
+      <span class="taklivo-banner-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dfc488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        ДЕМО-РЕЖИМ
+        <span class="taklivo-banner-badge">BUYURTMA #11</span>
+      </span>
+      <span class="taklivo-banner-desc">Сайт в предварительном просмотре. После оплаты водяной знак будет снят.</span>
+    </div>
+    <a href="https://t.me/taklivo_bot" class="taklivo-banner-btn" target="_blank" rel="noopener noreferrer">Подтвердить в боте</a>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
