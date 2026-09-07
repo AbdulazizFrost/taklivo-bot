@@ -1,6 +1,6 @@
 /* ==========================================================================
    ORIENTAL EMERALD LUXURY THEME — TAKLIVO
-   Matching Exact Royal Heritage Style with Real 3D Golden Ornaments
+   Matching Exact Royal Heritage Style with Real 3D Golden Ornaments & Avatar
    Deep Emerald Green (#091f1a) + Harlequin Diamond Tile + Radiant Antique Gold
    ========================================================================== */
 
@@ -110,9 +110,9 @@ body.curtain-active {
 .curtain-centerpiece {
     position: relative;
     z-index: 2;
-    padding: 20px;
+    padding: 16px;
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
     display: flex;
     justify-content: center;
     transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease;
@@ -122,7 +122,7 @@ body.curtain-active {
     background: linear-gradient(180deg, #0e332a 0%, #061e18 100%);
     border: 1.5px solid var(--gold-border-bright);
     border-radius: 30px;
-    padding: 34px 22px 30px;
+    padding: 28px 20px 26px;
     text-align: center;
     width: 100%;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(223, 189, 110, 0.08);
@@ -140,36 +140,49 @@ body.curtain-active {
     background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
 }
 
-.curtain-seal {
-    width: 76px;
-    height: 76px;
-    margin: 0 auto 12px;
+/* Couple Avatar Photo (Delicate Luxury Frame) */
+.couple-avatar-wrap {
+    width: 90px;
+    height: 90px;
+    margin: 4px auto 14px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.couple-avatar-wrap.hero {
+    width: 105px;
+    height: 105px;
+    margin: 6px auto 16px;
+}
+
+.couple-avatar-img {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
+    object-fit: cover;
+    object-position: center 22%;
     border: 2px solid var(--gold-primary);
-    background: radial-gradient(circle, rgba(223, 189, 110, 0.25) 0%, rgba(9, 35, 28, 0.95) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 25px rgba(223, 189, 110, 0.45);
+    box-shadow: 0 0 22px rgba(223, 189, 110, 0.45), 0 8px 25px rgba(0, 0, 0, 0.65);
+    display: block;
 }
 
-.seal-inner-ring {
-    width: 60px;
-    height: 60px;
+.avatar-gold-ring {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
     border-radius: 50%;
-    border: 1px dashed var(--gold-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border: 1px dashed rgba(223, 189, 110, 0.6);
+    pointer-events: none;
+    animation: ringSpin 30s linear infinite;
 }
 
-.seal-initials {
-    font-family: var(--font-heading);
-    color: var(--gold-light);
-    font-size: 1.75rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    margin-left: 2px;
+@keyframes ringSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .curtain-tag {
@@ -177,10 +190,10 @@ body.curtain-active {
     font-family: var(--font-heading);
     font-style: italic;
     color: var(--gold-primary);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     letter-spacing: 3px;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .curtain-names {
@@ -188,12 +201,12 @@ body.curtain-active {
     flex-direction: column;
     align-items: center;
     gap: 2px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .c-name {
     font-family: var(--font-heading);
-    font-size: 1.85rem;
+    font-size: 1.7rem;
     font-weight: 700;
     color: var(--gold-light);
     letter-spacing: 2px;
@@ -203,7 +216,7 @@ body.curtain-active {
 
 .c-amp {
     font-family: var(--font-body);
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-style: italic;
     color: var(--gold-primary);
     line-height: 1;
@@ -211,25 +224,25 @@ body.curtain-active {
 
 .curtain-event-type {
     display: inline-block;
-    padding: 3px 16px;
+    padding: 3px 14px;
     background: rgba(223, 189, 110, 0.12);
     border: 1px solid var(--gold-border);
     border-radius: 20px;
     color: var(--gold-light);
     font-family: var(--font-ui);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    letter-spacing: 3px;
-    margin-bottom: 4px;
+    letter-spacing: 2.5px;
+    margin-bottom: 2px;
 }
 
 .curtain-date-txt {
     font-family: var(--font-ui);
     color: var(--gold-antique);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 2px;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
     text-transform: uppercase;
 }
 
@@ -240,14 +253,14 @@ body.curtain-active {
     justify-content: center;
     gap: 10px;
     width: 100%;
-    padding: 16px 24px;
+    padding: 15px 22px;
     background: linear-gradient(135deg, #dfbd6e 0%, #c5a059 50%, #dfbd6e 100%);
     background-size: 200% auto;
     border: 1px solid var(--gold-light);
     border-radius: 40px;
     color: #071914;
     font-family: var(--font-ui);
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -264,7 +277,7 @@ body.curtain-active {
 }
 
 .btn-sparkle {
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 .btn-shimmer-effect {
@@ -321,7 +334,7 @@ body.curtain-active {
 .mobile-frame {
     max-width: 440px;
     margin: 0 auto;
-    padding: 20px 14px 40px;
+    padding: 16px 14px 40px;
     position: relative;
     opacity: 0;
     transform: translateY(20px);
@@ -339,7 +352,7 @@ body:not(.curtain-active) .mobile-frame {
     justify-content: flex-end;
     align-items: center;
     gap: 6px;
-    padding: 0 8px 14px;
+    padding: 0 8px 12px;
 }
 
 .decor-dot {
@@ -353,7 +366,7 @@ body:not(.curtain-active) .mobile-frame {
 .content-stream {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 20px;
 }
 
 /* ==========================================================================
@@ -363,7 +376,7 @@ body:not(.curtain-active) .mobile-frame {
     background: var(--bg-card-gradient);
     border: 1px solid var(--gold-border);
     border-radius: var(--radius-card);
-    padding: 28px 22px 28px;
+    padding: 24px 20px 24px;
     text-align: center;
     position: relative;
     box-shadow: var(--shadow-emerald), inset 0 0 35px rgba(223, 189, 110, 0.04);
@@ -393,44 +406,44 @@ body:not(.curtain-active) .mobile-frame {
 }
 
 /* ==========================================================================
-   REAL 3D GOLD ORNAMENTS (From Reference Assets)
+   REFINED 3D GOLD ORNAMENTS (Subtle, Compact, Jewelry-scale)
    ========================================================================== */
 .gold-arch-wrap {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: -6px auto 14px;
+    margin: 0 auto 10px;
     width: 100%;
 }
 
 .gold-arch-img {
-    width: 220px;
-    max-width: 68%;
+    width: 115px;
+    max-width: 36%;
     height: auto;
     display: block;
-    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5)) drop-shadow(0 2px 6px rgba(223, 189, 110, 0.25));
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5)) drop-shadow(0 1px 4px rgba(223, 189, 110, 0.25));
 }
 
 .gold-arch-wrap.mini .gold-arch-img {
-    width: 180px;
-    max-width: 58%;
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+    width: 90px;
+    max-width: 28%;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
 }
 
 .gold-divider-wrap {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 12px auto 18px;
+    margin: 10px auto 14px;
     width: 100%;
 }
 
 .gold-divider-img {
-    width: 270px;
-    max-width: 84%;
+    width: 145px;
+    max-width: 46%;
     height: auto;
     display: block;
-    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.45));
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
 }
 
 /* Sub-header Tag */
@@ -439,47 +452,24 @@ body:not(.curtain-active) .mobile-frame {
     font-family: var(--font-heading);
     font-style: italic;
     color: var(--gold-primary);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     letter-spacing: 3px;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .bismillah-calligraphy {
     font-family: var(--font-arabic);
     color: var(--gold-light);
-    font-size: 1.65rem;
+    font-size: 1.55rem;
     line-height: 1.4;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     text-shadow: 0 0 12px rgba(223, 189, 110, 0.4);
 }
 
 .bismillah-calligraphy.small {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-}
-
-/* Monogram Badge (Hero) */
-.monogram-badge {
-    width: 68px;
-    height: 68px;
-    margin: 0 auto 14px;
-    border-radius: 50%;
-    border: 1.5px solid var(--gold-primary);
-    background: radial-gradient(circle, rgba(223, 189, 110, 0.2) 0%, rgba(11, 36, 30, 0.9) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 20px rgba(223, 189, 110, 0.3);
-}
-
-.monogram-txt {
-    font-family: var(--font-heading);
-    color: var(--gold-light);
-    font-size: 1.6rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    margin-left: 2px;
+    font-size: 1.35rem;
+    margin-bottom: 8px;
 }
 
 /* ==========================================================================
@@ -488,9 +478,9 @@ body:not(.curtain-active) .mobile-frame {
 .main-card-headline {
     font-family: var(--font-heading);
     color: var(--text-white);
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    letter-spacing: 2.2px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     line-height: 1.25;
 }
@@ -499,13 +489,13 @@ body:not(.curtain-active) .mobile-frame {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    margin-bottom: 12px;
+    gap: 2px;
+    margin-bottom: 10px;
 }
 
 .hero-name {
     font-family: var(--font-heading);
-    font-size: 1.95rem;
+    font-size: 1.85rem;
     font-weight: 700;
     color: var(--gold-light);
     letter-spacing: 2px;
@@ -515,7 +505,7 @@ body:not(.curtain-active) .mobile-frame {
 
 .hero-amp {
     font-family: var(--font-body);
-    font-size: 1.7rem;
+    font-size: 1.55rem;
     font-style: italic;
     color: var(--gold-primary);
     line-height: 1;
@@ -523,21 +513,21 @@ body:not(.curtain-active) .mobile-frame {
 
 .event-type-badge {
     display: inline-block;
-    padding: 4px 18px;
+    padding: 3px 16px;
     background: rgba(223, 189, 110, 0.12);
     border: 1px solid var(--gold-border);
     border-radius: 20px;
     color: var(--gold-light);
     font-family: var(--font-ui);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 3px;
-    margin-bottom: 8px;
+    letter-spacing: 2.5px;
+    margin-bottom: 6px;
 }
 
 .hero-subtext {
     font-family: var(--font-body);
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-style: italic;
     color: var(--text-muted);
 }
@@ -548,14 +538,14 @@ body:not(.curtain-active) .mobile-frame {
 .letter-body-paragraphs {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    margin: 8px 0 22px;
+    gap: 12px;
+    margin: 6px 0 18px;
 }
 
 .paragraph-text {
     font-family: var(--font-body);
-    font-size: 1.25rem;
-    line-height: 1.65;
+    font-size: 1.2rem;
+    line-height: 1.6;
     color: var(--text-ivory);
     font-weight: 400;
 }
@@ -568,8 +558,8 @@ body:not(.curtain-active) .mobile-frame {
 
 .letter-gold-separator {
     height: 1px;
-    width: 60%;
-    margin: 0 auto 20px;
+    width: 50%;
+    margin: 0 auto 16px;
     background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
 }
 
@@ -580,17 +570,17 @@ body:not(.curtain-active) .mobile-frame {
 .signature-intro {
     font-family: var(--font-body);
     font-style: italic;
-    font-size: 1.12rem;
+    font-size: 1.05rem;
     color: var(--gold-primary);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .signature-family {
     font-family: var(--font-heading);
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--text-white);
-    letter-spacing: 2px;
+    letter-spacing: 1.8px;
     line-height: 1.4;
 }
 
@@ -603,19 +593,19 @@ body:not(.curtain-active) .mobile-frame {
     gap: 8px;
     background: rgba(7, 26, 21, 0.85);
     border: 1px solid var(--gold-border-bright);
-    padding: 10px 20px;
+    padding: 8px 18px;
     border-radius: 30px;
-    margin: 4px auto 20px;
+    margin: 2px auto 16px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .pill-cal-icon {
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .pill-cal-text {
     font-family: var(--font-ui);
-    font-size: 0.86rem;
+    font-size: 0.82rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     color: var(--gold-light);
@@ -626,25 +616,25 @@ body:not(.curtain-active) .mobile-frame {
     background: rgba(223, 189, 110, 0.05);
     border: 1px solid var(--gold-border);
     border-radius: var(--radius-inner);
-    padding: 16px 20px;
-    margin-bottom: 20px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
 }
 
 .time-label {
     display: block;
     font-family: var(--font-ui);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 2.5px;
+    letter-spacing: 2.2px;
     color: var(--gold-antique);
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .time-main {
     display: block;
     font-family: var(--font-heading);
-    font-size: 2.6rem;
+    font-size: 2.4rem;
     font-weight: 700;
     color: var(--text-white);
     letter-spacing: 2px;
@@ -655,10 +645,10 @@ body:not(.curtain-active) .mobile-frame {
 .time-sub {
     display: block;
     font-family: var(--font-body);
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-style: italic;
     color: var(--text-muted);
-    margin-top: 4px;
+    margin-top: 3px;
 }
 
 /* Mini Calendar Box */
@@ -666,35 +656,35 @@ body:not(.curtain-active) .mobile-frame {
     background: #061813;
     border: 1px solid var(--gold-border);
     border-radius: var(--radius-inner);
-    padding: 18px 14px;
-    margin-bottom: 20px;
+    padding: 16px 12px;
+    margin-bottom: 16px;
 }
 
 .cal-month-title {
     font-family: var(--font-heading);
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--gold-light);
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     text-align: center;
 }
 
 .cal-days-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    gap: 5px;
     text-align: center;
     font-family: var(--font-ui);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
 }
 
 .c-head {
     color: var(--text-muted);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    padding-bottom: 6px;
+    padding-bottom: 5px;
 }
 
 .c-head.c-gold {
@@ -702,8 +692,8 @@ body:not(.curtain-active) .mobile-frame {
 }
 
 .cal-days-grid span {
-    padding: 6px 0;
-    border-radius: 8px;
+    padding: 5px 0;
+    border-radius: 6px;
     color: var(--text-ivory);
 }
 
@@ -716,7 +706,7 @@ body:not(.curtain-active) .mobile-frame {
     color: #071a15 !important;
     font-weight: 700 !important;
     box-shadow: 0 0 12px rgba(223, 189, 110, 0.6);
-    transform: scale(1.08);
+    transform: scale(1.06);
 }
 
 .btn-cal-add {
@@ -724,13 +714,13 @@ body:not(.curtain-active) .mobile-frame {
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 13px 20px;
+    padding: 12px 18px;
     background: transparent;
     border: 1px solid var(--gold-primary);
     border-radius: 30px;
     color: var(--gold-light);
     font-family: var(--font-ui);
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     font-weight: 600;
     letter-spacing: 1px;
     cursor: pointer;
@@ -747,25 +737,25 @@ body:not(.curtain-active) .mobile-frame {
    CARD 4: VENUE & LOCATION
    ========================================================================== */
 .venue-showcase-box {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
 .venue-prominent-name {
     font-family: var(--font-heading);
     color: var(--gold-light);
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     font-weight: 700;
     letter-spacing: 1.5px;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .venue-badge-label {
     font-family: var(--font-ui);
     color: var(--gold-antique);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 3px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .venue-address-pill {
@@ -774,15 +764,15 @@ body:not(.curtain-active) .mobile-frame {
     gap: 6px;
     background: rgba(223, 189, 110, 0.08);
     border: 1px solid var(--gold-border);
-    padding: 8px 16px;
+    padding: 7px 15px;
     border-radius: 20px;
     font-family: var(--font-ui);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--text-ivory);
 }
 
 .pin-symbol {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .map-embed-wrapper {
@@ -791,7 +781,7 @@ body:not(.curtain-active) .mobile-frame {
     overflow: hidden;
     border: 1px solid var(--gold-border);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     background: #061813;
 }
 
@@ -805,10 +795,10 @@ body:not(.curtain-active) .mobile-frame {
     left: 10px;
     background: rgba(7, 26, 21, 0.92);
     border: 1px solid var(--gold-border);
-    padding: 6px 14px;
-    border-radius: 12px;
+    padding: 5px 12px;
+    border-radius: 10px;
     font-family: var(--font-ui);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
     color: var(--gold-light);
     backdrop-filter: blur(4px);
@@ -826,11 +816,11 @@ body:not(.curtain-active) .mobile-frame {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 13px 18px;
+    padding: 12px 16px;
     border-radius: 30px;
     text-decoration: none;
     font-family: var(--font-ui);
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     font-weight: 600;
     letter-spacing: 0.5px;
     transition: all 0.3s ease;
@@ -868,15 +858,15 @@ body:not(.curtain-active) .mobile-frame {
    CARD 5: SACRED AYAH
    ========================================================================== */
 .ayah-blessing-card {
-    padding: 26px 22px;
+    padding: 24px 20px;
 }
 
 .ayah-arabic-text {
     font-family: var(--font-arabic);
     color: var(--gold-light);
-    font-size: 1.45rem;
+    font-size: 1.4rem;
     line-height: 1.8;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     direction: rtl;
     text-shadow: 0 0 10px rgba(223, 189, 110, 0.3);
 }
@@ -885,15 +875,15 @@ body:not(.curtain-active) .mobile-frame {
     font-family: var(--font-body);
     font-style: italic;
     color: var(--text-ivory);
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     line-height: 1.6;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .ayah-source {
     font-family: var(--font-ui);
     color: var(--gold-antique);
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -904,29 +894,29 @@ body:not(.curtain-active) .mobile-frame {
    ========================================================================== */
 .emerald-footer {
     text-align: center;
-    padding: 16px 0 10px;
+    padding: 14px 0 8px;
 }
 
 .footer-names-line {
     font-family: var(--font-heading);
     color: var(--gold-primary);
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .footer-date-line {
     font-family: var(--font-ui);
     color: var(--text-muted);
-    font-size: 0.78rem;
-    margin-bottom: 10px;
+    font-size: 0.75rem;
+    margin-bottom: 8px;
 }
 
 .footer-brand {
     font-family: var(--font-ui);
     color: var(--text-muted);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
 }
 
 .footer-brand a {
