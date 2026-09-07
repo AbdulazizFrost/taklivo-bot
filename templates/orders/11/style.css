@@ -234,11 +234,18 @@ img {
 }
 
 .cover-mono {
-  font-family: "Parisienne", cursive;
-  font-size: clamp(42px, 9vw, 58px);
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  font-weight: 700;
+  font-size: clamp(38px, 8.5vw, 54px);
   color: var(--ink);
   text-align: center;
   line-height: 1.2;
+}
+
+.cover-mono .amp {
+  font-family: "Parisienne", cursive;
+  color: var(--gold);
+  font-weight: 400;
 }
 
 .cover-hint {
@@ -404,18 +411,22 @@ img {
 }
 
 .hero-names {
-  font-family: "Parisienne", cursive;
-  font-size: clamp(54px, 12vw, 96px);
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  font-weight: 700;
+  font-size: clamp(48px, 10.5vw, 86px);
   color: var(--ink);
-  line-height: 1.05;
+  line-height: 1.1;
   position: relative;
   z-index: 2;
+  letter-spacing: -0.01em;
 }
 
 .hero-amp {
+  font-family: "Parisienne", cursive;
   color: var(--gold);
-  font-size: .75em;
-  margin: 0 8px;
+  font-size: .85em;
+  margin: 0 10px;
+  font-weight: 400;
 }
 
 .hero-names::after {
@@ -947,9 +958,17 @@ footer {
 }
 
 .ft-names {
-  font-family: "Parisienne", cursive;
-  font-size: 42px;
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  font-weight: 700;
+  font-size: 38px;
   color: var(--gold-light);
+  letter-spacing: 0.02em;
+}
+
+.ft-names .amp {
+  font-family: "Parisienne", cursive;
+  color: var(--gold-light);
+  font-weight: 400;
 }
 
 .ft-date {
