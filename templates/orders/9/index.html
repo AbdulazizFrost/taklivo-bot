@@ -31,26 +31,6 @@
   <!-- Ambient Backdrop Wrapper -->
   <div class="app-wrapper">
 
-    <!-- Audio Ambient Controller -->
-    <div class="audio-controller">
-      <button id="audio-toggle-btn" class="audio-btn" type="button" aria-label="Musiqani yoqish/o'chirish" title="Musiqani yoqish">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-        </svg>
-      </button>
-      <div class="audio-waves" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-
-    <!-- Background Audio Element -->
-    <audio id="ambient-audio" preload="auto" loop>
-      <source src="background_music.mp3" type="audio/mpeg">
-    </audio>
-
     <!-- Main Mobile Invitation Container -->
     <main class="invitation-container">
       <div class="pattern-overlay" aria-hidden="true"></div>
@@ -89,9 +69,9 @@
           </div>
 
           <h1 class="hero-child-name">
-            <span class="name-text">UCHQUNBEK &amp; CHAROSXON</span>
-            <span class="gold-sparkle sparkle-1" aria-hidden="true"></span>
-            <span class="gold-sparkle sparkle-2" aria-hidden="true"></span>
+            <span class="name-line">UCHQUNBEK</span>
+            <span class="name-amp">&amp;</span>
+            <span class="name-line">CHAROSXON</span>
           </h1>
 
           <img src="assets/images/divider_ornament.png" alt="Oltin Gul Naqsh" class="hero-divider-ornament" />
@@ -175,37 +155,6 @@
             </div>
           </div>
 
-          <!-- Live Countdown Timer -->
-          <div class="countdown-container">
-            <p class="countdown-title">Tantanagacha qolgan vaqt:</p>
-            <div class="countdown-grid">
-              <div class="countdown-item">
-                <div class="countdown-box">
-                  <span id="countdown-days" class="countdown-num">00</span>
-                </div>
-                <span class="countdown-label">Kun</span>
-              </div>
-              <div class="countdown-item">
-                <div class="countdown-box">
-                  <span id="countdown-hours" class="countdown-num">00</span>
-                </div>
-                <span class="countdown-label">Soat</span>
-              </div>
-              <div class="countdown-item">
-                <div class="countdown-box">
-                  <span id="countdown-minutes" class="countdown-num">00</span>
-                </div>
-                <span class="countdown-label">Daqiqa</span>
-              </div>
-              <div class="countdown-item">
-                <div class="countdown-box">
-                  <span id="countdown-seconds" class="countdown-num">00</span>
-                </div>
-                <span class="countdown-label">Soniya</span>
-              </div>
-            </div>
-          </div>
-
           <!-- Add to Calendar Action -->
           <div class="calendar-btn-wrap">
             <button id="add-calendar-btn" class="btn-secondary" type="button">
@@ -216,107 +165,7 @@
         </section>
 
         <!-- ===============================================================
-             SECTION 4: KUN TARTIBI (EVENT TIMELINE)
-             =============================================================== -->
-        <section id="schedule-section" class="content-section" aria-label="Kun Tartibi">
-          <div class="section-badge">Reja va Dastur</div>
-          <h2 class="section-title">Kun Tartibi</h2>
-
-          <img src="assets/images/divider_ornament.png" alt="" class="section-divider-ornament" aria-hidden="true" />
-
-          <div class="timeline-list">
-            
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <p class="timeline-time">17:30</p>
-              <h3 class="timeline-title">Mehmonlarni Kutib Olish</h3>
-              <p class="timeline-desc">Fayzli davra va bayramona fotosessiya</p>
-            </div>
-
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <p class="timeline-time">18:00</p>
-              <h3 class="timeline-title">Tantanali Ochilish</h3>
-              <p class="timeline-desc">Kelin va kuyovning tashrifi, Qur'oni Karim tilovati</p>
-            </div>
-
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <p class="timeline-time">18:30</p>
-              <h3 class="timeline-title">Nikoh To‘yi Tantanasi</h3>
-              <p class="timeline-desc">San'atkorlar ijrosi va fayzli dasturxon</p>
-            </div>
-
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <p class="timeline-time">22:00</p>
-              <h3 class="timeline-title">Minnatdorchilik & Oq Fotiha</h3>
-              <p class="timeline-desc">Yaxshi niyatlar va esdalik fotosuratlari</p>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- ===============================================================
-             SECTION 5: GALLERY (XOTIRALAR & AN'ANALAR)
-             =============================================================== -->
-        <section id="gallery-section" class="content-section" aria-label="Xotiralar Galereyasi">
-          <div class="section-badge">Nafis Tasvirlar</div>
-          <h2 class="section-title">Xotiralar & An'analar</h2>
-
-          <img src="assets/images/divider_ornament.png" alt="" class="section-divider-ornament" aria-hidden="true" />
-
-          <div class="gallery-grid">
-            
-            <!-- Gallery Item 1 -->
-            <div class="gallery-card" tabindex="0" role="button" aria-label="Rasmni ko'rish">
-              <div class="gallery-img-wrap">
-                <img src="assets/images/gallery_tubeteika.jpg" alt="Muqaddas An'ana" class="gallery-img" loading="lazy" />
-                <div class="gallery-overlay-badge">
-                  <p class="gallery-item-title">Muqaddas An'ana</p>
-                  <p class="gallery-item-sub">Milliy qadriyatlarimiz</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Gallery Item 2 -->
-            <div class="gallery-card" tabindex="0" role="button" aria-label="Qur'oni Karim rasmini ko'rish">
-              <div class="gallery-img-wrap">
-                <img src="assets/images/gallery_quran.jpg" alt="Hikmat & Ziyo" class="gallery-img" loading="lazy" />
-                <div class="gallery-overlay-badge">
-                  <p class="gallery-item-title">Hikmat & Ziyo</p>
-                  <p class="gallery-item-sub">Muqaddas Qur'oni Karim va duolar</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Gallery Item 3 -->
-            <div class="gallery-card" tabindex="0" role="button" aria-label="Sharqona chiroqlar rasmini ko'rish">
-              <div class="gallery-img-wrap">
-                <img src="assets/images/gallery_lanterns.jpg" alt="Nurli Oqshom" class="gallery-img" loading="lazy" />
-                <div class="gallery-overlay-badge">
-                  <p class="gallery-item-title">Nurli Oqshom</p>
-                  <p class="gallery-item-sub">Sharqona chiroqlar va iliq muhit</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Gallery Item 4 -->
-            <div class="gallery-card" tabindex="0" role="button" aria-label="Tantanalar Saroyi zalini ko'rish">
-              <div class="gallery-img-wrap">
-                <img src="assets/images/gallery_hall.jpg" alt="Tantanalar Fayzi" class="gallery-img" loading="lazy" />
-                <div class="gallery-overlay-badge">
-                  <p class="gallery-item-title">Tantanalar Fayzi</p>
-                  <p class="gallery-item-sub">Shodiyona tantanalar saroyi</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- ===============================================================
-             SECTION 6: MANZIL & XARITA (LOCATION & MAP)
+             SECTION 4: MANZIL & XARITA (LOCATION & MAP - GREEN CHECKED)
              =============================================================== -->
         <section id="location-section" class="content-section" aria-label="Manzil va Xarita">
           <div class="section-badge">To‘y Manzili</div>
@@ -366,83 +215,7 @@
         </section>
 
         <!-- ===============================================================
-             SECTION 7: RSVP (TASHRIFNI TASDIQLASH)
-             =============================================================== -->
-        <section id="rsvp-section" class="content-section rsvp-card" aria-label="Tashrifni Tasdiqlash">
-          <img src="assets/images/arch_ornament.png" alt="" class="section-top-ornament" aria-hidden="true" />
-          <div class="section-badge">Hurmatli Mehmon</div>
-          <h2 class="section-title">Tashrifingizni Tasdiqlang</h2>
-
-          <img src="assets/images/divider_ornament.png" alt="" class="section-divider-ornament" aria-hidden="true" />
-
-          <p class="rsvp-intro-text">
-            To‘kin dasturxonimizda siz azizlar uchun qulay joy hozirlashimiz maqsadida tashrifingizni tasdiqlashingizni iltimos qilamiz:
-          </p>
-
-          <form id="rsvp-form" class="rsvp-form">
-            
-            <div class="form-group">
-              <label for="rsvp-name" class="form-label">Ismingiz va Familiyangiz *</label>
-              <input type="text" id="rsvp-name" class="form-input" placeholder="Masalan: Sardorbek Aliyev" required />
-            </div>
-
-            <div class="form-group">
-              <label for="rsvp-phone" class="form-label">Telefon Raqamingiz *</label>
-              <input type="tel" id="rsvp-phone" class="form-input" placeholder="+998 (__) ___-__-__" required />
-            </div>
-
-            <div class="form-group">
-              <span class="form-label">Tashrifingiz Holati:</span>
-              <div class="radio-options-grid">
-                <div class="radio-option-card">
-                  <input type="radio" id="attend-yes" name="attendance" value="Boraman" checked />
-                  <label for="attend-yes" class="radio-label">
-                    <span>🌟 Albatta boraman</span>
-                  </label>
-                </div>
-                <div class="radio-option-card">
-                  <input type="radio" id="attend-no" name="attendance" value="Bora olmayman" />
-                  <label for="attend-no" class="radio-label">
-                    <span>🕊️ Afsuski, yo‘q</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <span class="form-label">Mehmonlar Soni:</span>
-              <div class="guest-pills-grid">
-                <div class="guest-pill-card">
-                  <input type="radio" id="guests-1" name="guest_count" value="1" checked />
-                  <label for="guests-1" class="guest-pill-label">1 kishi</label>
-                </div>
-                <div class="guest-pill-card">
-                  <input type="radio" id="guests-2" name="guest_count" value="2" />
-                  <label for="guests-2" class="guest-pill-label">2 kishi</label>
-                </div>
-                <div class="guest-pill-card">
-                  <input type="radio" id="guests-family" name="guest_count" value="Oila bilan" />
-                  <label for="guests-family" class="guest-pill-label">Oila bilan</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="rsvp-wishes" class="form-label">Ezgu Tilaklaringiz (Ixtiyoriy)</label>
-              <textarea id="rsvp-wishes" class="form-textarea" placeholder="Yoshlarga samimiy tilaklaringiz va duolaringiz..."></textarea>
-            </div>
-
-            <button type="submit" class="btn-submit">
-              <span>TASDIQLASH</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </button>
-          </form>
-        </section>
-
-        <!-- ===============================================================
-             SECTION 8: YAKUN / XOTIMA (FINAL BLESSING)
+             SECTION 5: YAKUN / XOTIMA (FINAL BLESSING)
              =============================================================== -->
         <section id="yakun-section" class="yakun-section" aria-label="Xotima">
           <img src="assets/images/arch_ornament.png" alt="" class="yakun-ornament-top" aria-hidden="true" />
@@ -471,59 +244,6 @@
       </div>
     </main>
   </div>
-
-  <!-- ===================================================================
-       LIGHTBOX IMAGE MODAL
-       =================================================================== -->
-  <div id="lightbox-modal" class="lightbox-modal" role="dialog" aria-modal="true" aria-label="Rasm Ko'rish">
-    <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Yopish">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
-    <div class="lightbox-img-container">
-      <img id="lightbox-img" class="lightbox-img" src="" alt="Kattalashtirilgan Rasm" />
-    </div>
-    <p id="lightbox-caption" class="lightbox-caption"></p>
-  </div>
-
-  <!-- ===================================================================
-       VIP CONFIRMATION PASS MODAL
-       =================================================================== -->
-  <div id="vip-modal" class="vip-modal" role="dialog" aria-modal="true" aria-label="VIP Taklifnoma Chiptasi">
-    <div class="vip-card">
-      <div class="vip-badge-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-      </div>
-
-      <h3 class="vip-title">Tashrif Tasdiqlandi</h3>
-      <p class="vip-subtitle">Sizni to‘yimizda kutib qolamiz!</p>
-
-      <div class="vip-details-box">
-        <p id="vip-card-name" class="vip-guest-name">Aziz Mehmon</p>
-        <p id="vip-card-status" class="vip-guest-status">✨ Tashrif tasdiqlandi (1 kishi)</p>
-        <p style="font-size: 12px; color: var(--gold-muted); margin-top: 6px;">📍 «Xo‘jaqul Ota» Tantanalar Saroyi • 9-Oktabr, 2026</p>
-      </div>
-
-      <div class="vip-actions">
-        <a id="vip-telegram-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-submit" style="height: 46px; font-size: 12.5px; text-decoration: none;">
-          <span>Telegram orqali yuborish</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
-          </svg>
-        </a>
-        <button id="vip-modal-close" class="btn-secondary" type="button" style="width: 100%;">
-          <span>Yopish</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Golden Confetti Canvas -->
-  <canvas id="confetti-canvas"></canvas>
 
   <!-- JavaScript Scripts -->
   <script src="js/app.js"></script>

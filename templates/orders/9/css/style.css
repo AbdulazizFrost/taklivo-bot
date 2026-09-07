@@ -138,28 +138,10 @@ body {
 }
 
 /* ==========================================================================
-   AUDIO TOGGLE CONTROLLER
-   Hidden initially on the hero invitation gate.
-   Reveals smoothly when .site-unlocked is activated on CTA click.
+   AUDIO CONTROLLER (DISABLED / REMOVED PER CLIENT REQUEST)
    ========================================================================== */
 .audio-controller {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(0.85);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.site-unlocked .audio-controller {
-  opacity: 1;
-  pointer-events: auto;
-  transform: scale(1);
+  display: none !important;
 }
 
 @media (min-width: 768px) {
@@ -437,31 +419,36 @@ body {
   transform: rotate(45deg);
 }
 
-/* UCHQUNBEK & CHAROSXON — Visually Dominant, Grand Serif Typography */
+/* UCHQUNBEK & CHAROSXON — Elegant Vertical Stacking within Arch */
 .hero-child-name {
   font-family: var(--font-serif-title);
-  font-size: clamp(18px, 5.2vw, 27px);
+  font-size: clamp(19px, 5.2vw, 24px);
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  margin-left: 0.14em;
-  width: 92%;
-  white-space: nowrap;
+  margin-left: 0.16em;
+  width: 100%;
+  max-width: 280px;
   text-align: center;
   position: relative;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
   opacity: 0;
-  transform: scale(0.96);
+  transform: translateY(12px);
   transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.0s,
               transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.0s;
 }
 
 .hero-loaded .hero-child-name {
   opacity: 1;
-  transform: scale(1);
+  transform: translateY(0);
 }
 
-.name-text {
+.name-line {
+  display: block;
+  white-space: nowrap;
   background: linear-gradient(
     115deg,
     #d4af37 0%,
@@ -484,78 +471,14 @@ body {
   animation: royalGoldGleam 6s ease-in-out infinite alternate;
 }
 
-@keyframes royalGoldGleam {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Subtle Jewel Diamond Sparkles on Letter Accents */
-.gold-sparkle {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  pointer-events: none;
-  z-index: 3;
-}
-
-.gold-sparkle::before,
-.gold-sparkle::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #ffffff;
-  box-shadow: 0 0 6px #fff3dc, 0 0 14px rgba(212, 175, 55, 0.85);
-  border-radius: 50%;
-}
-
-.gold-sparkle::before {
-  width: 12px;
-  height: 2px;
-}
-
-.gold-sparkle::after {
-  width: 2px;
-  height: 12px;
-}
-
-.sparkle-1 {
-  top: -2px;
-  left: 1%;
-  animation: diamondGlint 4.5s ease-in-out infinite;
-}
-
-.sparkle-2 {
-  top: 0px;
-  right: 1%;
-  animation: diamondGlint 4.5s ease-in-out 2.25s infinite;
-}
-
-@keyframes diamondGlint {
-  0%, 100% {
-    transform: scale(0) rotate(0deg);
-    opacity: 0;
-  }
-  35% {
-    transform: scale(1.1) rotate(45deg);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.25) rotate(90deg);
-    opacity: 1;
-  }
-  65% {
-    transform: scale(0) rotate(135deg);
-    opacity: 0;
-  }
+.name-amp {
+  font-family: var(--font-serif-sub);
+  font-size: clamp(13px, 3.5vw, 16px);
+  font-style: italic;
+  color: var(--gold-light);
+  line-height: 1;
+  margin: 1px 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 10px rgba(198, 161, 91, 0.5);
 }
 
 /* Floral Divider Ornament below (Width = 30vw) */
