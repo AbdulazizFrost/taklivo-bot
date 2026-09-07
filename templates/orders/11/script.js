@@ -1,4 +1,18 @@
+// Ensure browser always starts from top on reload/refresh
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
+window.addEventListener('beforeunload', () => {
+  window.scrollTo(0, 0);
+});
+
 document.addEventListener('DOMContentLoaded', () => {
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+
   // --- 1. HERO ANIMATION & SPARKLES ---
   const hero = document.getElementById('heroSection');
   if (hero) {
