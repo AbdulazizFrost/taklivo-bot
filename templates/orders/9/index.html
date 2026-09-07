@@ -11,9 +11,65 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="curtain-active">
 
-    <div class="mobile-frame">
+    <!-- ==========================================================================
+         ROYAL EMERALD COVER / CURTAIN SCREEN (Bosh sahifa / Ochish oynasi)
+         ========================================================================== -->
+    <div class="curtain-overlay" id="curtainOverlay">
+        <div class="curtain-panel panel-left"></div>
+        <div class="curtain-panel panel-right"></div>
+        
+        <div class="curtain-centerpiece">
+            <div class="curtain-card">
+                <!-- 3D Gold Arch Ornament -->
+                <div class="gold-arch-wrap">
+                    <img src="images/gold-arch.png" alt="Zarhal Toj" class="gold-arch-img">
+                </div>
+
+                <!-- Royal Monogram Seal -->
+                <div class="curtain-seal">
+                    <div class="seal-inner-ring">
+                        <span class="seal-initials">UC</span>
+                    </div>
+                </div>
+
+                <span class="curtain-tag">MUBORAK TAKLIFNOMA</span>
+
+                <div class="bismillah-calligraphy small">
+                    بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+                </div>
+
+                <h1 class="curtain-names">
+                    <span class="c-name">Uchqunbek</span>
+                    <span class="c-amp">&</span>
+                    <span class="c-name">Charosxon</span>
+                </h1>
+
+                <span class="curtain-event-type">NIKOH TO‘YI</span>
+
+                <!-- 3D Gold Divider -->
+                <div class="gold-divider-wrap">
+                    <img src="images/gold-divider.png" alt="Zarhal Naqsh" class="gold-divider-img">
+                </div>
+
+                <p class="curtain-date-txt">🗓 2026-YIL 9-OKTABR</p>
+
+                <!-- Open Invitation Button -->
+                <button class="curtain-open-btn" onclick="openInvitation()" aria-label="Taklifnomani ochish">
+                    <span class="btn-sparkle">⚜️</span>
+                    <span class="btn-txt">Taklifnomani ochish</span>
+                    <span class="btn-sparkle">⚜️</span>
+                    <div class="btn-shimmer-effect"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MAIN INVITATION STREAM
+         ========================================================================== -->
+    <div class="mobile-frame" id="mainInvitation">
         <!-- Top Status / Decorative Dots -->
         <div class="top-nav-decor">
             <span class="decor-dot"></span>

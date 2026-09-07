@@ -59,12 +59,278 @@ body {
     min-height: 100vh;
 }
 
-/* Mobile Frame Wrapper */
+body.curtain-active {
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ==========================================================================
+   OPENING COVER / CURTAIN OVERLAY ("Taklifnomani ochish")
+   ========================================================================== */
+.curtain-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #071914;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.curtain-panel {
+    position: absolute;
+    top: 0;
+    width: 50vw;
+    height: 100vh;
+    background: #061712;
+    background-image: 
+        radial-gradient(circle at 50% 50%, rgba(20, 65, 54, 0.7) 0%, rgba(4, 15, 12, 0.98) 100%),
+        repeating-linear-gradient(45deg, rgba(14, 42, 34, 0.45) 0, rgba(14, 42, 34, 0.45) 1px, transparent 0, transparent 28px),
+        repeating-linear-gradient(-45deg, rgba(14, 42, 34, 0.45) 0, rgba(14, 42, 34, 0.45) 1px, transparent 0, transparent 28px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+    z-index: 1;
+}
+
+.curtain-panel.panel-left {
+    left: 0;
+    border-right: 1px solid rgba(223, 189, 110, 0.35);
+}
+
+.curtain-panel.panel-right {
+    right: 0;
+    border-left: 1px solid rgba(223, 189, 110, 0.35);
+}
+
+.curtain-centerpiece {
+    position: relative;
+    z-index: 2;
+    padding: 20px;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    justify-content: center;
+    transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease;
+}
+
+.curtain-card {
+    background: linear-gradient(180deg, #0e332a 0%, #061e18 100%);
+    border: 1.5px solid var(--gold-border-bright);
+    border-radius: 30px;
+    padding: 34px 22px 30px;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(223, 189, 110, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.curtain-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+}
+
+.curtain-seal {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    border: 2px solid var(--gold-primary);
+    background: radial-gradient(circle, rgba(223, 189, 110, 0.25) 0%, rgba(9, 35, 28, 0.95) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 25px rgba(223, 189, 110, 0.45);
+}
+
+.seal-inner-ring {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px dashed var(--gold-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seal-initials {
+    font-family: var(--font-heading);
+    color: var(--gold-light);
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-left: 2px;
+}
+
+.curtain-tag {
+    display: block;
+    font-family: var(--font-heading);
+    font-style: italic;
+    color: var(--gold-primary);
+    font-size: 0.82rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.curtain-names {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.c-name {
+    font-family: var(--font-heading);
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.c-amp {
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--gold-primary);
+    line-height: 1;
+}
+
+.curtain-event-type {
+    display: inline-block;
+    padding: 3px 16px;
+    background: rgba(223, 189, 110, 0.12);
+    border: 1px solid var(--gold-border);
+    border-radius: 20px;
+    color: var(--gold-light);
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+}
+
+.curtain-date-txt {
+    font-family: var(--font-ui);
+    color: var(--gold-antique);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 22px;
+    text-transform: uppercase;
+}
+
+/* Open Invitation Button */
+.curtain-open-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #dfbd6e 0%, #c5a059 50%, #dfbd6e 100%);
+    background-size: 200% auto;
+    border: 1px solid var(--gold-light);
+    border-radius: 40px;
+    color: #071914;
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(223, 189, 110, 0.45);
+    position: relative;
+    overflow: hidden;
+    animation: pulseGoldBtn 2.4s infinite ease-in-out;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.curtain-open-btn:active {
+    transform: scale(0.98);
+}
+
+.btn-sparkle {
+    font-size: 1rem;
+}
+
+.btn-shimmer-effect {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+    transform: skewX(-25deg);
+    animation: btnShimmer 3s infinite;
+}
+
+@keyframes btnShimmer {
+    0% { left: -100%; }
+    50%, 100% { left: 150%; }
+}
+
+@keyframes pulseGoldBtn {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 8px 25px rgba(223, 189, 110, 0.4);
+    }
+    50% {
+        transform: scale(1.025);
+        box-shadow: 0 12px 35px rgba(223, 189, 110, 0.65), 0 0 20px rgba(223, 189, 110, 0.35);
+    }
+}
+
+/* Curtain Opened States */
+.curtain-overlay.opened {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.curtain-overlay.opened .panel-left {
+    transform: translateX(-100%);
+}
+
+.curtain-overlay.opened .panel-right {
+    transform: translateX(100%);
+}
+
+.curtain-overlay.opened .curtain-centerpiece {
+    opacity: 0;
+    transform: scale(0.9) translateY(-25px);
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   MOBILE FRAME & CONTENT STREAM
+   ========================================================================== */
 .mobile-frame {
     max-width: 440px;
     margin: 0 auto;
     padding: 20px 14px 40px;
     position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+}
+
+body:not(.curtain-active) .mobile-frame {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Decorative Top Dots */
@@ -84,7 +350,6 @@ body {
     opacity: 0.7;
 }
 
-/* Main Stream of Cards */
 .content-stream {
     display: flex;
     flex-direction: column;
