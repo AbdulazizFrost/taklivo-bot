@@ -126,28 +126,94 @@ document.addEventListener('DOMContentLoaded', () => {
   const rsvpForm = document.getElementById('rsvpForm');
   const formMsg = document.getElementById('formMsg');
   const wishesList = document.getElementById('wishesList');
+  const savedWishesKey = 'taklivo_order11_wishes';
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>'"]/g, tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag] || tag));
+  }
+
+  // Load any previously saved wishes from this browser/device
+  function loadSavedWishes() {
+    if (!wishesList) return;
+    try {
+      const saved = JSON.parse(localStorage.getItem(savedWishesKey) || '[]');
+      if (Array.isArray(saved)) {
+        saved.forEach(w => {
+          const newWish = document.createElement('div');
+          newWish.className = 'wish-item';
+          newWish.innerHTML = `
+            <p class="wish-name">${escapeHtml(w.name)}</p>
+            <p class="wish-text">${escapeHtml(w.comment)}</p>
+          `;
+          wishesList.prepend(newWish);
+        });
+      }
+    } catch (e) {
+      console.warn("Could not load saved wishes", e);
+    }
+  }
+  loadSavedWishes();
 
   if (rsvpForm && formMsg) {
     rsvpForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const nameInput = rsvpForm.querySelector('input[type="text"]');
       const commentInput = rsvpForm.querySelector('textarea');
+      const attendingRadio = rsvpForm.querySelector('input[name="attending"]:checked');
       const btn = rsvpForm.querySelector('.rsvp-btn');
 
       const guestName = nameInput ? nameInput.value.trim() : '';
       const guestComment = commentInput ? commentInput.value.trim() : '';
+      const attendingVal = attendingRadio ? attendingRadio.value : 'yes';
+      const statusText = attendingVal === 'yes' ? 'Albatta boraman' : 'Kela olmayman';
 
+      const defaultName = (currentLang === 'uz' ? 'Mehmon' : currentLang === 'en' ? 'Guest' : 'Гость');
+      const displayName = guestName || defaultName;
+
+      // Dynamically prepend new wish card to the wishes list
       if (guestComment && wishesList) {
         const newWish = document.createElement('div');
         newWish.className = 'wish-item';
         newWish.innerHTML = `
-          <p class="wish-name">${guestName || (currentLang === 'uz' ? 'Mehmon' : currentLang === 'en' ? 'Guest' : 'Гость')}</p>
-          <p class="wish-text">${guestComment}</p>
+          <p class="wish-name">${escapeHtml(displayName)}</p>
+          <p class="wish-text">${escapeHtml(guestComment)}</p>
         `;
         wishesList.prepend(newWish);
+
+        // Save wish into localStorage
+        try {
+          const saved = JSON.parse(localStorage.getItem(savedWishesKey) || '[]');
+          saved.push({ name: displayName, comment: guestComment });
+          localStorage.setItem(savedWishesKey, JSON.stringify(saved));
+        } catch (err) {}
       }
 
+      // Send to Taklivo Bot RSVP API if available
+      try {
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const apiBase = isLocal ? '' : 'https://taklivo.uz';
+        fetch(`${apiBase}/api/order/11/rsvp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: displayName,
+            phone: '',
+            status: statusText,
+            message: guestComment
+          })
+        }).catch(() => {});
+      } catch (err) {}
+
       if (btn) btn.disabled = true;
+      if (nameInput) nameInput.disabled = true;
+      if (commentInput) commentInput.disabled = true;
 
       const dict = T[currentLang] || T.uz;
       formMsg.textContent = "✓ " + dict.thanksMsg;
