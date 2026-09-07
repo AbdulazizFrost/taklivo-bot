@@ -3,14 +3,14 @@
 // ==========================================================================
 
 function openInvitation() {
-    const curtain = document.getElementById('curtainOverlay');
-    if (curtain) {
-        curtain.classList.add('opened');
+    const overlay = document.getElementById('curtainOverlay');
+    if (overlay) {
+        overlay.classList.add('opened');
         document.body.classList.remove('curtain-active');
         
         setTimeout(() => {
-            curtain.style.display = 'none';
-        }, 1200);
+            overlay.style.display = 'none';
+        }, 900);
     }
 }
 

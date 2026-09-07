@@ -14,53 +14,64 @@
 <body class="curtain-active">
 
     <!-- ==========================================================================
-         ROYAL EMERALD COVER / CURTAIN SCREEN (Bosh sahifa / Ochish oynasi)
+         ROYAL ORIENTAL COVER SCREEN (From Original Provided Artwork)
          ========================================================================== -->
-    <div class="curtain-overlay" id="curtainOverlay">
-        <div class="curtain-panel panel-left"></div>
-        <div class="curtain-panel panel-right"></div>
-        
-        <div class="curtain-centerpiece">
-            <div class="curtain-card">
-                <!-- 3D Gold Arch Ornament -->
-                <div class="gold-arch-wrap">
-                    <img src="images/gold-arch.png" alt="Zarhal Toj" class="gold-arch-img">
+    <div class="oriental-cover-overlay" id="curtainOverlay">
+        <div class="oriental-cover-container">
+            
+            <!-- 4 Ornate Mosaic Corners -->
+            <img src="images/frame-corner.png" alt="" class="frame-corner corner-tl" aria-hidden="true">
+            <img src="images/frame-corner.png" alt="" class="frame-corner corner-tr" aria-hidden="true">
+            <img src="images/frame-corner.png" alt="" class="frame-corner corner-bl" aria-hidden="true">
+            <img src="images/frame-corner.png" alt="" class="frame-corner corner-br" aria-hidden="true">
+
+            <!-- Hanging Lanterns -->
+            <div class="hanging-lantern lantern-left" aria-hidden="true">
+                <img src="images/lantern.png" alt="Zarhal fonus" class="lantern-img">
+            </div>
+            <div class="hanging-lantern lantern-right" aria-hidden="true">
+                <img src="images/lantern.png" alt="Zarhal fonus" class="lantern-img">
+            </div>
+
+            <!-- Top Content Block -->
+            <div class="cover-top-block">
+                <p class="cover-bismillah">Bismillahir Rohmanir Rohiym</p>
+                
+                <div class="cover-gold-arch">
+                    <img src="images/gold-arch.png" alt="Zarhal Toj" class="cover-arch-img">
                 </div>
 
-                <!-- Elegant Royal UC Monogram Logo -->
-                <div class="uc-monogram-wrap cover">
-                    <img src="images/uc-logo.png" alt="U & C Monogrammasi" class="uc-monogram-img">
-                </div>
+                <span class="cover-event-tag">NIKOH TO‘YI</span>
 
-                <span class="curtain-tag">MUBORAK TAKLIFNOMA</span>
-
-                <div class="bismillah-calligraphy small">
-                    بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-                </div>
-
-                <h1 class="curtain-names">
-                    <span class="c-name">Uchqunbek</span>
+                <h1 class="cover-couple-title">
+                    <span class="c-groom">UCHQUNBEK</span>
                     <span class="c-amp">&</span>
-                    <span class="c-name">Charosxon</span>
+                    <span class="c-bride">CHAROSXON</span>
                 </h1>
 
-                <span class="curtain-event-type">NIKOH TO‘YI</span>
-
-                <!-- 3D Gold Divider -->
-                <div class="gold-divider-wrap">
-                    <img src="images/gold-divider.png" alt="Zarhal Naqsh" class="gold-divider-img">
+                <div class="cover-gold-divider">
+                    <img src="images/gold-divider.png" alt="Zarhal Naqsh" class="cover-divider-img">
                 </div>
-
-                <p class="curtain-date-txt">🗓 2026-YIL 9-OKTABR</p>
-
-                <!-- Open Invitation Button -->
-                <button class="curtain-open-btn" onclick="openInvitation()" aria-label="Taklifnomani ochish">
-                    <span class="btn-sparkle">⚜️</span>
-                    <span class="btn-txt">Taklifnomani ochish</span>
-                    <span class="btn-sparkle">⚜️</span>
-                    <div class="btn-shimmer-effect"></div>
-                </button>
             </div>
+
+            <!-- Center Spacer (Allows Mosque, Wedding Rings on Cushion & Quran to shine) -->
+            <div class="cover-mid-spacer"></div>
+
+            <!-- Bottom Action CTA Block -->
+            <div class="cover-bottom-block">
+                <button class="cover-cta-button" onclick="openInvitation()" aria-label="Taklifnomani ochish">
+                    <img src="images/cta-btn-plate.png" alt="" class="btn-plate-bg" aria-hidden="true">
+                    <div class="btn-inner-content">
+                        <img src="images/mosque-icon.png" alt="Masjid" class="btn-mosque-icon">
+                        <span class="btn-label-text">TAKLIFNOMANI OCHISH</span>
+                        <span class="btn-chevron-icon">›</span>
+                    </div>
+                    <div class="btn-sheen-sweep"></div>
+                </button>
+
+                <p class="cover-sub-hint">Marosim tafsilotlarini ko‘rish</p>
+            </div>
+
         </div>
     </div>
 
