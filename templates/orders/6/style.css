@@ -95,7 +95,7 @@ html, body {
 }
 
 /* ==========================================================================
-   SECTION 1: HERO / OPENING SCREEN (LIGHT GOLD ROYAL CREST)
+   SECTION 1: HERO / OPENING SCREEN (LIGHT GOLD ROYAL CREST CARD)
    ========================================================================== */
 .hero-section {
   position: fixed;
@@ -109,8 +109,9 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 16px;
   transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
+  overflow-y: auto;
 }
 
 .hero-section.hero-closing {
@@ -123,22 +124,54 @@ body.site-unlocked .hero-section {
   display: none;
 }
 
-.hero-content {
+/* Enclosed Luxury Gold Hero Card */
+.hero-card {
   position: relative;
-  z-index: 2;
+  width: 100%;
+  max-width: 410px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--card-border-gold);
+  border-radius: 26px;
+  box-shadow: 0 20px 60px rgba(180, 135, 55, 0.18), 0 4px 16px rgba(0, 0, 0, 0.04);
+  padding: 28px 20px 24px;
   text-align: center;
-  max-width: 400px;
+  z-index: 2;
+  margin: auto;
+}
+
+.hero-card-inner {
+  position: relative;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* Top Arch Ornament */
+.hero-card-arch {
+  width: 115px;
+  height: auto;
+  margin-bottom: 8px;
+  object-fit: contain;
+}
+
+.hero-card-badge {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
 /* Royal 3D Embossed Gold Crest Monogram */
 .hero-crest-container {
   position: relative;
-  width: 170px;
-  height: 170px;
-  margin-bottom: 20px;
+  width: 125px;
+  height: 125px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,13 +182,13 @@ body.site-unlocked .hero-section {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 10px 20px rgba(180, 135, 55, 0.35));
+  filter: drop-shadow(0 8px 18px rgba(180, 135, 55, 0.35));
 }
 
 .crest-glow {
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(223, 196, 136, 0.4) 0%, transparent 70%);
   z-index: -1;
@@ -164,7 +197,7 @@ body.site-unlocked .hero-section {
 
 @keyframes floatCrest {
   0% { transform: translateY(0px) scale(1); }
-  100% { transform: translateY(-8px) scale(1.02); }
+  100% { transform: translateY(-6px) scale(1.02); }
 }
 
 @keyframes pulseGlow {
@@ -174,29 +207,29 @@ body.site-unlocked .hero-section {
 
 .hero-event-badge {
   font-family: var(--font-cinzel);
-  font-size: 0.95rem;
-  letter-spacing: 5px;
+  font-size: 0.85rem;
+  letter-spacing: 4px;
   color: var(--gold-deep);
   font-weight: 700;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .hero-gold-line {
-  width: 70px;
+  width: 60px;
   height: 1.5px;
   background: var(--gold-gradient);
-  margin: 0 auto 16px;
+  margin: 0 auto 12px;
   border-radius: 2px;
 }
 
 .hero-names {
   font-family: var(--font-serif);
-  font-size: 2.6rem;
+  font-size: 2.2rem;
   font-weight: 600;
   line-height: 1.15;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -204,54 +237,89 @@ body.site-unlocked .hero-section {
 
 .hero-names .name-amp {
   font-style: italic;
-  font-size: 2rem;
+  font-size: 1.6rem;
   color: var(--gold-primary);
-  margin: 2px 0;
+  margin: 1px 0;
+}
+
+.hero-divider-ornament {
+  width: 120px;
+  height: auto;
+  margin: 6px auto 10px;
+  object-fit: contain;
 }
 
 .hero-subtitle {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   color: var(--text-secondary);
-  margin-bottom: 8px;
-  max-width: 320px;
+  margin-bottom: 10px;
+  max-width: 300px;
 }
 
-.hero-date-text {
+.hero-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  background: #FAF5EB;
+  border: 1px solid var(--card-border-gold);
+  border-radius: 50px;
   font-family: var(--font-cinzel);
-  font-size: 0.85rem;
-  letter-spacing: 3px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
   color: var(--gold-deep);
-  font-weight: 600;
-  margin-bottom: 28px;
+  margin-bottom: 18px;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.meta-svg {
+  width: 13px;
+  height: 13px;
+  fill: var(--gold-deep);
+}
+
+.meta-sep {
+  color: var(--gold-light);
 }
 
 /* Hero CTA Button */
+.hero-cta-wrap {
+  width: 100%;
+}
+
 .hero-cta-button {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 16px 36px;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 28px;
   border: none;
   border-radius: 50px;
   background: linear-gradient(135deg, #C7A04A 0%, #E7D095 50%, #B48737 100%);
   color: #261D12;
   font-family: var(--font-cinzel);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(180, 135, 55, 0.4), 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 24px rgba(180, 135, 55, 0.38), 0 2px 6px rgba(0,0,0,0.08);
   overflow: hidden;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .hero-cta-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 34px rgba(180, 135, 55, 0.5);
+  box-shadow: 0 12px 30px rgba(180, 135, 55, 0.48);
 }
 
 .hero-cta-button:active {
@@ -259,7 +327,7 @@ body.site-unlocked .hero-section {
 }
 
 .cta-arrow {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #261D12;
   transition: transform 0.2s ease;
 }
@@ -285,9 +353,9 @@ body.site-unlocked .hero-section {
 }
 
 .hero-subtext {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 /* ==========================================================================
