@@ -108,7 +108,22 @@ document.addEventListener('DOMContentLoaded', () => {
         window.TaklivoEngine.init({
             orderId: 7,
             defaultDate: '2026-09-20T19:00:00',
-            secondLanguage: true
+            secondLanguage: true,
+            orderData: {
+                order_id: 7,
+                is_demo: false,
+                is_paid: true,
+                couple: {
+                    groom_name: 'Muslimbek',
+                    bride_name: 'Oyshaxon'
+                },
+                event: {
+                    event_date: '20.09.2026',
+                    event_time: '19:00',
+                    venue: 'Uy',
+                    address: "Namangan sh. Yangi yo'l ko'cha 4-uy"
+                }
+            }
         });
     }
 
