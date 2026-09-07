@@ -1,162 +1,282 @@
 <!DOCTYPE html>
 <html lang="uz">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Axadbek &amp; Sabrinaxon — To'y Taklifnomasi 💍</title>
-    
-    <!-- OpenGraph Preview for Telegram / Socials -->
-    <meta property="og:title" content="Axadbek &amp; Sabrinaxon — Nikoh To'yi Taklifnomasi 💍">
-    <meta property="og:description" content="18-Oktabr 2026, 18:00 | «Osiyo» To'yxonasi, Beshkent. Sizni to'y oqshomimizga lutfan taklif etamiz!">
-    <meta property="og:image" content="images/bosh_rasm.jpg">
-    <meta property="og:type" content="website">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nikoh To‘yi Taklifnomasi — Axadbek &amp; Sabrinaxon</title>
+  
+  <!-- SEO & Social Open Graph Meta -->
+  <meta name="description" content="Axadbek &amp; Sabrinaxonlarning Nikoh to'yiga lutfan taklif etamiz! 2026-yil 18-oktabr, «Osiyo» To‘yxonasi, Beshkent.">
+  <meta name="theme-color" content="#062A20">
+  <meta property="og:title" content="Nikoh To‘yi Taklifnomasi — Axadbek &amp; Sabrinaxon">
+  <meta property="og:description" content="Sizni jondan aziz farzandlarimiz Axadbek va Sabrinaxonning Nikoh to'yiga lutfan taklif etamiz!">
+  <meta property="og:image" content="assets/images/hero_clean_bg.png">
+  <meta property="og:type" content="website">
 
-    <!-- Google Fonts Preconnect & Styles -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
+  <!-- Resource Preconnects for Ultra-Fast Font & Asset Loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Preload Critical Above-the-Fold Hero Image -->
+  <link rel="preload" as="image" href="assets/images/hero_clean_bg.png" fetchpriority="high">
+
+  <!-- Favicon / Touch Icon -->
+  <link rel="icon" type="image/png" href="assets/images/mosque_icon.png">
+
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
-    <!-- ➕ Musiqa (Fayl biriktirilgan) -->
-    <audio id="weddingAudio" src="music.mp3" loop preload="auto"></audio>
-    <button class="music-toggle-btn" id="musicBtn" onclick="toggleMusic()" aria-label="Musiqa nazorati">
-        <svg class="icon-play" viewBox="0 0 24 24" id="musicIconPlay" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
-        <svg class="icon-pause" viewBox="0 0 24 24" id="musicIconPause"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        <div class="music-pulse"></div>
-    </button>
+  <!-- Audio Player (➕ Musiqa - Fayl biriktirilgan) -->
+  <audio id="weddingAudio" src="music.mp3" loop preload="auto"></audio>
+  <button class="music-toggle-btn" id="musicBtn" onclick="toggleMusic()" aria-label="Musiqa nazorati" style="display: none;">
+    <svg class="icon-play" viewBox="0 0 24 24" id="musicIconPlay" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
+    <svg class="icon-pause" viewBox="0 0 24 24" id="musicIconPause"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    <div class="music-pulse-ring"></div>
+  </button>
 
-    <!-- Background Golden Dust / Particles -->
-    <div class="particles-container" id="particles"></div>
+  <!-- Ambient Backdrop Wrapper -->
+  <div class="app-wrapper">
 
-    <!-- 1. Intro Curtain Overlay Screen -->
-    <div class="intro-overlay" id="introOverlay">
-        <div class="cloud-layer cloud-bg-1"></div>
-        <div class="cloud-layer cloud-bg-2"></div>
-        <div class="cloud-layer cloud-bg-3"></div>
+    <!-- Main Mobile Invitation Container -->
+    <main class="invitation-container">
+      <div class="pattern-overlay" aria-hidden="true"></div>
 
-        <div class="intro-content">
-            <div class="luxury-crest-wrapper">
-                <div class="luxury-monogram-intro">AS</div>
-            </div>
-            <h1 class="intro-names">Axadbek &amp; Sabrinaxon</h1>
-            <p class="intro-subtitle">Hayotimizning eng go'zal sahifasi boshlanmoqda</p>
-            <button class="open-invite-btn" onclick="revealInvitation()">
-                <span>Taklifnomani Ochish</span>
-                <div class="btn-glow"></div>
-            </button>
+      <!-- =================================================================
+           SECTION 1: HERO / OPENING SCREEN (EXACT ZANGORI OLTIN MASTER ARTWORK)
+           ================================================================= -->
+      <section id="hero-section" class="hero-section" aria-label="Hero Taklifnoma">
+        
+        <!-- Clean Master Backdrop Artwork (Wedding scene with rings & cushion) -->
+        <img 
+          src="assets/images/hero_clean_bg.png" 
+          alt="" 
+          class="hero-bg-canvas"
+          loading="eager"
+          aria-hidden="true"
+        />
+        <div class="hero-ambient-overlay" aria-hidden="true"></div>
+
+        <!-- 1. Four 3D Gold Girih Corner Arch Frames -->
+        <img src="assets/images/frame_corner_tr.png" alt="" class="hero-corner-frame corner-tl" aria-hidden="true" />
+        <img src="assets/images/frame_corner_tr.png" alt="" class="hero-corner-frame corner-tr" aria-hidden="true" />
+        <img src="assets/images/frame_corner_tr.png" alt="" class="hero-corner-frame corner-bl" aria-hidden="true" />
+        <img src="assets/images/frame_corner_tr.png" alt="" class="hero-corner-frame corner-br" aria-hidden="true" />
+
+        <!-- 2. Hanging 3D Gold Lanterns -->
+        <div class="lantern-wrapper lantern-left-wrap">
+          <img src="assets/images/lantern_sharp.png" alt="Sharqona Chiroq" class="hero-hanging-lantern" />
+          <div class="lantern-glow"></div>
         </div>
-    </div>
+        <div class="lantern-wrapper lantern-right-wrap">
+          <img src="assets/images/lantern_sharp.png" alt="Sharqona Chiroq" class="hero-hanging-lantern" />
+          <div class="lantern-glow"></div>
+        </div>
 
-    <!-- 2. Main Invitation Content -->
-    <main class="app-container" id="mainContent">
+        <!-- 3. Top Header: Bismillahir Rohmanir Rohiym -->
+        <div class="hero-bismillah-wrap">
+          <p class="bismillah-text">Bismillahir Rohmanir Rohiym</p>
+          <div class="bismillah-divider" aria-hidden="true">
+            <div class="diamond"></div>
+          </div>
+        </div>
 
-        <!-- Hero Card Section -->
-        <section class="card-hero reveal-item">
-            <div class="card-header">
-                <div class="luxury-crest-wrapper small">
-                    <div class="gold-monogram">AS</div>
-                </div>
-                <h2 class="serif-title font-accent-names">Axadbek &amp; Sabrinaxon</h2>
+        <!-- 4. Central Title Group: Arch Crown, NIKOH TO‘YI, AXADBEK & SABRINAXON, Floral Divider -->
+        <div class="hero-title-group">
+          <img src="assets/images/arch_ornament.png" alt="Oltin Naqsh" class="hero-arch-ornament" />
+          
+          <h2 class="hero-event-type">NIKOH TO‘YI</h2>
+          
+          <div class="hero-thin-line" aria-hidden="true">
+            <div class="line-diamond"></div>
+          </div>
+
+          <h1 class="hero-child-name">
+            <span class="name-text">AXADBEK &amp; SABRINAXON</span>
+            <span class="gold-sparkle sparkle-1" aria-hidden="true"></span>
+            <span class="gold-sparkle sparkle-2" aria-hidden="true"></span>
+          </h1>
+
+          <img src="assets/images/divider_ornament.png" alt="Oltin Gul Naqsh" class="hero-divider-ornament" />
+        </div>
+
+        <!-- 5. CTA Button -->
+        <div class="hero-cta-wrap">
+          <a href="#taklif-section" id="hero-cta-btn" class="hero-cta-button" aria-label="Taklifnomani ochish">
+            <img src="assets/images/cta_btn_plate.png" alt="" class="cta-plate-bg" aria-hidden="true" />
+            <div class="cta-content">
+              <img src="assets/images/mosque_icon.png" alt="" class="cta-mosque-icon" aria-hidden="true" />
+              <span class="cta-label">TAKLIFNOMANI OCHISH</span>
+              <span class="cta-chevron" aria-hidden="true">❯</span>
             </div>
+          </a>
+          <p class="hero-subtext">Marosim tafsilotlarini ko‘rish</p>
+        </div>
 
-            <div class="premium-image-frame">
-                <div class="image-inner-shadow"></div>
-                <div class="photo-placeholder" style="background-image: url('images/bosh_rasm.jpg');"></div>
-            </div>
+      </section>
 
-            <div class="scroll-down-notice">
-                <span>Pastga suring</span>
-                <div class="chevron-down"></div>
-            </div>
+      <!-- =================================================================
+           MAIN INVITATION CONTENT (CARDS IN ZANGORI OLTIN DESIGN)
+           ================================================================= -->
+      <div class="invitation-body">
+
+        <!-- ===============================================================
+             CARD 1: MUBORAK TAKLIFNOMA (SOLEMN INVITATION)
+             =============================================================== -->
+        <section id="taklif-section" class="content-section" aria-label="Taklifnoma Matni">
+          <img src="assets/images/arch_ornament.png" alt="" class="section-top-ornament" aria-hidden="true" />
+          <div class="section-badge">Muborak Taklifnoma</div>
+          <div class="taklif-arabic-title" dir="rtl" aria-label="Bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          
+          <h2 class="section-title">Hurmatli Mehmonimiz!</h2>
+          
+          <img src="assets/images/divider_ornament.png" alt="" class="section-divider-ornament" aria-hidden="true" />
+
+          <p class="taklif-text">
+            Sizni va oilangizni jondan aziz farzandlarimiz <span class="taklif-highlight">Axadbek</span> va <span class="taklif-highlight">Sabrinaxonlarning</span> Nikoh to‘yi munosabati bilan yoziladigan fayzli va to‘kin dasturxonimizga lutfan taklif etamiz.
+          </p>
+
+          <p class="taklif-text">
+            Ushbu quvonchli va shukuhli kunimizda davramiz fayzi, to‘rimiz ko‘rki bo‘lishingiz biz uchun cheksiz sharafdir.
+          </p>
+
+          <div class="taklif-signature">
+            <p class="taklif-signature-title">Cheksiz ehtirom va samimiyat ila:</p>
+            <p class="taklif-signature-name">Ota-onasi va barcha oila a'zolari</p>
+          </div>
         </section>
 
-        <!-- Sacred Ayat & Blessing -->
-        <section class="card-body-text reveal-item">
-            <p class="date-badge">18.10 — BIZNING KUNIMIZ 💍</p>
-            <p class="ayat">
-                «Alloh ularning qalblarini sevgi ila birlashtirdi»<br>
-                <span>Anfol surasi, 63-oyat</span>
-            </p>
-            <p class="main-invite-message">
-                Ota-onalarimizning duosi bilan sizni nikoh oqshomimizning unutilmas lahzalariga guvoh bo‘lishga lutfan taklif qilamiz.
-            </p>
+        <!-- ===============================================================
+             CARD 2: TADBIR HAQIDA & VAQTI (EVENT DETAILS)
+             =============================================================== -->
+        <section id="details-section" class="content-section" aria-label="Tadbir Tafsilotlari">
+          <div class="section-badge">Tantana Vaqti</div>
+          <h2 class="section-title">Tadbir Haqida</h2>
 
-            <div class="divider-gold-line"></div>
+          <img src="assets/images/divider_ornament.png" alt="" class="section-divider-ornament" aria-hidden="true" />
 
-            <h3 class="big-date-display">18/10/2026</h3>
-            <p class="location-sub-text">Qashqadaryo viloyati, Qarshi, Beshkent</p>
-            <p class="city-title-serif">Baxt Oqshomi</p>
+          <div class="event-date-pill">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+            </svg>
+            <span>2026-YIL 18-OKTABR, YAKSHANBA</span>
+          </div>
 
-            <div class="divider-gold-line small"></div>
-            <p class="names-footer-span">AXADBEK &amp; SABRINAXON</p>
-        </section>
-
-        <!-- ➕ Karta proezda: Event Location & Interactive Map -->
-        <section class="event-info-section reveal-item">
-            <div class="info-architecture-card">
-                <div class="building-icon-luxury"></div>
-                <h2 class="time-display">18:00</h2>
-                <p class="schedule-title">Mehmonlar yig'ilishi</p>
-                <p class="venue-name">«Osiyo» To'yxonasi</p>
-                <p class="venue-city" style="color: var(--text-light); font-size: 14px; margin-bottom: 18px;">Qashqadaryo viloyati, Qarshi, Beshkent</p>
-                
-                <!-- Google Maps Embed -->
-                <div class="venue-map-frame" style="width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); border: 1px solid rgba(199, 168, 107, 0.3);">
-                    <iframe 
-                        src="https://maps.google.com/maps?q=38.8287075,65.7014877&hl=uz&z=16&output=embed" 
-                        width="100%" 
-                        height="200" 
-                        style="border:0; display: block;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade"
-                        title="Osiyo to'yxonasi xaritasi">
-                    </iframe>
-                </div>
-
-                <a href="https://www.google.com/maps/place/Osiyo+to'yxonasi/@38.8287117,65.6989128,17z/data=!3m1!4b1!4m6!3m5!1s0x3f4ea564b2a7e491:0x9ece476f6687dab9!8m2!3d38.8287075!4d65.7014877!16s%2Fg%2F11c7t2dfw4?entry=ttu" target="_blank" class="luxury-action-btn">
-                    <span>Google Xaritada ochish</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="luxury-footer reveal-item">
-            <div class="gold-divider-line"></div>
-            <h2 class="footer-names">Axadbek &amp; Sabrinaxon</h2>
-            <p class="with-love-tag">With Love • TAKLIVO</p>
-        </footer>
-
-    </main>
-
-    <!-- Watermark Pill (Unpaid / Demo Mode) -->
-    <div id="taklivoWatermark" class="taklivo-unpaid-watermark">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-        TAKLIVO DEMO PREVIEW • 24H
-    </div>
-
-    <!-- Floating Demo Bottom Banner -->
-    <div id="taklivoBanner" class="taklivo-floating-banner">
-        <div class="taklivo-banner-left">
-            <span class="taklivo-banner-title">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <!-- Event Ceremony Card -->
+          <div class="event-cards-grid" style="grid-template-columns: 1fr;">
+            <div class="event-subcard" style="max-width: 100%;">
+              <div class="event-subcard-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446A9 9 0 1 1 12 2.992V3z"/>
                 </svg>
-                ДЕМО-РЕЖИМ
-                <span class="taklivo-banner-badge">BUYURTMA #6</span>
-            </span>
-            <span class="taklivo-banner-desc">Сайт в предварительном просмотре. После оплаты водяной знак будет снят.</span>
-        </div>
-        <a href="https://t.me/taklivo_bot" class="taklivo-banner-btn" target="_blank">Подтвердить в боте</a>
-    </div>
+              </div>
+              <div class="event-subcard-info">
+                <p class="event-subcard-tag">Bayramona Oqshom</p>
+                <h3 class="event-subcard-name">Nikoh To‘yi Tantanasi</h3>
+                <p class="event-subcard-time">🌙 18:00</p>
+              </div>
+            </div>
+          </div>
 
-    <script src="script.js"></script>
+          <!-- Add to Calendar Action -->
+          <div class="calendar-btn-wrap">
+            <button id="add-calendar-btn" class="btn-secondary" type="button">
+              <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/></svg>
+              <span>Taqvimga Qo‘shish</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- ===============================================================
+             CARD 3: MANZIL & XARITA (➕ KARTA PROEZDA)
+             =============================================================== -->
+        <section id="location-section" class="content-section" aria-label="Manzil va Xarita">
+          <div class="section-badge">To‘y Manzili</div>
+          <h2 class="section-title">Manzil</h2>
+
+          <img src="assets/images/divider_ornament.png" alt="" class="section-divider-ornament" aria-hidden="true" />
+
+          <div class="venue-details">
+            <h3 class="venue-name">«Osiyo» To‘yxonasi</h3>
+            <p class="venue-address">Qashqadaryo viloyati, Qarshi, Beshkent</p>
+          </div>
+
+          <!-- Interactive Styled Map Embed -->
+          <div class="map-container">
+            <iframe 
+              src="https://maps.google.com/maps?q=38.8287075,65.7014877&hl=uz&z=16&output=embed" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Osiyo to'yxonasi xaritasi">
+            </iframe>
+          </div>
+
+          <!-- Navigation Action: Google Map -->
+          <div class="nav-single-wrap">
+            <a href="https://www.google.com/maps/place/Osiyo+to'yxonasi/@38.8287117,65.6989128,17z/data=!3m1!4b1!4m6!3m5!1s0x3f4ea564b2a7e491:0x9ece476f6687dab9!8m2!3d38.8287075!4d65.7014877!16s%2Fg%2F11c7t2dfw4?entry=ttu" target="_blank" rel="noopener noreferrer" class="nav-btn nav-btn-google-only">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              <span>Google Xarita</span>
+            </a>
+          </div>
+        </section>
+
+        <!-- ===============================================================
+             CARD 4: YAKUN / XOTIMA (FINAL BLESSING)
+             =============================================================== -->
+        <section id="yakun-section" class="yakun-section" aria-label="Xotima">
+          <img src="assets/images/arch_ornament.png" alt="" class="yakun-ornament-top" aria-hidden="true" />
+          
+          <p class="yakun-tagline">Tashrifingizdan mamnun bo‘lamiz!</p>
+          <h2 class="yakun-main-title">SIZNI KUTIB QOLAMIZ!</h2>
+          <h3 class="yakun-child-name">AXADBEK &amp; SABRINAXON</h3>
+
+          <div style="margin: 20px auto 14px; max-width: 380px; text-align: center;">
+            <p style="font-family: var(--font-arabic); font-size: 1.35rem; color: var(--gold-light); line-height: 1.8; direction: rtl; text-shadow: 0 0 10px rgba(198, 161, 91, 0.4);">
+              وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعЕЛَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً
+            </p>
+            <p style="font-family: var(--font-serif-sub); font-style: italic; color: var(--text-warm-white); font-size: 1.1rem; margin-top: 8px; line-height: 1.5;">
+              «U sizlar taskin topishingiz uchun o‘zingizdan juftlar yaratdi va oralaringizda mehr hamda muhabbat paydo qildi...»
+            </p>
+            <p style="font-size: 0.8rem; color: var(--gold-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px;">
+              Rum surasi, 21-oyat
+            </p>
+          </div>
+
+          <p class="footer-credits">
+            © 2026 Axadbek &amp; Sabrinaxon Nikoh To‘yi • Barcha huquqlar himoyalangan
+          </p>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Watermark Pill (Unpaid / Demo Mode) -->
+  <div id="taklivoWatermark" class="taklivo-unpaid-watermark">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    TAKLIVO DEMO PREVIEW • 24H
+  </div>
+
+  <!-- Floating Demo Bottom Banner -->
+  <div id="taklivoBanner" class="taklivo-floating-banner">
+    <div class="taklivo-banner-left">
+      <span class="taklivo-banner-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        ДЕМО-РЕЖИМ
+        <span class="taklivo-banner-badge">BUYURTMA #6</span>
+      </span>
+      <span class="taklivo-banner-desc">Сайт в предварительном просмотре. После оплаты водяной знак будет снят.</span>
+    </div>
+    <a href="https://t.me/taklivo_bot" class="taklivo-banner-btn" target="_blank">Подтвердить в боте</a>
+  </div>
+
+  <!-- JavaScript Scripts -->
+  <script src="js/app.js"></script>
 </body>
 </html>
