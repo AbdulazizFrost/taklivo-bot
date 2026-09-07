@@ -473,7 +473,7 @@ body {
 /* 4. Central Title Group (Arch Crown, NIKOH TO'YI, Line, UCHQUNBEK & CHAROSXON, Divider) */
 .hero-title-group {
   position: absolute;
-  top: clamp(23%, 25.5vh, 27.5%);
+  top: clamp(28%, 31vh, 33.5%);
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
