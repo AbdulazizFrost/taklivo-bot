@@ -453,7 +453,7 @@ body.minimal-editorial-body {
 
 .photo-hero-primary {
   width: 100%;
-  height: 400px;
+  height: auto;
   background: var(--c-pure-white);
   padding: 8px;
   border-radius: var(--radius-sm);
@@ -463,17 +463,16 @@ body.minimal-editorial-body {
   box-shadow: 0 16px 40px rgba(28, 25, 23, 0.08);
 }
 
-.photo-img-primary {
+.photo-img-full {
   width: 100%;
-  height: 100%;
+  height: auto;
+  display: block;
   border-radius: 2px;
-  background-size: cover;
-  background-position: center 30%;
   transition: transform 1.2s var(--ease-editorial);
 }
 
-.photo-hero-primary:hover .photo-img-primary {
-  transform: scale(1.03);
+.photo-hero-primary:hover .photo-img-full {
+  transform: scale(1.02);
 }
 
 .photo-frame-caption {
@@ -1703,9 +1702,6 @@ body.minimal-editorial-body {
     font-size: clamp(2.4rem, 11vw, 3.4rem);
   }
 
-  .photo-hero-primary {
-    height: 330px;
-  }
 
   .hero-editorial-stamp {
     width: 76px;
