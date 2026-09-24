@@ -15,7 +15,7 @@ function openEnvelope(e) {
   const card = document.getElementById('envelopeCard');
   const topFlap = document.getElementById('envelopeTopFlap');
   const waxSeal = document.getElementById('envelopeWaxSeal');
-  const btn = document.getElementById('openEnvelopeBtn');
+  const ribbon = document.getElementById('envelopeRibbon');
 
   // 1. Trigger audio play directly on user gesture
   if (audio && !isPlaying) {
@@ -27,13 +27,10 @@ function openEnvelope(e) {
     });
   }
 
-  // 2. Animate wax seal break & 3D flap opening
+  // 2. Animate wax seal break, ribbon dissolve & 3D flap opening
   if (waxSeal) waxSeal.classList.add('broken');
+  if (ribbon) ribbon.classList.add('dissolve');
   if (topFlap) topFlap.classList.add('open');
-  if (btn) {
-    btn.style.pointerEvents = 'none';
-    btn.innerHTML = '<span>ОТКРЫВАЕТСЯ...</span>';
-  }
 
   // 3. Slide letter card out of the envelope
   setTimeout(() => {
@@ -44,7 +41,7 @@ function openEnvelope(e) {
   setTimeout(() => {
     if (screen) screen.classList.add('opened');
     document.body.classList.remove('locked');
-  }, 1300);
+  }, 1350);
 }
 
 // --- 1. Audio Player Controller ---

@@ -22,22 +22,30 @@
 <body class="minimal-editorial-body locked">
 
   <!-- ============================================================
-       INTERACTIVE 3D OPENING ENVELOPE SCREEN
+       LUXURY 3D OPENING ENVELOPE SCREEN
        ============================================================ -->
   <div class="envelope-screen-overlay" id="envelopeScreen">
-    <div class="envelope-backdrop-particles" aria-hidden="true"></div>
+    <!-- Ambient Golden Dust Glow -->
+    <div class="envelope-ambient-glow" aria-hidden="true">
+      <span class="dust-particle p1"></span>
+      <span class="dust-particle p2"></span>
+      <span class="dust-particle p3"></span>
+      <span class="dust-particle p4"></span>
+    </div>
 
     <div class="envelope-stage">
-      <!-- 3D Envelope Component -->
-      <div class="envelope-container" id="envelopeBox" onclick="openEnvelope(event)" role="button" aria-label="Открыть свадебный конверт" tabindex="0">
+      <!-- 3D Luxury Envelope (Entire container is clickable) -->
+      <div class="envelope-container" id="envelopeBox" onclick="openEnvelope(event)" role="button" aria-label="Прикоснитесь, чтобы открыть свадебный конверт" tabindex="0">
         
-        <!-- Back Base Pocket -->
-        <div class="envelope-back-pocket"></div>
+        <!-- Back Base Pocket with Gold Damask Inner Liner -->
+        <div class="envelope-back-pocket">
+          <div class="envelope-inner-gold-liner"></div>
+        </div>
 
-        <!-- The Invitation Card inside that slides up -->
+        <!-- The Luxury Letter Card inside that slides up -->
         <div class="envelope-card-insert" id="envelopeCard">
           <div class="card-inner-frame">
-            <span class="card-monogram font-serif">С &amp; Ю</span>
+            <div class="card-gold-crest font-serif">С &amp; Ю</div>
             <span class="card-invite-badge">СВАДЕБНОЕ ПРИГЛАШЕНИЕ</span>
             <h2 class="card-couple-names font-serif">Сергей &amp; Юлия</h2>
             <div class="card-hairline-sep"></div>
@@ -53,29 +61,44 @@
           <div class="pocket-side-bottom"></div>
         </div>
 
-        <!-- Top Flap that rotates in 3D -->
-        <div class="envelope-top-flap" id="envelopeTopFlap">
-          <div class="flap-triangle-shape"></div>
+        <!-- Luxury Satin Champagne Ribbon -->
+        <div class="envelope-silk-ribbon" id="envelopeRibbon" aria-hidden="true">
+          <span class="ribbon-thread-top"></span>
+          <span class="ribbon-shine"></span>
+          <span class="ribbon-thread-bottom"></span>
         </div>
 
-        <!-- Golden Wax Seal Stamp -->
+        <!-- Top Flap that rotates in 3D -->
+        <div class="envelope-top-flap" id="envelopeTopFlap">
+          <div class="flap-triangle-shape">
+            <div class="flap-gold-edge-trim"></div>
+            <div class="flap-embossed-crest">
+              <span class="flap-script-title font-serif">Свадебное торжество</span>
+              <span class="flap-script-names font-serif">Сергей &amp; Юлия</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Handcrafted 3D Golden Wax Seal Stamp -->
         <div class="envelope-wax-seal" id="envelopeWaxSeal">
-          <div class="seal-outer-glow"></div>
+          <div class="seal-aura-pulse"></div>
           <div class="seal-body">
-            <span class="seal-icon">💍</span>
-            <span class="seal-initials font-serif">С &amp; Ю</span>
+            <div class="seal-inner-groove">
+              <span class="seal-icon">💍</span>
+              <span class="seal-initials font-serif">С &amp; Ю</span>
+            </div>
           </div>
         </div>
 
       </div>
 
-      <!-- Action Button and Hint -->
+      <!-- Calligraphic Tap Hint (No Button) -->
       <div class="envelope-cta-block">
-        <p class="envelope-hint-text">Нажмите на конверт, чтобы открыть</p>
-        <button type="button" class="envelope-unfold-btn" id="openEnvelopeBtn" onclick="openEnvelope(event)">
-          <span>ОТКРЫТЬ ПРИГЛАШЕНИЕ</span>
-          <span class="btn-sparkle">✨</span>
-        </button>
+        <p class="envelope-hint-text font-serif">
+          <span class="hint-sparkle">✦</span>
+          <span>Прикоснитесь к конверту, чтобы открыть</span>
+          <span class="hint-sparkle">✦</span>
+        </p>
       </div>
     </div>
   </div>
