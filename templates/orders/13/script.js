@@ -27,7 +27,7 @@ function openEnvelope(e) {
     });
   }
 
-  // 2. Animate wax seal break, ribbon dissolve & 3D flap opening
+  if (screen) screen.classList.add('opening');
   if (waxSeal) waxSeal.classList.add('broken');
   if (ribbon) ribbon.classList.add('dissolve');
   if (topFlap) topFlap.classList.add('open');
