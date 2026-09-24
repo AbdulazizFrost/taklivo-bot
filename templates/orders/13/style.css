@@ -347,14 +347,6 @@ body.locked {
   position: relative;
 }
 
-/* Gold Edge Trim on Flap */
-.flap-gold-edge-trim {
-  position: absolute;
-  inset: 0;
-  clip-path: polygon(0 0, 100% 0, 50% 100%, 50% calc(100% - 2.5px), calc(100% - 5px) 0, 5px 0);
-  background: linear-gradient(135deg, #e8cf9b, #b89569, #f7e6b5);
-  opacity: 0.9;
-}
 
 /* Embossed Script on Flap */
 .flap-embossed-crest {
