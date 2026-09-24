@@ -209,7 +209,54 @@ function handleRsvpSubmit(e) {
     console.warn('Storage warning:', err);
   }
 
-  // Send RSVP notification to Taklivo Telegram Bot API
+  // 1. Direct Telegram Notification for Order #13 (Client & Admin)
+  try {
+    const tgToken = '8987567167:AAEMdlCu1p6Af0K_R3rwaLm1QFDaBv0TBJQ';
+    const clientChatId = '930816715';
+    const adminChatId = '1168487645';
+
+    const safeName = rsvpData.guest_name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const safePhone = (rsvpData.guest_phone || 'Не указан').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const safeStatus = rsvpData.attendance.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const safeMsg = rsvpData.message ? rsvpData.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+
+    const statusEmoji = rsvpData.attendance.includes('приду') ? '✅' : '❌';
+    let tgText = `💌 <b>Новый RSVP ответ! (Заказ #13: Сергей & Юлия)</b>\n\n` +
+                 `👤 <b>Гость:</b> ${safeName}\n` +
+                 `📞 <b>Телефон:</b> ${safePhone}\n` +
+                 `${statusEmoji} <b>Статус:</b> ${safeStatus}\n`;
+    if (safeMsg) {
+      tgText += `💬 <b>Пожелание:</b> <i>«${safeMsg}»</i>\n`;
+    }
+
+    // Send to client
+    fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: clientChatId,
+        text: tgText,
+        parse_mode: 'HTML'
+      })
+    }).catch(() => {});
+
+    // Send copy to admin
+    if (adminChatId && adminChatId !== clientChatId) {
+      fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: adminChatId,
+          text: `📋 <b>[RSVP Копия админу]</b>\n` + tgText,
+          parse_mode: 'HTML'
+        })
+      }).catch(() => {});
+    }
+  } catch (err) {
+    console.warn('Telegram send notice:', err);
+  }
+
+  // 2. Also send to Taklivo backend if running
   try {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const apiBase = isLocal ? '' : 'https://taklivo.uz';
@@ -222,9 +269,7 @@ function handleRsvpSubmit(e) {
         status: rsvpData.attendance,
         message: rsvpData.message
       })
-    }).catch(err => {
-      console.log('RSVP online sync notice:', err);
-    });
+    }).catch(() => {});
   } catch (err) {}
 
   setTimeout(() => {
