@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>Сергей &amp; Юлия — Свадебное приглашение</title>
+  
+  <!-- OpenGraph Preview for Telegram / WhatsApp -->
+  <meta property="og:title" content="Сергей &amp; Юлия — Свадебное приглашение 💍" />
+  <meta property="og:description" content="5 июня 2027 · 14:00 | ЗАГС Королёва. Мы будем счастливы видеть вас на нашем празднике!" />
+  <meta property="og:image" content="images/rings.jpg" />
+  <meta property="og:type" content="website" />
+
+  <!-- Google Fonts: Editorial Serif + Clean Modern Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="minimal-editorial-body">
+
+  <!-- ============================================================
+       0. DEMO WATERMARKS & UNPAID NOTICES (Visible & Distinct)
+       ============================================================ -->
+  <!-- Full-Page Diagonal Repeating Watermark Grid -->
+  <div class="taklivo-diagonal-watermark-grid" aria-hidden="true">
+    <div class="watermark-pattern">
+      <span>TAKLIVO DEMO PREVIEW • ЗАКАЗ #13 • НЕ ОПЛАЧЕНО</span>
+      <span>TAKLIVO.UZ • PREVIEW ONLY • СЕРГЕЙ &amp; ЮЛИЯ</span>
+      <span>TAKLIVO DEMO PREVIEW • ЗАКАЗ #13 • НЕ ОПЛАЧЕНО</span>
+      <span>TAKLIVO.UZ • PREVIEW ONLY • СЕРГЕЙ &amp; ЮЛИЯ</span>
+      <span>TAKLIVO DEMO PREVIEW • ЗАКАЗ #13 • НЕ ОПЛАЧЕНО</span>
+      <span>TAKLIVO.UZ • PREVIEW ONLY • СЕРГЕЙ &amp; ЮЛИЯ</span>
+      <span>TAKLIVO DEMO PREVIEW • ЗАКАЗ #13 • НЕ ОПЛАЧЕНО</span>
+      <span>TAKLIVO.UZ • PREVIEW ONLY • СЕРГЕЙ &amp; ЮЛИЯ</span>
+    </div>
+  </div>
+
+  <!-- Persistent Bottom Demo Notification Bar -->
+  <aside class="taklivo-demo-bottom-bar" role="alert">
+    <div class="demo-bottom-inner">
+      <div class="demo-badge-wrap">
+        <span class="demo-pulse-dot" aria-hidden="true"></span>
+        <span class="demo-badge-title">ДЕМО-РЕЖИМ • ЗАКАЗ #13</span>
+      </div>
+      <p class="demo-bottom-text">
+        Сайт в режиме предварительного просмотра. После оплаты все водяные знаки будут удалены.
+      </p>
+      <a href="https://t.me/taklivo_bot" target="_blank" rel="noopener noreferrer" class="demo-confirm-btn">
+        <span>Подтвердить в боте</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       AUDIO PLAYER & FLOATING SWISS BADGE
+       ============================================================ -->
+  <audio id="weddingAudio" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div class="swiss-audio-badge" id="musicBtn" onclick="toggleMusic()" role="button" aria-label="Включить или выключить музыку" tabindex="0">
+    <div class="audio-equalizer-micro" id="eqBars" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+    <span class="audio-badge-label" id="audioLabel">ВАЛЬС № 2</span>
+  </div>
+
+  <!-- ============================================================
+       MAIN EDITORIAL BOOKLET CANVAS (Centered Swiss Layout)
+       ============================================================ -->
+  <main class="editorial-page-canvas">
+
+    <!-- Top Watermark Header Badge -->
+    <div class="canvas-top-badge-wrap">
+      <div id="taklivoWatermark" class="taklivo-demo-top-pill" role="status" aria-label="Демонстрационный режим">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>TAKLIVO DEMO PREVIEW • ЗАКАЗ #13</span>
+      </div>
+    </div>
+
+    <!-- 1. HERO SECTION (Magazine Cover Architecture) -->
+    <header class="editorial-hero reveal-item active" id="hero">
+      <div class="magazine-issue-bar">
+        <span class="issue-left">VOL. 27 · NO. 06</span>
+        <span class="issue-center">СВАДЕБНЫЙ ВЫПУСК</span>
+        <span class="issue-right">05.06.2027</span>
+      </div>
+
+      <div class="hero-typography-block">
+        <div class="hero-editorial-eyebrow">
+          <span class="eyebrow-line left"></span>
+          <p class="hero-editorial-sub">ПРИГЛАШЕНИЕ НА СВАДЬБУ</p>
+          <span class="eyebrow-line right"></span>
+        </div>
+
+        <h1 class="hero-monumental-name">
+          <span class="name-row">СЕРГЕЙ</span>
+          <span class="amp-row"><span class="amp-char">&amp;</span></span>
+          <span class="name-row">ЮЛИЯ</span>
+        </h1>
+
+        <div class="hero-date-row">
+          <div class="hero-date-item">
+            <span class="date-label">ДАТА</span>
+            <span class="architectural-date">05 · 06 · 2027</span>
+          </div>
+          <div class="hero-date-item center-item">
+            <span class="date-label">ВРЕМЯ</span>
+            <span class="architectural-date">14:00</span>
+          </div>
+          <div class="hero-date-item right">
+            <span class="date-label">ЛОКАЦИЯ</span>
+            <span class="city-indicator">КОРОЛЁВ · ЗАГС</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editorial Portrait Composition -->
+      <div class="hero-asymmetric-composition">
+        <div class="photo-hero-primary">
+          <div class="photo-img-primary" style="background-image: url('images/rings.jpg');" role="img" aria-label="Свадебные кольца Сергея и Юлии"></div>
+          <div class="photo-frame-caption">
+            <span class="photo-num-tag">PLATE 01</span>
+            <span class="photo-desc-tag">НАШ ДЕНЬ · 05.06.2027</span>
+          </div>
+        </div>
+        <div class="hero-editorial-stamp">
+          <div class="stamp-circle">
+            <svg viewBox="0 0 100 100" class="stamp-svg" aria-hidden="true">
+              <path id="stampPath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="transparent" />
+              <text font-size="9" letter-spacing="2.5" fill="#b89569">
+                <textPath href="#stampPath">СЕРГЕЙ &amp; ЮЛИЯ • СВАДЬБА • 2027 •</textPath>
+              </text>
+            </svg>
+            <span class="stamp-inner-symbol">💍</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-quote-card">
+        <span class="quote-mark-large">“</span>
+        <blockquote class="hero-manifesto-quote font-serif">
+          Любовь не в том, чтобы смотреть друг на друга, а в том, чтобы смотреть вместе в одном направлении.
+        </blockquote>
+      </div>
+    </header>
+
+    <!-- 2. THE UNION / О СОЮЗЕ -->
+    <section class="section-editorial-couple reveal-item" id="union">
+      <div class="editorial-grid-header">
+        <span class="section-index">01</span>
+        <h2 class="section-title-clean">О НАШЕМ СОЮЗЕ</h2>
+        <span class="section-line"></span>
+      </div>
+
+      <div class="couple-manifesto-layout">
+        <div class="manifesto-card">
+          <div class="manifesto-accent-bar"></div>
+          <div class="manifesto-content">
+            <h3 class="lead-statement font-serif">
+              Два пути, соединившиеся в одну счастливую историю.
+            </h3>
+            <p class="manifesto-body-text">
+              Дорогие родные, близкие и друзья! В жизни каждого человека наступает особенный момент, когда двое решают соединить свои судьбы. Мы безмерно счастливы пригласить вас разделить с нами радость этого незабываемого дня и стать свидетелями рождения нашей семьи.
+            </p>
+            <div class="signature-line">
+              <span class="monogram-emboss font-serif">С &amp; Ю</span>
+              <span class="signature-sub">Сергей &amp; Юлия</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. COUNTDOWN TIMER -->
+    <section class="section-countdown-minimal reveal-item" id="countdown">
+      <div class="editorial-grid-header">
+        <span class="section-index">02</span>
+        <h2 class="section-title-clean">ОБРАТНЫЙ ОТСЧЕТ</h2>
+        <span class="section-line"></span>
+      </div>
+
+      <div class="countdown-container">
+        <p class="countdown-eyebrow">ДО НАЧАЛА СВАДЕБНОГО ТОРЖЕСТВА ОСТАЛОСЬ</p>
+        <div class="swiss-countdown-grid">
+          <div class="sc-unit">
+            <span class="sc-val font-serif" id="days">00</span>
+            <span class="sc-lbl">ДНЕЙ</span>
+          </div>
+          <div class="sc-unit-colon">:</div>
+          <div class="sc-unit">
+            <span class="sc-val font-serif" id="hours">00</span>
+            <span class="sc-lbl">ЧАСОВ</span>
+          </div>
+          <div class="sc-unit-colon">:</div>
+          <div class="sc-unit">
+            <span class="sc-val font-serif" id="minutes">00</span>
+            <span class="sc-lbl">МИНУТ</span>
+          </div>
+          <div class="sc-unit-colon">:</div>
+          <div class="sc-unit">
+            <span class="sc-val font-serif" id="seconds">00</span>
+            <span class="sc-lbl">СЕКУНД</span>
+          </div>
+        </div>
+        <div class="target-date-banner">
+          <span class="calendar-icon">🗓</span>
+          <span>Суббота, 5 июня 2027 года · 14:00</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. SCHEDULE / ТАЙМИНГ ДНЯ -->
+    <section class="section-swiss-timeline reveal-item" id="schedule">
+      <div class="editorial-grid-header">
+        <span class="section-index">03</span>
+        <h2 class="section-title-clean">ПРОГРАММА ДНЯ</h2>
+        <span class="section-line"></span>
+      </div>
+
+      <div class="swiss-timeline-list">
+        <!-- 13:30 -->
+        <div class="timeline-row">
+          <div class="time-year-badge">
+            <span class="time-year font-serif">13:30</span>
+            <span class="timeline-dot"></span>
+          </div>
+          <div class="time-detail-card">
+            <div class="phase-header-row">
+              <span class="time-phase-name">СБОР ГОСТЕЙ</span>
+              <span class="phase-tag">ВСТРЕЧА</span>
+            </div>
+            <p class="time-phase-desc">
+              Встреча родных и дорогих друзей у парадного входа отдела ЗАГС г. Королёв.
+            </p>
+          </div>
+        </div>
+
+        <!-- 14:00 (Featured) -->
+        <div class="timeline-row featured">
+          <div class="time-year-badge">
+            <span class="time-year font-serif">14:00</span>
+            <span class="timeline-dot featured-dot"></span>
+          </div>
+          <div class="time-detail-card featured-card">
+            <div class="phase-header-row">
+              <span class="time-phase-name">ТОРЖЕСТВЕННАЯ РЕГИСТРАЦИЯ</span>
+              <span class="featured-badge">ГЛАВНЫЙ МОМЕНТ 💍</span>
+            </div>
+            <p class="time-phase-desc">
+              Церемония бракосочетания, обмен кольцами и первые теплые слова в статусе мужа и жены.
+            </p>
+          </div>
+        </div>
+
+        <!-- 15:00 -->
+        <div class="timeline-row">
+          <div class="time-year-badge">
+            <span class="time-year font-serif">15:00</span>
+            <span class="timeline-dot"></span>
+          </div>
+          <div class="time-detail-card">
+            <div class="phase-header-row">
+              <span class="time-phase-name">ФОТОСЕССИЯ &amp; ПОЗДРАВЛЕНИЯ</span>
+              <span class="phase-tag">ФОТО</span>
+            </div>
+            <p class="time-phase-desc">
+              Памятные фотографии с молодоженами, звон бокалов и первые поздравления.
+            </p>
+          </div>
+        </div>
+
+        <!-- 16:30 -->
+        <div class="timeline-row">
+          <div class="time-year-badge">
+            <span class="time-year font-serif">16:30</span>
+            <span class="timeline-dot"></span>
+          </div>
+          <div class="time-detail-card">
+            <div class="phase-header-row">
+              <span class="time-phase-name">СВАДЕБНЫЙ БАНКЕТ</span>
+              <span class="phase-tag">УЖИН</span>
+            </div>
+            <p class="time-phase-desc">
+              Праздничный ужин, музыка, танцы и душевный вечер в кругу самых близких.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. LOCATION & VENUE / ЛОКАЦИЯ -->
+    <section class="section-celebration reveal-item" id="location">
+      <div class="editorial-grid-header">
+        <span class="section-index">04</span>
+        <h2 class="section-title-clean">МЕСТО ПРОВЕДЕНИЯ</h2>
+        <span class="section-line"></span>
+      </div>
+
+      <div class="celebration-monument-box">
+        <div class="monument-top-seal">
+          <span class="seal-diamond">◇</span>
+          <span class="seal-sub-title">МЕСТО РЕГИСТРАЦИИ БРАКА</span>
+        </div>
+
+        <div class="monument-time-col">
+          <span class="time-giant font-serif">14:00</span>
+          <span class="time-sub-note">Торжественная церемония</span>
+        </div>
+
+        <div class="hairline-divider-h">
+          <span class="divider-dot"></span>
+        </div>
+
+        <div class="monument-venue-col">
+          <span class="venue-label">ОТДЕЛ ЗАГС</span>
+          <h3 class="venue-title font-serif">ЗАГС Королёва</h3>
+          <p class="venue-sub-text">
+            Отдел ЗАГС по городскому округу Королёв<br>
+            Московская область, Королёв, проспект Королёва, д. 14
+          </p>
+
+          <div class="venue-phone-row">
+            <span class="phone-icon">📞</span>
+            <a href="tel:+79687691393" class="phone-link">+7 (968) 769-13-93</a>
+          </div>
+
+          <div class="map-actions-group">
+            <a href="https://yandex.ru/maps/org/otdel_zags_po_gorodskomu_okrugu_korolyov/1003895005?si=01j3q63cqnq9r52yp2479zr7g8" target="_blank" rel="noopener noreferrer" class="swiss-black-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2C7.589 2 4 5.589 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.411-3.589-8-8-8zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/>
+              </svg>
+              <span>Открыть в Яндекс.Картах</span>
+              <span class="btn-arrow">→</span>
+            </a>
+
+            <a href="https://www.google.com/maps/search/?api=1&query=55.920769,37.841396" target="_blank" rel="noopener noreferrer" class="swiss-outline-action-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+              </svg>
+              <span>Открыть в Google Maps</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. DRESS CODE / ДРЕСС-КОД -->
+    <section class="section-dresscode reveal-item" id="dresscode">
+      <div class="editorial-grid-header">
+        <span class="section-index">05</span>
+        <h2 class="section-title-clean">ДРЕСС-КОД</h2>
+        <span class="section-line"></span>
+      </div>
+
+      <div class="dresscode-editorial-card">
+        <div class="dresscode-intro">
+          <p class="dresscode-sub-title font-serif">COCKTAIL &amp; MINIMAL ELEGANCE</p>
+          <p class="dresscode-lead-desc">
+            Нам будет особенно приятно видеть вас в красивых нарядах, гармонирующих со стилем и атмосферой нашего праздника.
+          </p>
+        </div>
+
+        <div class="dresscode-columns">
+          <!-- Gentlemen -->
+          <div class="dresscode-col">
+            <div class="dresscode-icon-badge">🤵</div>
+            <h3 class="dresscode-role font-serif">ДЖЕНТЛЬМЕНЫ</h3>
+            <p class="dresscode-desc">
+              Классический костюм темных или приглушенных тонов, строгие брюки, светлая рубашка и элегантные туфли.
+            </p>
+          </div>
+
+          <div class="dresscode-divider-v" aria-hidden="true"></div>
+
+          <!-- Ladies -->
+          <div class="dresscode-col">
+            <div class="dresscode-icon-badge">👗</div>
+            <h3 class="dresscode-role font-serif">ДАМЫ</h3>
+            <p class="dresscode-desc">
+              Коктейльные или вечерние платья, элегантные брючные костюмы в мягких, сдержанных оттенках.
+            </p>
+          </div>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="dresscode-swatches-box">
+          <span class="swatch-label">РЕКОМЕНДУЕМАЯ ЦВЕТОВАЯ ПАЛИТРА:</span>
+          <div class="swatches-grid">
+            <div class="swatch-item">
+              <span class="swatch-circle" style="background-color: #F1EBE4; border: 1px solid rgba(0,0,0,0.12);"></span>
+              <span class="swatch-name">Айвори</span>
+            </div>
+            <div class="swatch-item">
+              <span class="swatch-circle" style="background-color: #D9CDBF;"></span>
+              <span class="swatch-name">Песочный</span>
+            </div>
+            <div class="swatch-item">
+              <span class="swatch-circle" style="background-color: #9FA796;"></span>
+              <span class="swatch-name">Шалфей</span>
+            </div>
+            <div class="swatch-item">
+              <span class="swatch-circle" style="background-color: #5C6066;"></span>
+              <span class="swatch-name">Графит</span>
+            </div>
+            <div class="swatch-item">
+              <span class="swatch-circle" style="background-color: #222326;"></span>
+              <span class="swatch-name">Угольный</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dresscode-polite-notice">
+          <span class="notice-asterisk">*</span>
+          <p class="notice-text">
+            Пожалуйста, оставьте белый цвет платья исключительно для невесты. Благодарим за понимание!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. GALLERY / ФОТОГАЛЕРЕЯ -->
+    <section class="section-minimal-gallery reveal-item" id="gallery">
+      <div class="editorial-grid-header">
+        <span class="section-index">06</span>
+        <h2 class="section-title-clean">ГАЛЕРЕЯ</h2>
+        <span class="section-line"></span>
+      </div>
+
+      <div class="gallery-curated-showcase">
+        <div class="gallery-primary-frame" onclick="openPhotoModal('images/rings.jpg')">
+          <div class="gallery-img-wrap">
+            <img src="images/rings.jpg" alt="Свадебные кольца — Сергей и Юлия" class="gallery-main-img" loading="lazy" />
+            <div class="gallery-zoom-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                <line x1="11" y1="8" x2="11" y2="14"></line>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+              </svg>
+              <span>Увеличить фото</span>
+            </div>
+          </div>
+          <div class="g-caption-bar">
+            <div class="g-caption-left">
+              <span class="g-photo-caption">SERIES 01</span>
+              <span class="g-photo-sub">СИМВОЛ ВЕЧНОСТИ · КОЛЬЦА</span>
+            </div>
+            <span class="g-caption-date">05.06.2027</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. RSVP / ПОДТВЕРЖДЕНИЕ ПРИСУТСТВИЯ -->
+    <section class="section-rsvp-minimal reveal-item" id="rsvp">
+      <div class="editorial-grid-header">
+        <span class="section-index">07</span>
+        <h2 class="section-title-clean">ПОДТВЕРЖДЕНИЕ ПРИСУТСТВИЯ</h2>
+        <span class="section-line"></span>
+      </div>
+
+      <div class="minimal-rsvp-box">
+        <div class="rsvp-intro-header">
+          <span class="rsvp-top-tag">RSVP</span>
+          <h3 class="rsvp-title font-serif">ЖДЁМ ВАС НА НАШЕМ ПРАЗДНИКЕ</h3>
+          <p class="rsvp-intro-text">
+            Пожалуйста, подтвердите ваше присутствие до <strong>1 мая 2027 года</strong>, чтобы мы могли наилучшим образом организовать этот день.
+          </p>
+        </div>
+
+        <form class="swiss-form" id="rsvpForm" onsubmit="handleRsvpSubmit(event)">
+          <!-- Name -->
+          <div class="field-luxury-wrap">
+            <label for="guestName">Ваше имя и фамилия <span class="req-star">*</span></label>
+            <input type="text" id="guestName" required placeholder="Например: Александр Смирнов" autocomplete="name" />
+          </div>
+
+          <!-- Phone -->
+          <div class="field-luxury-wrap">
+            <label for="guestPhone">Номер телефона <span class="req-star">*</span></label>
+            <input type="tel" id="guestPhone" required placeholder="+7 (999) 000-00-00" autocomplete="tel" />
+          </div>
+
+          <!-- Attendance Choice -->
+          <div class="field-luxury-wrap">
+            <label id="attendanceLabel">Сможете ли вы разделить с нами этот день? <span class="req-star">*</span></label>
+            <div class="rsvp-options-grid" role="radiogroup" aria-labelledby="attendanceLabel">
+              <label class="rsvp-choice-card active" id="choiceYes">
+                <input type="radio" name="attendance" value="С удовольствием приду" checked onchange="updateChoiceUI(this)" />
+                <span class="choice-check">✓</span>
+                <span class="choice-text">С удовольствием приду ✨</span>
+              </label>
+              <label class="rsvp-choice-card" id="choiceNo">
+                <input type="radio" name="attendance" value="К сожалению, не смогу" onchange="updateChoiceUI(this)" />
+                <span class="choice-check">✗</span>
+                <span class="choice-text">К сожалению, не смогу</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Wishes / Message -->
+          <div class="field-luxury-wrap">
+            <label for="guestMessage">Ваши пожелания или комментарии (необязательно)</label>
+            <textarea id="guestMessage" rows="3" placeholder="Напишите пару тёплых слов или предпочтения..."></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="swiss-form-actions">
+            <button type="submit" class="swiss-primary-btn" id="submitBtn">
+              <span>ОТПРАВИТЬ ОТВЕТ</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 9. EDITORIAL FOOTER -->
+    <footer class="editorial-footer reveal-item">
+      <div class="footer-hairline"></div>
+      
+      <div class="footer-monogram-block">
+        <span class="footer-monogram font-serif">С &amp; Ю</span>
+      </div>
+
+      <div class="footer-brand-row">
+        <h2 class="footer-couple font-serif">Сергей &amp; Юлия</h2>
+        <p class="footer-date-tag">05 ИЮНЯ 2027 ГОДА · КОРОЛЁВ</p>
+        <p class="footer-credit">TAKLIVO · ARCHITECTURAL EDITORIAL WEDDINGS</p>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ============================================================
+       SUCCESS MODAL (Russian)
+       ============================================================ -->
+  <div class="success-modal" id="successModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-swiss-box">
+      <div class="swiss-check" aria-hidden="true">✓</div>
+      <h3 class="font-serif" id="modalTitle">Спасибо!</h3>
+      <p id="modalSuccessDesc">Ваш ответ успешно принят. Мы с нетерпением ждём встречи с вами на нашей свадьбе!</p>
+      <button type="button" class="modal-swiss-close" onclick="closeSuccessModal()">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- Photo Lightbox Modal -->
+  <div class="lightbox-modal" id="photoModal" onclick="closePhotoModal(event)" role="dialog" aria-modal="true">
+    <div class="lightbox-content">
+      <button type="button" class="lightbox-close-btn" onclick="closePhotoModal(event)" aria-label="Закрыть фото">✕</button>
+      <img src="" id="lightboxImg" alt="Просмотр фотографии" />
+      <p class="lightbox-caption">Сергей &amp; Юлия · 05.06.2027</p>
+    </div>
+  </div>
+
+  <!-- Main JavaScript File -->
+  <script src="script.js"></script>
+</body>
+</html>

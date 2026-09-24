@@ -26,4 +26,5 @@ logs/
 # Local database and media downloads
 *.db
 downloads/
+scratch/
 
