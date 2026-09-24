@@ -209,6 +209,24 @@ function handleRsvpSubmit(e) {
     console.warn('Storage warning:', err);
   }
 
+  // Send RSVP notification to Taklivo Telegram Bot API
+  try {
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const apiBase = isLocal ? '' : 'https://taklivo.uz';
+    fetch(`${apiBase}/api/order/13/rsvp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: rsvpData.guest_name,
+        phone: rsvpData.guest_phone,
+        status: rsvpData.attendance,
+        message: rsvpData.message
+      })
+    }).catch(err => {
+      console.log('RSVP online sync notice:', err);
+    });
+  } catch (err) {}
+
   setTimeout(() => {
     // Restore button
     if (submitBtn) {
