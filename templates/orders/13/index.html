@@ -19,7 +19,66 @@
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="minimal-editorial-body">
+<body class="minimal-editorial-body locked">
+
+  <!-- ============================================================
+       INTERACTIVE 3D OPENING ENVELOPE SCREEN
+       ============================================================ -->
+  <div class="envelope-screen-overlay" id="envelopeScreen">
+    <div class="envelope-backdrop-particles" aria-hidden="true"></div>
+
+    <div class="envelope-stage">
+      <!-- 3D Envelope Component -->
+      <div class="envelope-container" id="envelopeBox" onclick="openEnvelope(event)" role="button" aria-label="Открыть свадебный конверт" tabindex="0">
+        
+        <!-- Back Base Pocket -->
+        <div class="envelope-back-pocket"></div>
+
+        <!-- The Invitation Card inside that slides up -->
+        <div class="envelope-card-insert" id="envelopeCard">
+          <div class="card-inner-frame">
+            <span class="card-monogram font-serif">С &amp; Ю</span>
+            <span class="card-invite-badge">СВАДЕБНОЕ ПРИГЛАШЕНИЕ</span>
+            <h2 class="card-couple-names font-serif">Сергей &amp; Юлия</h2>
+            <div class="card-hairline-sep"></div>
+            <p class="card-date-line">05 · 06 · 2027 · 14:00</p>
+            <p class="card-venue-line">ЗАГС Королёва</p>
+          </div>
+        </div>
+
+        <!-- Left, Right and Bottom Front Folds -->
+        <div class="envelope-front-pocket">
+          <div class="pocket-side-left"></div>
+          <div class="pocket-side-right"></div>
+          <div class="pocket-side-bottom"></div>
+        </div>
+
+        <!-- Top Flap that rotates in 3D -->
+        <div class="envelope-top-flap" id="envelopeTopFlap">
+          <div class="flap-triangle-shape"></div>
+        </div>
+
+        <!-- Golden Wax Seal Stamp -->
+        <div class="envelope-wax-seal" id="envelopeWaxSeal">
+          <div class="seal-outer-glow"></div>
+          <div class="seal-body">
+            <span class="seal-icon">💍</span>
+            <span class="seal-initials font-serif">С &amp; Ю</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Button and Hint -->
+      <div class="envelope-cta-block">
+        <p class="envelope-hint-text">Нажмите на конверт, чтобы открыть</p>
+        <button type="button" class="envelope-unfold-btn" id="openEnvelopeBtn" onclick="openEnvelope(event)">
+          <span>ОТКРЫТЬ ПРИГЛАШЕНИЕ</span>
+          <span class="btn-sparkle">✨</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ============================================================
        0. DEMO WATERMARKS & UNPAID NOTICES (Visible & Distinct)

@@ -3,6 +3,50 @@
  * Wedding Invitation Interactive Controller
  */
 
+// --- 0. Interactive 3D Envelope Opening ---
+let isEnvelopeOpened = false;
+
+function openEnvelope(e) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  if (isEnvelopeOpened) return;
+  isEnvelopeOpened = true;
+
+  const screen = document.getElementById('envelopeScreen');
+  const card = document.getElementById('envelopeCard');
+  const topFlap = document.getElementById('envelopeTopFlap');
+  const waxSeal = document.getElementById('envelopeWaxSeal');
+  const btn = document.getElementById('openEnvelopeBtn');
+
+  // 1. Trigger audio play directly on user gesture
+  if (audio && !isPlaying) {
+    audio.play().then(() => {
+      isPlaying = true;
+      updateAudioUI(true);
+    }).catch(err => {
+      console.log('Audio autoplay policy:', err);
+    });
+  }
+
+  // 2. Animate wax seal break & 3D flap opening
+  if (waxSeal) waxSeal.classList.add('broken');
+  if (topFlap) topFlap.classList.add('open');
+  if (btn) {
+    btn.style.pointerEvents = 'none';
+    btn.innerHTML = '<span>ОТКРЫВАЕТСЯ...</span>';
+  }
+
+  // 3. Slide letter card out of the envelope
+  setTimeout(() => {
+    if (card) card.classList.add('slid-out');
+  }, 380);
+
+  // 4. Fade out overlay and unlock page scroll
+  setTimeout(() => {
+    if (screen) screen.classList.add('opened');
+    document.body.classList.remove('locked');
+  }, 1300);
+}
+
 // --- 1. Audio Player Controller ---
 let isPlaying = false;
 const audio = document.getElementById('weddingAudio');

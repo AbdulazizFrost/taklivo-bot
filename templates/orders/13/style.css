@@ -59,8 +59,308 @@ body.minimal-editorial-body {
   padding-bottom: 110px; /* Space for sticky demo notice */
 }
 
+body.locked {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+
 .font-serif {
   font-family: var(--font-serif);
+}
+
+/* ==========================================================================
+   INTERACTIVE 3D ENVELOPE OPENING SCREEN
+   ========================================================================== */
+.envelope-screen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: radial-gradient(circle at 50% 35%, #faf8f5 0%, #ede6dd 60%, #e2d9cd 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transition: opacity 0.85s var(--ease-editorial), visibility 0.85s var(--ease-editorial), transform 0.85s var(--ease-editorial);
+}
+
+.envelope-screen-overlay.opened {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: scale(1.08);
+}
+
+.envelope-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.envelope-container {
+  position: relative;
+  width: min(350px, 88vw);
+  height: 220px;
+  perspective: 1200px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.3s var(--ease-editorial);
+}
+
+.envelope-container:hover {
+  transform: translateY(-3px);
+}
+
+/* Envelope Back Pocket Base */
+.envelope-back-pocket {
+  position: absolute;
+  inset: 0;
+  background: #ded6c7;
+  border-radius: 8px;
+  box-shadow: 0 25px 60px rgba(45, 35, 25, 0.16), 0 4px 14px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(184, 149, 105, 0.25);
+}
+
+/* Inside Letter Card that Slides Up */
+.envelope-card-insert {
+  position: absolute;
+  width: 90%;
+  height: 175px;
+  left: 5%;
+  bottom: 8px;
+  z-index: 2;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(184, 149, 105, 0.3);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.9s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+
+.envelope-card-insert.slid-out {
+  transform: translateY(-90px);
+  z-index: 5;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+}
+
+.card-inner-frame {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(184, 149, 105, 0.4);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  background: #fffdfa;
+}
+
+.card-monogram {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--c-bronze-accent);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.card-invite-badge {
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--c-grey-cool);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.card-couple-names {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--c-carbon);
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.card-hairline-sep {
+  width: 32px;
+  height: 1px;
+  background: var(--c-bronze-accent);
+  margin-bottom: 6px;
+  opacity: 0.6;
+}
+
+.card-date-line {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--c-carbon-soft);
+}
+
+.card-venue-line {
+  font-size: 8.5px;
+  color: var(--c-grey-cool);
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* Front Envelope Pocket Folds */
+.envelope-front-pocket {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.pocket-side-left {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 0 100%, 54% 50%);
+  background: #ede6dc;
+}
+
+.pocket-side-right {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(100% 0, 100% 100%, 46% 50%);
+  background: #e7dfd4;
+}
+
+.pocket-side-bottom {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 100%, 100% 100%, 50% 42%);
+  background: #f4eee5;
+  filter: drop-shadow(0 -3px 8px rgba(0, 0, 0, 0.05));
+}
+
+/* Top Flap with 3D Flip */
+.envelope-top-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  z-index: 4;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s 0.3s;
+}
+
+.flap-triangle-shape {
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: #e8e0d4;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.envelope-top-flap.open {
+  transform: rotateX(180deg);
+  z-index: 1;
+}
+
+/* Golden Wax Seal Stamp */
+.envelope-wax-seal {
+  position: absolute;
+  top: 110px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  cursor: pointer;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.envelope-wax-seal.broken {
+  transform: translate(-50%, -50%) scale(0.5);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.seal-body {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #dfc29e 0%, #b89569 50%, #87693f 100%);
+  box-shadow: 0 6px 18px rgba(135, 105, 63, 0.45), inset 0 2px 3px rgba(255, 255, 255, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  animation: sealPulse 2.8s infinite ease-in-out;
+}
+
+@keyframes sealPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); box-shadow: 0 8px 24px rgba(184, 149, 105, 0.6); }
+}
+
+.seal-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.seal-initials {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #fffefb;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* CTA Hint & Button */
+.envelope-cta-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.envelope-hint-text {
+  font-size: 11px;
+  letter-spacing: 1.8px;
+  color: var(--c-charcoal-subtle);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.envelope-unfold-btn {
+  background: var(--c-carbon);
+  color: #ffffff;
+  padding: 14px 28px;
+  border-radius: var(--radius-pill);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: 1px solid rgba(184, 149, 105, 0.4);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+  transition: all 0.3s var(--ease-editorial);
+}
+
+.envelope-unfold-btn:hover {
+  background: #000000;
+  transform: translateY(-2px);
+  border-color: var(--c-bronze-accent);
+  box-shadow: 0 10px 30px rgba(184, 149, 105, 0.3);
+}
+
+.btn-sparkle {
+  font-size: 14px;
 }
 
 /* ==========================================================================
